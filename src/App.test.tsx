@@ -18,21 +18,21 @@ describe('HomePage', () => {
   const mockNavigateToDrawing = vi.fn()
 
   it('renders home page content', () => {
-    render(<HomePage onNavigateToDrawing={mockNavigateToDrawing} />)
+    render(<HomePage onNavigateToDrawing={mockNavigateToDrawing} onNavigateToStencil={vi.fn()} />)
     expect(screen.getByText('🎨 Kids Drawing App')).toBeInTheDocument()
     expect(screen.getByText('Welcome to Your Creative Space!')).toBeInTheDocument()
   })
 
   it('renders feature cards', () => {
-    render(<HomePage onNavigateToDrawing={mockNavigateToDrawing} />)
+    render(<HomePage onNavigateToDrawing={mockNavigateToDrawing} onNavigateToStencil={vi.fn()} />)
     expect(screen.getByText('Touch & Draw')).toBeInTheDocument()
     expect(screen.getByText('Bright Colors')).toBeInTheDocument()
     expect(screen.getByText('Save Your Art')).toBeInTheDocument()
   })
 
   it('renders start drawing button', () => {
-    render(<HomePage onNavigateToDrawing={mockNavigateToDrawing} />)
-    expect(screen.getByText('🖌️ Start Drawing!')).toBeInTheDocument()
+    render(<HomePage onNavigateToDrawing={mockNavigateToDrawing} onNavigateToStencil={vi.fn()} />)
+    expect(screen.getByText('🖌️ Free Drawing!')).toBeInTheDocument()
   })
 })
 

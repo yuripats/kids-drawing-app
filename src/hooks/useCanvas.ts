@@ -1,15 +1,21 @@
 import { useRef, useCallback, useEffect, useState } from 'react';
 import { CanvasState, DrawingPoint, DrawingPath } from '../types/Drawing';
 
+import { Stencil } from '../types/Stencil';
+
 interface UseCanvasProps {
   width: number;
   height: number;
   onDrawingChange?: (dataURL: string) => void;
+  stencil?: Stencil | null;
 }
 
-export const useCanvas = ({ width, height, onDrawingChange }: UseCanvasProps) => {
+export const useCanvas = ({ width, height, onDrawingChange, stencil }: UseCanvasProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const contextRef = useRef<CanvasRenderingContext2D | null>(null);
+  // Separate canvas for stencil mask (to detect protected areas)
+  const stencilMaskRef = useRef<HTMLCanvasElement | null>(null);
+  const stencilMaskContextRef = useRef<CanvasRenderingContext2D | null>(null);
   
   // Reactive state for UI components
   const [currentColor, setCurrentColorState] = useState('#FF6B6B');
@@ -23,6 +29,87 @@ export const useCanvas = ({ width, height, onDrawingChange }: UseCanvasProps) =>
     currentColor: '#FF6B6B', // Default red color
     currentLineWidth: 4
   });
+
+  // Draw stencil as simple shapes directly on canvas and mask
+  const drawStencil = useCallback((context: CanvasRenderingContext2D, stencil: Stencil) => {
+    console.log('drawStencil called with:', stencil);
+    
+    try {
+      const maskContext = stencilMaskContextRef.current;
+      
+      // Helper function to draw the same shape on both canvases
+      const drawShape = (ctx: CanvasRenderingContext2D, isMask: boolean) => {
+        ctx.strokeStyle = isMask ? '#FF0000' : '#000000'; // Red for mask, black for visible
+        ctx.lineWidth = isMask ? 8 : 3; // Thicker line for mask to create buffer zone
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        
+        if (stencil.id === 'test-circle') {
+          console.log('Drawing test circle');
+          ctx.beginPath();
+          ctx.arc(width / 2, height / 2, Math.min(width, height) * 0.2, 0, 2 * Math.PI);
+          ctx.stroke();
+        } else {
+          console.log('Drawing rectangle for', stencil.name);
+          // Draw a simple rectangle for other stencils
+          const rectWidth = width * 0.4;
+          const rectHeight = height * 0.3;
+          const x = (width - rectWidth) / 2;
+          const y = (height - rectHeight) / 2;
+          
+          ctx.beginPath();
+          ctx.rect(x, y, rectWidth, rectHeight);
+          ctx.stroke();
+          
+          // Add some decorative elements
+          ctx.beginPath();
+          ctx.arc(x + rectWidth * 0.3, y + rectHeight * 0.3, 10, 0, 2 * Math.PI);
+          ctx.stroke();
+          
+          ctx.beginPath();
+          ctx.arc(x + rectWidth * 0.7, y + rectHeight * 0.3, 10, 0, 2 * Math.PI);
+          ctx.stroke();
+        }
+      };
+      
+      // Draw on visible canvas
+      drawShape(context, false);
+      
+      // Draw on mask canvas if available
+      if (maskContext) {
+        drawShape(maskContext, true);
+      }
+      
+      console.log('Stencil drawn successfully on both canvases');
+      
+      // Notify parent component of changes
+      if (onDrawingChange) {
+        onDrawingChange(canvasRef.current!.toDataURL('image/png'));
+      }
+      
+    } catch (error) {
+      console.error('Error in drawStencil:', error);
+    }
+  }, [width, height, onDrawingChange]);
+
+  // Check if a point is on the stencil outline (protected area)
+  const isPointOnStencil = useCallback((x: number, y: number): boolean => {
+    const maskContext = stencilMaskContextRef.current;
+    if (!maskContext || !stencil) return false;
+    
+    try {
+      // Get pixel data at the point
+      const imageData = maskContext.getImageData(Math.floor(x), Math.floor(y), 1, 1);
+      const data = imageData.data;
+      
+      // Check if pixel is not transparent (alpha > 0)
+      // The mask uses red color, so we check if red channel > 0
+      return data[0] > 0; // Red channel
+    } catch (error) {
+      console.error('Error checking stencil mask:', error);
+      return false;
+    }
+  }, [stencil]);
 
   // Initialize canvas context
   useEffect(() => {
@@ -43,10 +130,35 @@ export const useCanvas = ({ width, height, onDrawingChange }: UseCanvasProps) =>
     canvas.width = width;
     canvas.height = height;
     
-    // Clear canvas with white background
+    // Create stencil mask canvas
+    if (!stencilMaskRef.current) {
+      stencilMaskRef.current = document.createElement('canvas');
+    }
+    const maskCanvas = stencilMaskRef.current;
+    maskCanvas.width = width;
+    maskCanvas.height = height;
+    
+    const maskContext = maskCanvas.getContext('2d');
+    if (maskContext) {
+      stencilMaskContextRef.current = maskContext;
+      maskContext.lineCap = 'round';
+      maskContext.lineJoin = 'round';
+    }
+    
+    // Clear main canvas with white background
     context.fillStyle = '#FFFFFF';
     context.fillRect(0, 0, width, height);
-  }, [width, height]);
+    
+    // Clear mask canvas
+    if (maskContext) {
+      maskContext.clearRect(0, 0, width, height);
+    }
+
+    // Draw stencil if provided
+    if (stencil) {
+      drawStencil(context, stencil);
+    }
+  }, [width, height, stencil, drawStencil]);
 
   // Get point coordinates relative to canvas
   const getPointFromEvent = useCallback((event: React.TouchEvent | React.MouseEvent): DrawingPoint => {
@@ -76,10 +188,30 @@ export const useCanvas = ({ width, height, onDrawingChange }: UseCanvasProps) =>
     };
   }, []);
 
-  // Draw a line between two points
+  // Draw a line between two points (with stencil collision detection)
   const drawLine = useCallback((from: DrawingPoint, to: DrawingPoint) => {
     const context = contextRef.current;
     if (!context) return;
+
+    // If we have a stencil, check for collision along the line
+    if (stencil) {
+      // Sample points along the line to check for stencil collision
+      const dx = to.x - from.x;
+      const dy = to.y - from.y;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+      const steps = Math.max(Math.floor(distance), 1);
+      
+      // Check multiple points along the line
+      for (let i = 0; i <= steps; i++) {
+        const t = i / steps;
+        const x = from.x + dx * t;
+        const y = from.y + dy * t;
+        
+        if (isPointOnStencil(x, y)) {
+          return; // Don't draw if line intersects stencil
+        }
+      }
+    }
 
     const state = stateRef.current;
     context.strokeStyle = state.currentColor;
@@ -89,7 +221,7 @@ export const useCanvas = ({ width, height, onDrawingChange }: UseCanvasProps) =>
     context.moveTo(from.x, from.y);
     context.lineTo(to.x, to.y);
     context.stroke();
-  }, []);
+  }, [stencil, isPointOnStencil]);
 
   // Redraw entire canvas from paths
   const redrawCanvas = useCallback(() => {
@@ -213,14 +345,18 @@ export const useCanvas = ({ width, height, onDrawingChange }: UseCanvasProps) =>
     const point = getPointFromEvent(event);
     
     if (currentTool === 'fill') {
-      // Use fill tool
+      // Use fill tool - always allowed
       floodFill(point.x, point.y, stateRef.current.currentColor);
     } else {
-      // Use brush tool
+      // Use brush tool - check stencil collision
+      if (stencil && isPointOnStencil(point.x, point.y)) {
+        return; // Don't start drawing on stencil
+      }
+      
       stateRef.current.isDrawing = true;
       stateRef.current.currentPath = [point];
     }
-  }, [getPointFromEvent, currentTool, floodFill]);
+  }, [getPointFromEvent, currentTool, floodFill, stencil, isPointOnStencil]);
 
   // Continue drawing
   const draw = useCallback((event: React.TouchEvent | React.MouseEvent) => {
@@ -274,13 +410,13 @@ export const useCanvas = ({ width, height, onDrawingChange }: UseCanvasProps) =>
     }
   }, [onDrawingChange, currentTool]);
 
-  // Clear the entire canvas
+  // Clear the entire canvas (but preserve stencil)
   const clearCanvas = useCallback(() => {
     const context = contextRef.current;
     const canvas = canvasRef.current;
     if (!context || !canvas) return;
 
-    // Clear all paths
+    // Clear all user paths
     stateRef.current.paths = [];
     stateRef.current.currentPath = [];
     
@@ -288,11 +424,17 @@ export const useCanvas = ({ width, height, onDrawingChange }: UseCanvasProps) =>
     context.fillStyle = '#FFFFFF';
     context.fillRect(0, 0, canvas.width, canvas.height);
     
+    // Redraw stencil if present (this preserves the permanent outline)
+    if (stencil) {
+      drawStencil(context, stencil);
+    }
+    
+    
     // Notify parent component
     if (onDrawingChange) {
       onDrawingChange(canvas.toDataURL('image/png'));
     }
-  }, [onDrawingChange]);
+  }, [onDrawingChange, stencil, drawStencil]);
 
   // Change drawing color
   const setColor = useCallback((color: string) => {

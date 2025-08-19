@@ -1,12 +1,14 @@
 import { useState, useCallback, useEffect } from 'react';
 import DrawingCanvasWithTools from './Canvas/DrawingCanvasWithTools';
 import { isMobileDevice, getViewportDimensions } from '../utils/DeviceUtils';
+import { Stencil } from '../types/Stencil';
 
 interface DrawingPageProps {
   onNavigateHome: () => void;
+  stencil?: Stencil | null;
 }
 
-const DrawingPage = ({ onNavigateHome }: DrawingPageProps) => {
+const DrawingPage = ({ onNavigateHome, stencil }: DrawingPageProps) => {
   const [isMobile, setIsMobile] = useState(false);
   const [viewport, setViewport] = useState({ width: 800, height: 600 });
 
@@ -70,7 +72,10 @@ const DrawingPage = ({ onNavigateHome }: DrawingPageProps) => {
         </button>
         
         <h1 className={`font-bold text-primary-600 ${isMobile ? 'text-lg' : 'text-2xl md:text-3xl'}`}>
-          {isMobile ? '🎨 Draw!' : '🎨 Draw Something Amazing!'}
+          {stencil 
+            ? (isMobile ? `🎭 ${stencil.name}` : `🎭 Color ${stencil.name}!`)
+            : (isMobile ? '🎨 Draw!' : '🎨 Draw Something Amazing!')
+          }
         </h1>
         
         {/* Spacer for layout balance */}
@@ -83,7 +88,10 @@ const DrawingPage = ({ onNavigateHome }: DrawingPageProps) => {
           <div className="flex flex-col items-center space-y-4">
             {!isMobile && (
               <p className="text-lg text-gray-600 text-center">
-                Use your finger or stylus to draw on the canvas below
+                {stencil 
+                  ? `Fill in the ${stencil.name.toLowerCase()} with colors and patterns!`
+                  : 'Use your finger or stylus to draw on the canvas below'
+                }
               </p>
             )}
             
@@ -94,6 +102,7 @@ const DrawingPage = ({ onNavigateHome }: DrawingPageProps) => {
                 height={canvasSize.height}
                 className="max-w-full"
                 onDrawingChange={handleDrawingChange}
+                stencil={stencil}
               />
             </div>
 

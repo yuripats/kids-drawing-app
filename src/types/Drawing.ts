@@ -1,3 +1,5 @@
+import { Stencil } from './Stencil';
+
 export interface DrawingPoint {
   x: number;
   y: number;
@@ -24,4 +26,5 @@ export interface CanvasProps {
   height?: number;
   className?: string;
   onDrawingChange?: (dataURL: string) => void;
+  stencil?: Stencil | null;
 }

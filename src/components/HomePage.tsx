@@ -1,11 +1,19 @@
 import { useState } from 'react';
+import StencilGallery from './Stencils/StencilGallery';
+import { Stencil } from '../types/Stencil';
 
 interface HomePageProps {
   onNavigateToDrawing: () => void;
+  onNavigateToStencil: (stencil: Stencil) => void;
 }
 
-function HomePage({ onNavigateToDrawing }: HomePageProps) {
+function HomePage({ onNavigateToDrawing, onNavigateToStencil }: HomePageProps) {
   const [isExcited, setIsExcited] = useState(false);
+  const [showStencils, setShowStencils] = useState(false);
+
+  const handleStencilSelect = (stencil: Stencil) => {
+    onNavigateToStencil(stencil);
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-secondary-100 via-primary-50 to-secondary-50">
@@ -43,7 +51,18 @@ function HomePage({ onNavigateToDrawing }: HomePageProps) {
                 onNavigateToDrawing();
               }}
             >
-              🖌️ Start Drawing!
+              🖌️ Free Drawing!
+            </button>
+            
+            <button 
+              className="kid-button bg-purple-500 hover:bg-purple-600 active:bg-purple-700 text-xl"
+              onClick={() => {
+                setIsExcited(true);
+                setShowStencils(!showStencils);
+              }}
+              onTouchStart={() => setIsExcited(true)}
+            >
+              🎭 Color Stencils!
             </button>
             
             <button 
@@ -55,6 +74,13 @@ function HomePage({ onNavigateToDrawing }: HomePageProps) {
             </button>
           </div>
         </div>
+
+        {/* Stencil Gallery */}
+        {showStencils && (
+          <div className="mb-8">
+            <StencilGallery onStencilSelect={handleStencilSelect} />
+          </div>
+        )}
 
         {/* Features Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-4xl mx-auto">
@@ -116,7 +142,7 @@ function HomePage({ onNavigateToDrawing }: HomePageProps) {
           Made with ❤️ for creative kids everywhere
         </p>
         <p className="text-xs mt-2">
-          v0.1.4 - Fill Tool (Bucket Fill) Added!
+          v0.1.5 - Stencil System with Protected Outlines!
         </p>
       </footer>
     </div>

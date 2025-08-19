@@ -8,7 +8,8 @@ const DrawingCanvasWithTools = ({
   width = 800, 
   height = 600, 
   className = '',
-  onDrawingChange 
+  onDrawingChange,
+  stencil 
 }: CanvasProps) => {
   const [isMobile] = useState(isMobileDevice());
   
@@ -24,7 +25,7 @@ const DrawingCanvasWithTools = ({
     currentColor,
     currentLineWidth,
     currentTool
-  } = useCanvas({ width, height, onDrawingChange });
+  } = useCanvas({ width, height, onDrawingChange, stencil });
 
   const handleColorChange = useCallback((color: string) => {
     setColor(color);
