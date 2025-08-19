@@ -1,6 +1,7 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useCanvas } from '../../hooks/useCanvas';
 import { CanvasProps } from '../../types/Drawing';
+import { isMobileDevice } from '../../utils/DeviceUtils';
 
 const DrawingCanvas = ({ 
   width = 800, 
@@ -8,12 +9,32 @@ const DrawingCanvas = ({
   className = '',
   onDrawingChange 
 }: CanvasProps) => {
+  const [isMobile, setIsMobile] = useState(false);
+  
   const {
     canvasRef,
     startDrawing,
     draw,
     stopDrawing
   } = useCanvas({ width, height, onDrawingChange });
+
+  // Detect mobile device on mount
+  useEffect(() => {
+    setIsMobile(isMobileDevice());
+    
+    // Listen for viewport changes (orientation, resize)
+    const handleResize = () => {
+      setIsMobile(isMobileDevice());
+    };
+    
+    window.addEventListener('resize', handleResize);
+    window.addEventListener('orientationchange', handleResize);
+    
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      window.removeEventListener('orientationchange', handleResize);
+    };
+  }, []);
 
   // Prevent scrolling on the canvas container
   useEffect(() => {
@@ -58,13 +79,18 @@ const DrawingCanvas = ({
     stopDrawing(e);
   };
 
+  // Dynamic canvas styling based on device type
+  const canvasClassName = isMobile 
+    ? "bg-white touch-none select-none rounded-lg shadow-sm" // Mobile: no border, subtle shadow
+    : "border-4 border-primary-200 rounded-2xl bg-white touch-none select-none shadow-lg"; // Desktop: decorative border
+
   return (
     <div className={`relative ${className}`}>
       <canvas
         ref={canvasRef}
         width={width}
         height={height}
-        className="border-4 border-primary-200 rounded-2xl bg-white touch-none select-none"
+        className={canvasClassName}
         style={{ touchAction: 'none' }}
         data-testid="drawing-canvas"
         onTouchStart={handleTouchStart}
