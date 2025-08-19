@@ -1,40 +1,46 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import HomePage from './components/HomePage'
 import DrawingPage from './components/DrawingPage'
-import { BrowserRouter } from 'react-router-dom'
 
-const renderWithRouter = (component: React.ReactElement) => {
-  return render(
-    <BrowserRouter>
-      {component}
-    </BrowserRouter>
-  )
-}
+// Mock the DrawingCanvas component
+vi.mock('./components/Canvas/DrawingCanvas', () => ({
+  default: ({ onDrawingChange }: { onDrawingChange?: (dataURL: string) => void }) => {
+    return (
+      <div data-testid="drawing-canvas" onClick={() => onDrawingChange?.('mock-data-url')}>
+        Mock Canvas
+      </div>
+    );
+  }
+}));
 
 describe('HomePage', () => {
+  const mockNavigateToDrawing = vi.fn()
+
   it('renders home page content', () => {
-    renderWithRouter(<HomePage />)
+    render(<HomePage onNavigateToDrawing={mockNavigateToDrawing} />)
     expect(screen.getByText('🎨 Kids Drawing App')).toBeInTheDocument()
     expect(screen.getByText('Welcome to Your Creative Space!')).toBeInTheDocument()
   })
 
   it('renders feature cards', () => {
-    renderWithRouter(<HomePage />)
+    render(<HomePage onNavigateToDrawing={mockNavigateToDrawing} />)
     expect(screen.getByText('Touch & Draw')).toBeInTheDocument()
     expect(screen.getByText('Bright Colors')).toBeInTheDocument()
     expect(screen.getByText('Save Your Art')).toBeInTheDocument()
   })
 
   it('renders start drawing button', () => {
-    renderWithRouter(<HomePage />)
+    render(<HomePage onNavigateToDrawing={mockNavigateToDrawing} />)
     expect(screen.getByText('🖌️ Start Drawing!')).toBeInTheDocument()
   })
 })
 
 describe('DrawingPage', () => {
+  const mockNavigateHome = vi.fn()
+
   it('renders drawing page content', () => {
-    renderWithRouter(<DrawingPage />)
+    render(<DrawingPage onNavigateHome={mockNavigateHome} />)
     expect(screen.getByText('🎨 Draw Something Amazing!')).toBeInTheDocument()
   })
 })

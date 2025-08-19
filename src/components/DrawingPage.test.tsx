@@ -1,6 +1,5 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
-import { BrowserRouter } from 'react-router-dom';
 import DrawingPage from './DrawingPage';
 
 // Mock the DrawingCanvas component
@@ -14,39 +13,50 @@ vi.mock('./Canvas/DrawingCanvas', () => ({
   }
 }));
 
-const renderWithRouter = (component: React.ReactElement) => {
-  return render(<BrowserRouter>{component}</BrowserRouter>);
-};
-
 describe('DrawingPage', () => {
+  const mockNavigateHome = vi.fn();
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
   it('renders drawing page with header', () => {
-    renderWithRouter(<DrawingPage />);
+    render(<DrawingPage onNavigateHome={mockNavigateHome} />);
     expect(screen.getByText('🎨 Draw Something Amazing!')).toBeInTheDocument();
   });
 
   it('renders home button', () => {
-    renderWithRouter(<DrawingPage />);
+    render(<DrawingPage onNavigateHome={mockNavigateHome} />);
     expect(screen.getByText('← Home')).toBeInTheDocument();
   });
 
   it('renders clear button', () => {
-    renderWithRouter(<DrawingPage />);
+    render(<DrawingPage onNavigateHome={mockNavigateHome} />);
     expect(screen.getByText('Clear 🗑️')).toBeInTheDocument();
   });
 
   it('renders drawing canvas', () => {
-    renderWithRouter(<DrawingPage />);
+    render(<DrawingPage onNavigateHome={mockNavigateHome} />);
     expect(screen.getByTestId('drawing-canvas')).toBeInTheDocument();
   });
 
   it('renders mobile instructions', () => {
-    renderWithRouter(<DrawingPage />);
+    render(<DrawingPage onNavigateHome={mockNavigateHome} />);
     expect(screen.getByText(/On mobile:/)).toBeInTheDocument();
     expect(screen.getByText(/On desktop:/)).toBeInTheDocument();
   });
 
+  it('calls navigation callback when home button is clicked', () => {
+    render(<DrawingPage onNavigateHome={mockNavigateHome} />);
+    const homeButton = screen.getByText('← Home');
+    
+    fireEvent.click(homeButton);
+    
+    expect(mockNavigateHome).toHaveBeenCalledTimes(1);
+  });
+
   it('clears canvas when clear button is clicked', () => {
-    renderWithRouter(<DrawingPage />);
+    render(<DrawingPage onNavigateHome={mockNavigateHome} />);
     const clearButton = screen.getByText('Clear 🗑️');
     
     fireEvent.click(clearButton);

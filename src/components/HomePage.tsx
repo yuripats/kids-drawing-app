@@ -1,7 +1,10 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
 
-function HomePage() {
+interface HomePageProps {
+  onNavigateToDrawing: () => void;
+}
+
+function HomePage({ onNavigateToDrawing }: HomePageProps) {
   const [isExcited, setIsExcited] = useState(false);
 
   return (
@@ -32,14 +35,16 @@ function HomePage() {
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link 
-              to="/draw"
-              className="kid-button text-xl inline-block text-center no-underline"
+            <button 
+              className="kid-button text-xl"
               onTouchStart={() => setIsExcited(true)}
-              onClick={() => setIsExcited(true)}
+              onClick={() => {
+                setIsExcited(true);
+                onNavigateToDrawing();
+              }}
             >
               🖌️ Start Drawing!
-            </Link>
+            </button>
             
             <button 
               className="kid-button bg-secondary-500 hover:bg-secondary-600 active:bg-secondary-700 text-xl"

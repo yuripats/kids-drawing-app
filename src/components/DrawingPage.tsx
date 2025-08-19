@@ -1,9 +1,12 @@
 import { useState, useCallback, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import DrawingCanvas from './Canvas/DrawingCanvas';
 import { isMobileDevice, getViewportDimensions } from '../utils/DeviceUtils';
 
-const DrawingPage = () => {
+interface DrawingPageProps {
+  onNavigateHome: () => void;
+}
+
+const DrawingPage = ({ onNavigateHome }: DrawingPageProps) => {
   const [canvasKey, setCanvasKey] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
   const [viewport, setViewport] = useState({ width: 800, height: 600 });
@@ -65,12 +68,12 @@ const DrawingPage = () => {
     <div className={`min-h-screen ${isMobile ? 'bg-gray-50' : 'bg-gradient-to-br from-secondary-100 via-primary-50 to-secondary-50'} ${isMobile ? 'p-2' : 'p-4'}`}>
       {/* Header */}
       <header className={`flex justify-between items-center ${isMobile ? 'mb-4' : 'mb-6'}`}>
-        <Link 
-          to="/"
-          className="kid-button bg-secondary-500 hover:bg-secondary-600 active:bg-secondary-700 px-4 py-2 text-sm inline-block text-center no-underline"
+        <button 
+          onClick={onNavigateHome}
+          className="kid-button bg-secondary-500 hover:bg-secondary-600 active:bg-secondary-700 px-4 py-2 text-sm"
         >
           ← Home
-        </Link>
+        </button>
         
         <h1 className={`font-bold text-primary-600 ${isMobile ? 'text-lg' : 'text-2xl md:text-3xl'}`}>
           {isMobile ? '🎨 Draw!' : '🎨 Draw Something Amazing!'}
