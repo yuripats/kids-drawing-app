@@ -116,7 +116,7 @@ function HomePage({ onNavigateToDrawing }: HomePageProps) {
           Made with ❤️ for creative kids everywhere
         </p>
         <p className="text-xs mt-2">
-          v0.1.1 - Step 11: Navigation Bug Fixed!
+          v0.1.2 - Step 12: Drawing Tools Added!
         </p>
       </footer>
     </div>

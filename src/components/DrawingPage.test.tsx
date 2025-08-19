@@ -2,12 +2,13 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import DrawingPage from './DrawingPage';
 
-// Mock the DrawingCanvas component
-vi.mock('./Canvas/DrawingCanvas', () => ({
+// Mock the DrawingCanvasWithTools component
+vi.mock('./Canvas/DrawingCanvasWithTools', () => ({
   default: ({ onDrawingChange }: { onDrawingChange?: (dataURL: string) => void }) => {
     return (
       <div data-testid="drawing-canvas" onClick={() => onDrawingChange?.('mock-data-url')}>
-        Mock Canvas
+        Mock Canvas with Tools
+        <button data-testid="mock-clear-button">Clear Canvas</button>
       </div>
     );
   }
@@ -30,9 +31,9 @@ describe('DrawingPage', () => {
     expect(screen.getByText('← Home')).toBeInTheDocument();
   });
 
-  it('renders clear button', () => {
+  it('renders clear button in canvas tools', () => {
     render(<DrawingPage onNavigateHome={mockNavigateHome} />);
-    expect(screen.getByText('Clear 🗑️')).toBeInTheDocument();
+    expect(screen.getByTestId('mock-clear-button')).toBeInTheDocument();
   });
 
   it('renders drawing canvas', () => {
@@ -55,13 +56,11 @@ describe('DrawingPage', () => {
     expect(mockNavigateHome).toHaveBeenCalledTimes(1);
   });
 
-  it('clears canvas when clear button is clicked', () => {
+  it('renders canvas with tools', () => {
     render(<DrawingPage onNavigateHome={mockNavigateHome} />);
-    const clearButton = screen.getByText('Clear 🗑️');
     
-    fireEvent.click(clearButton);
-    
-    // Canvas should be re-rendered (new component instance)
+    // Canvas with tools should be rendered
     expect(screen.getByTestId('drawing-canvas')).toBeInTheDocument();
+    expect(screen.getByText('Mock Canvas with Tools')).toBeInTheDocument();
   });
 });

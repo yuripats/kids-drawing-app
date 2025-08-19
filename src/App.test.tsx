@@ -3,12 +3,12 @@ import { render, screen } from '@testing-library/react'
 import HomePage from './components/HomePage'
 import DrawingPage from './components/DrawingPage'
 
-// Mock the DrawingCanvas component
-vi.mock('./components/Canvas/DrawingCanvas', () => ({
+// Mock the DrawingCanvasWithTools component
+vi.mock('./components/Canvas/DrawingCanvasWithTools', () => ({
   default: ({ onDrawingChange }: { onDrawingChange?: (dataURL: string) => void }) => {
     return (
       <div data-testid="drawing-canvas" onClick={() => onDrawingChange?.('mock-data-url')}>
-        Mock Canvas
+        Mock Canvas with Tools
       </div>
     );
   }

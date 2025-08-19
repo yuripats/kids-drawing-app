@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect } from 'react';
-import DrawingCanvas from './Canvas/DrawingCanvas';
+import DrawingCanvasWithTools from './Canvas/DrawingCanvasWithTools';
 import { isMobileDevice, getViewportDimensions } from '../utils/DeviceUtils';
 
 interface DrawingPageProps {
@@ -7,18 +7,12 @@ interface DrawingPageProps {
 }
 
 const DrawingPage = ({ onNavigateHome }: DrawingPageProps) => {
-  const [canvasKey, setCanvasKey] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
   const [viewport, setViewport] = useState({ width: 800, height: 600 });
 
   const handleDrawingChange = useCallback((dataURL: string) => {
     // For now, just log the drawing change
     console.log('Drawing updated:', dataURL.substring(0, 50) + '...');
-  }, []);
-
-  const handleClearCanvas = useCallback(() => {
-    // Force canvas to remount by changing key
-    setCanvasKey(prev => prev + 1);
   }, []);
 
   // Detect mobile and calculate optimal canvas size
@@ -79,12 +73,8 @@ const DrawingPage = ({ onNavigateHome }: DrawingPageProps) => {
           {isMobile ? '🎨 Draw!' : '🎨 Draw Something Amazing!'}
         </h1>
         
-        <button 
-          onClick={handleClearCanvas}
-          className="kid-button bg-red-500 hover:bg-red-600 active:bg-red-700 px-4 py-2 text-sm"
-        >
-          Clear 🗑️
-        </button>
+        {/* Spacer for layout balance */}
+        <div className="w-16"></div>
       </header>
 
       {/* Drawing Area */}
@@ -97,10 +87,9 @@ const DrawingPage = ({ onNavigateHome }: DrawingPageProps) => {
               </p>
             )}
             
-            {/* Canvas Container */}
+            {/* Canvas with Tools Container */}
             <div className="w-full flex justify-center">
-              <DrawingCanvas
-                key={canvasKey}
+              <DrawingCanvasWithTools
                 width={canvasSize.width}
                 height={canvasSize.height}
                 className="max-w-full"
