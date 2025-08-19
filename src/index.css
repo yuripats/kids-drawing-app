@@ -1,0 +1,46 @@
+@import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@300;400;700&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    font-family: 'Comic Neue', 'Comic Sans MS', cursive;
+  }
+  
+  body {
+    @apply bg-gray-50 text-gray-900;
+    /* Prevent scrolling during touch interactions */
+    touch-action: manipulation;
+    /* Disable text selection for better drawing experience */
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  /* Ensure touch targets meet accessibility guidelines */
+  button, .touch-target {
+    @apply min-h-touch min-w-touch;
+  }
+
+  /* Prevent zoom on double tap for mobile */
+  * {
+    touch-action: manipulation;
+  }
+}
+
+@layer components {
+  .kid-button {
+    @apply bg-primary-500 hover:bg-primary-600 active:bg-primary-700 
+           text-white font-bold py-4 px-6 rounded-2xl
+           transform transition-all duration-150 ease-in-out
+           hover:scale-105 active:scale-95
+           shadow-lg hover:shadow-xl
+           min-h-touch min-w-touch;
+  }
+
+  .kid-card {
+    @apply bg-white rounded-3xl shadow-lg border-4 border-primary-200
+           p-6 transform transition-all duration-200 ease-in-out
+           hover:shadow-xl hover:-translate-y-1;
+  }
+}
