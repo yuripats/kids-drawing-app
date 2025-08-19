@@ -16,6 +16,10 @@ export const useCanvas = ({ width, height, onDrawingChange, stencil }: UseCanvas
   // Separate canvas for stencil mask (to detect protected areas)
   const stencilMaskRef = useRef<HTMLCanvasElement | null>(null);
   const stencilMaskContextRef = useRef<CanvasRenderingContext2D | null>(null);
+  // Flag to prevent multiple simultaneous stencil drawings
+  const isDrawingStencilRef = useRef<boolean>(false);
+  // Store the canvas state after drawing the stencil (so we can restore it)
+  const stencilCanvasStateRef = useRef<ImageData | null>(null);
   
   // Reactive state for UI components
   const [currentColor, setCurrentColorState] = useState('#FF6B6B');
@@ -30,65 +34,114 @@ export const useCanvas = ({ width, height, onDrawingChange, stencil }: UseCanvas
     currentLineWidth: 4
   });
 
-  // Draw stencil as simple shapes directly on canvas and mask
+  // Draw stencil SVG path on canvas and mask (with duplicate prevention)
   const drawStencil = useCallback((context: CanvasRenderingContext2D, stencil: Stencil) => {
-    console.log('drawStencil called with:', stencil);
+    // Prevent multiple simultaneous stencil drawings
+    if (isDrawingStencilRef.current) {
+      console.log('Skipping stencil draw - already in progress');
+      return;
+    }
+    
+    
+    isDrawingStencilRef.current = true;
     
     try {
       const maskContext = stencilMaskContextRef.current;
       
-      // Helper function to draw the same shape on both canvases
-      const drawShape = (ctx: CanvasRenderingContext2D, isMask: boolean) => {
-        ctx.strokeStyle = isMask ? '#FF0000' : '#000000'; // Red for mask, black for visible
-        ctx.lineWidth = isMask ? 8 : 3; // Thicker line for mask to create buffer zone
-        ctx.lineCap = 'round';
-        ctx.lineJoin = 'round';
+      // Clear canvas before drawing to prevent overlaps
+      context.fillStyle = '#FFFFFF';
+      context.fillRect(0, 0, width, height);
+      
+      if (maskContext) {
+        maskContext.clearRect(0, 0, width, height);
+      }
+      
+      // Create SVG element from the stencil's path data
+      const svgString = `
+        <svg viewBox="${stencil.viewBox}" xmlns="http://www.w3.org/2000/svg">
+          <path d="${stencil.svgPath}" 
+                fill="none" 
+                stroke="#000000" 
+                stroke-width="3" 
+                stroke-linecap="round" 
+                stroke-linejoin="round"/>
+        </svg>
+      `;
+      
+      // Convert SVG to image and draw it
+      const img = new Image();
+      
+      img.onload = () => {
         
-        if (stencil.id === 'test-circle') {
-          console.log('Drawing test circle');
-          ctx.beginPath();
-          ctx.arc(width / 2, height / 2, Math.min(width, height) * 0.2, 0, 2 * Math.PI);
-          ctx.stroke();
-        } else {
-          console.log('Drawing rectangle for', stencil.name);
-          // Draw a simple rectangle for other stencils
-          const rectWidth = width * 0.4;
-          const rectHeight = height * 0.3;
-          const x = (width - rectWidth) / 2;
-          const y = (height - rectHeight) / 2;
+        // Parse viewBox to get original dimensions
+        const viewBoxParts = stencil.viewBox.split(' ').map(Number);
+        const [, , viewWidth, viewHeight] = viewBoxParts;
+        
+        // Scale the stencil to fit the canvas while maintaining aspect ratio
+        const scale = Math.min((width * 0.8) / viewWidth, (height * 0.8) / viewHeight);
+        const scaledWidth = viewWidth * scale;
+        const scaledHeight = viewHeight * scale;
+        const x = (width - scaledWidth) / 2;
+        const y = (height - scaledHeight) / 2;
+
+        
+        // Draw on visible canvas
+        context.drawImage(img, x, y, scaledWidth, scaledHeight);
+        
+        // Draw on mask canvas if available (thicker for collision detection)
+        if (maskContext) {
+          // Create a thicker version for the mask
+          const maskSvgString = `
+            <svg viewBox="${stencil.viewBox}" xmlns="http://www.w3.org/2000/svg">
+              <path d="${stencil.svgPath}" 
+                    fill="none" 
+                    stroke="#FF0000" 
+                    stroke-width="8" 
+                    stroke-linecap="round" 
+                    stroke-linejoin="round"/>
+            </svg>
+          `;
           
-          ctx.beginPath();
-          ctx.rect(x, y, rectWidth, rectHeight);
-          ctx.stroke();
+          const maskImg = new Image();
+          maskImg.onload = () => {
+            maskContext.drawImage(maskImg, x, y, scaledWidth, scaledHeight);
+          };
           
-          // Add some decorative elements
-          ctx.beginPath();
-          ctx.arc(x + rectWidth * 0.3, y + rectHeight * 0.3, 10, 0, 2 * Math.PI);
-          ctx.stroke();
+          maskImg.onerror = (error) => {
+            console.error('Mask image failed to load:', error);
+          };
           
-          ctx.beginPath();
-          ctx.arc(x + rectWidth * 0.7, y + rectHeight * 0.3, 10, 0, 2 * Math.PI);
-          ctx.stroke();
+          const maskSvgDataUrl = `data:image/svg+xml;base64,${btoa(maskSvgString)}`;
+          maskImg.src = maskSvgDataUrl;
         }
+        
+        // Save the canvas state with the stencil drawn
+        const canvas = canvasRef.current;
+        if (canvas) {
+          stencilCanvasStateRef.current = context.getImageData(0, 0, canvas.width, canvas.height);
+        }
+        
+        // Notify parent component of changes
+        if (onDrawingChange) {
+          onDrawingChange(canvasRef.current!.toDataURL('image/png'));
+        }
+        
+        // Reset the flag when drawing is complete
+        isDrawingStencilRef.current = false;
       };
       
-      // Draw on visible canvas
-      drawShape(context, false);
-      
-      // Draw on mask canvas if available
-      if (maskContext) {
-        drawShape(maskContext, true);
-      }
-      
-      console.log('Stencil drawn successfully on both canvases');
-      
-      // Notify parent component of changes
-      if (onDrawingChange) {
-        onDrawingChange(canvasRef.current!.toDataURL('image/png'));
-      }
+      img.onerror = (error) => {
+        console.error('Stencil image failed to load:', error);
+        isDrawingStencilRef.current = false; // Reset flag on error too
+      };
+
+      // Use data URL for better compatibility
+      const svgDataUrl = `data:image/svg+xml;base64,${btoa(svgString)}`;
+      img.src = svgDataUrl;
       
     } catch (error) {
       console.error('Error in drawStencil:', error);
+      isDrawingStencilRef.current = false; // Reset flag on error
     }
   }, [width, height, onDrawingChange]);
 
@@ -145,18 +198,18 @@ export const useCanvas = ({ width, height, onDrawingChange, stencil }: UseCanvas
       maskContext.lineJoin = 'round';
     }
     
-    // Clear main canvas with white background
-    context.fillStyle = '#FFFFFF';
-    context.fillRect(0, 0, width, height);
-    
-    // Clear mask canvas
-    if (maskContext) {
-      maskContext.clearRect(0, 0, width, height);
-    }
-
-    // Draw stencil if provided
+    // Draw stencil if provided (drawStencil will handle clearing)
     if (stencil) {
       drawStencil(context, stencil);
+    } else {
+      // Clear main canvas with white background only if no stencil
+      context.fillStyle = '#FFFFFF';
+      context.fillRect(0, 0, width, height);
+      
+      // Clear mask canvas
+      if (maskContext) {
+        maskContext.clearRect(0, 0, width, height);
+      }
     }
   }, [width, height, stencil, drawStencil]);
 
@@ -223,17 +276,23 @@ export const useCanvas = ({ width, height, onDrawingChange, stencil }: UseCanvas
     context.stroke();
   }, [stencil, isPointOnStencil]);
 
-  // Redraw entire canvas from paths
+  // Redraw entire canvas from paths (restore stencil from saved state)
   const redrawCanvas = useCallback(() => {
     const context = contextRef.current;
     const canvas = canvasRef.current;
     if (!context || !canvas) return;
 
-    // Clear canvas
-    context.fillStyle = '#FFFFFF';
-    context.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Redraw all paths
+    // Restore the stencil state if we have it saved
+    if (stencil && stencilCanvasStateRef.current) {
+      context.putImageData(stencilCanvasStateRef.current, 0, 0);
+    } else {
+      // Clear canvas if no stencil
+      context.fillStyle = '#FFFFFF';
+      context.fillRect(0, 0, canvas.width, canvas.height);
+    }
+
+    // Redraw all user paths on top of the restored stencil
     stateRef.current.paths.forEach((path) => {
       if (path.points.length < 2) return;
 
@@ -254,7 +313,7 @@ export const useCanvas = ({ width, height, onDrawingChange, stencil }: UseCanvas
     if (onDrawingChange) {
       onDrawingChange(canvas.toDataURL('image/png'));
     }
-  }, [onDrawingChange]);
+  }, [onDrawingChange, stencil]);
 
   // Flood fill algorithm (bucket fill)
   const floodFill = useCallback((startX: number, startY: number, fillColor: string) => {
@@ -420,15 +479,14 @@ export const useCanvas = ({ width, height, onDrawingChange, stencil }: UseCanvas
     stateRef.current.paths = [];
     stateRef.current.currentPath = [];
     
-    // Clear canvas with white background
-    context.fillStyle = '#FFFFFF';
-    context.fillRect(0, 0, canvas.width, canvas.height);
-    
-    // Redraw stencil if present (this preserves the permanent outline)
+    // Redraw stencil if present (drawStencil will clear and redraw)
     if (stencil) {
       drawStencil(context, stencil);
+    } else {
+      // If no stencil, just clear canvas with white background
+      context.fillStyle = '#FFFFFF';
+      context.fillRect(0, 0, canvas.width, canvas.height);
     }
-    
     
     // Notify parent component
     if (onDrawingChange) {

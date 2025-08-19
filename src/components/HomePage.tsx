@@ -142,7 +142,7 @@ function HomePage({ onNavigateToDrawing, onNavigateToStencil }: HomePageProps) {
           Made with ❤️ for creative kids everywhere
         </p>
         <p className="text-xs mt-2">
-          v0.1.5 - Stencil System with Protected Outlines!
+          v0.1.6 - Enhanced High-Quality Stencils!
         </p>
       </footer>
     </div>
