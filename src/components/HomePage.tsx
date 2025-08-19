@@ -116,7 +116,7 @@ function HomePage({ onNavigateToDrawing }: HomePageProps) {
           Made with ❤️ for creative kids everywhere
         </p>
         <p className="text-xs mt-2">
-          v0.1.3 - Tools Selection Visual Feedback Fixed!
+          v0.1.4 - Fill Tool (Bucket Fill) Added!
         </p>
       </footer>
     </div>

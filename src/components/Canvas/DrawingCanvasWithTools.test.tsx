@@ -5,6 +5,7 @@ import DrawingCanvasWithTools from './DrawingCanvasWithTools';
 // Mock the useCanvas hook
 const mockSetColor = vi.fn();
 const mockSetLineWidth = vi.fn();
+const mockSetTool = vi.fn();
 const mockClearCanvas = vi.fn();
 
 vi.mock('../../hooks/useCanvas', () => ({
@@ -15,9 +16,11 @@ vi.mock('../../hooks/useCanvas', () => ({
     stopDrawing: vi.fn(),
     setColor: mockSetColor,
     setLineWidth: mockSetLineWidth,
+    setTool: mockSetTool,
     clearCanvas: mockClearCanvas,
     currentColor: '#FF6B6B',
     currentLineWidth: 4,
+    currentTool: 'brush',
     redrawCanvas: vi.fn()
   })
 }));
@@ -42,6 +45,7 @@ describe('DrawingCanvasWithTools', () => {
     );
 
     expect(screen.getByText('🎨 Drawing Tools')).toBeInTheDocument();
+    expect(screen.getByText('🛠️ Drawing Tool')).toBeInTheDocument();
     expect(screen.getByText('🎨 Choose Your Color')).toBeInTheDocument();
     expect(screen.getByText('📏 Brush Size')).toBeInTheDocument();
     expect(screen.getByTestId('drawing-canvas')).toBeInTheDocument();
@@ -76,6 +80,20 @@ describe('DrawingCanvasWithTools', () => {
     expect(mediumBrushButton).toHaveClass('border-primary-500', 'bg-primary-50', 'scale-110', 'shadow-lg');
   });
 
+  it('shows default tool selection (brush) visually', () => {
+    render(
+      <DrawingCanvasWithTools
+        width={800}
+        height={600}
+        onDrawingChange={vi.fn()}
+      />
+    );
+
+    // The brush tool button should be selected
+    const brushToolButton = screen.getByLabelText('Select Brush tool');
+    expect(brushToolButton).toHaveClass('border-primary-500', 'bg-primary-50', 'scale-110', 'shadow-lg');
+  });
+
   it('calls setColor when a color is selected', () => {
     render(
       <DrawingCanvasWithTools
@@ -104,6 +122,21 @@ describe('DrawingCanvasWithTools', () => {
     fireEvent.click(thickBrushButton);
 
     expect(mockSetLineWidth).toHaveBeenCalledWith(8);
+  });
+
+  it('calls setTool when a tool is selected', () => {
+    render(
+      <DrawingCanvasWithTools
+        width={800}
+        height={600}
+        onDrawingChange={vi.fn()}
+      />
+    );
+
+    const fillToolButton = screen.getByLabelText('Select Fill tool');
+    fireEvent.click(fillToolButton);
+
+    expect(mockSetTool).toHaveBeenCalledWith('fill');
   });
 
   it('calls clearCanvas when clear button is clicked', () => {

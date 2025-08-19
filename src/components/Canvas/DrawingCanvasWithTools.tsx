@@ -19,9 +19,11 @@ const DrawingCanvasWithTools = ({
     stopDrawing,
     setColor,
     setLineWidth,
+    setTool,
     clearCanvas,
     currentColor,
-    currentLineWidth
+    currentLineWidth,
+    currentTool
   } = useCanvas({ width, height, onDrawingChange });
 
   const handleColorChange = useCallback((color: string) => {
@@ -31,6 +33,10 @@ const DrawingCanvasWithTools = ({
   const handleBrushSizeChange = useCallback((size: number) => {
     setLineWidth(size);
   }, [setLineWidth]);
+
+  const handleToolChange = useCallback((tool: 'brush' | 'fill') => {
+    setTool(tool);
+  }, [setTool]);
 
   const handleClearCanvas = useCallback(() => {
     clearCanvas();
@@ -71,8 +77,10 @@ const DrawingCanvasWithTools = ({
       <DrawingToolPanel
         currentColor={currentColor}
         currentBrushSize={currentLineWidth}
+        currentTool={currentTool}
         onColorChange={handleColorChange}
         onBrushSizeChange={handleBrushSizeChange}
+        onToolChange={handleToolChange}
         onClearCanvas={handleClearCanvas}
       />
 

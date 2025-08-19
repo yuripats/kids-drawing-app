@@ -1,21 +1,26 @@
 import { useState } from 'react';
 import ColorPicker from './ColorPicker';
 import BrushSizePicker from './BrushSizePicker';
+import ToolSelector from './ToolSelector';
 import { isMobileDevice } from '../../utils/DeviceUtils';
 
 interface DrawingToolPanelProps {
   currentColor: string;
   currentBrushSize: number;
+  currentTool: 'brush' | 'fill';
   onColorChange: (color: string) => void;
   onBrushSizeChange: (size: number) => void;
+  onToolChange: (tool: 'brush' | 'fill') => void;
   onClearCanvas: () => void;
 }
 
 const DrawingToolPanel = ({
   currentColor,
   currentBrushSize,
+  currentTool,
   onColorChange,
   onBrushSizeChange,
+  onToolChange,
   onClearCanvas
 }: DrawingToolPanelProps) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -73,9 +78,16 @@ const DrawingToolPanel = ({
           <div className={`
             ${isMobile 
               ? 'flex flex-col space-y-4' 
-              : 'grid grid-cols-1 md:grid-cols-2 gap-6'
+              : 'grid grid-cols-1 md:grid-cols-3 gap-6'
             }
           `}>
+            <div className="flex-1">
+              <ToolSelector 
+                selectedTool={currentTool} 
+                onToolChange={onToolChange} 
+              />
+            </div>
+
             <div className="flex-1">
               <ColorPicker 
                 selectedColor={currentColor} 
