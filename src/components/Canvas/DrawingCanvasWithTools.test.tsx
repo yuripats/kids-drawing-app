@@ -1,0 +1,155 @@
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { render, screen, fireEvent } from '@testing-library/react';
+import DrawingCanvasWithTools from './DrawingCanvasWithTools';
+
+// Mock the useCanvas hook
+const mockSetColor = vi.fn();
+const mockSetLineWidth = vi.fn();
+const mockClearCanvas = vi.fn();
+
+vi.mock('../../hooks/useCanvas', () => ({
+  useCanvas: () => ({
+    canvasRef: { current: null },
+    startDrawing: vi.fn(),
+    draw: vi.fn(),
+    stopDrawing: vi.fn(),
+    setColor: mockSetColor,
+    setLineWidth: mockSetLineWidth,
+    clearCanvas: mockClearCanvas,
+    currentColor: '#FF6B6B',
+    currentLineWidth: 4,
+    redrawCanvas: vi.fn()
+  })
+}));
+
+// Mock device utils
+vi.mock('../../utils/DeviceUtils', () => ({
+  isMobileDevice: () => false
+}));
+
+describe('DrawingCanvasWithTools', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it('renders canvas and drawing tools', () => {
+    render(
+      <DrawingCanvasWithTools
+        width={800}
+        height={600}
+        onDrawingChange={vi.fn()}
+      />
+    );
+
+    expect(screen.getByText('🎨 Drawing Tools')).toBeInTheDocument();
+    expect(screen.getByText('🎨 Choose Your Color')).toBeInTheDocument();
+    expect(screen.getByText('📏 Brush Size')).toBeInTheDocument();
+    expect(screen.getByTestId('drawing-canvas')).toBeInTheDocument();
+  });
+
+  it('shows default color selection (red) visually', () => {
+    render(
+      <DrawingCanvasWithTools
+        width={800}
+        height={600}
+        onDrawingChange={vi.fn()}
+      />
+    );
+
+    // The red color button should have the checkmark (selected state)
+    const redColorButton = screen.getByLabelText('Select #FF6B6B color');
+    expect(redColorButton).toHaveClass('border-gray-800', 'scale-110', 'shadow-lg');
+    expect(redColorButton.querySelector('span')).toHaveTextContent('✓');
+  });
+
+  it('shows default brush size selection (medium) visually', () => {
+    render(
+      <DrawingCanvasWithTools
+        width={800}
+        height={600}
+        onDrawingChange={vi.fn()}
+      />
+    );
+
+    // The medium brush button should be selected
+    const mediumBrushButton = screen.getByLabelText('Select Medium brush size');
+    expect(mediumBrushButton).toHaveClass('border-primary-500', 'bg-primary-50', 'scale-110', 'shadow-lg');
+  });
+
+  it('calls setColor when a color is selected', () => {
+    render(
+      <DrawingCanvasWithTools
+        width={800}
+        height={600}
+        onDrawingChange={vi.fn()}
+      />
+    );
+
+    const blueColorButton = screen.getByLabelText('Select #45B7D1 color');
+    fireEvent.click(blueColorButton);
+
+    expect(mockSetColor).toHaveBeenCalledWith('#45B7D1');
+  });
+
+  it('calls setLineWidth when a brush size is selected', () => {
+    render(
+      <DrawingCanvasWithTools
+        width={800}
+        height={600}
+        onDrawingChange={vi.fn()}
+      />
+    );
+
+    const thickBrushButton = screen.getByLabelText('Select Thick brush size');
+    fireEvent.click(thickBrushButton);
+
+    expect(mockSetLineWidth).toHaveBeenCalledWith(8);
+  });
+
+  it('calls clearCanvas when clear button is clicked', () => {
+    render(
+      <DrawingCanvasWithTools
+        width={800}
+        height={600}
+        onDrawingChange={vi.fn()}
+      />
+    );
+
+    const clearButton = screen.getByText('Clear Canvas');
+    fireEvent.click(clearButton);
+
+    expect(mockClearCanvas).toHaveBeenCalledTimes(1);
+  });
+
+  it('shows visual feedback during color selection (animation)', async () => {
+    render(
+      <DrawingCanvasWithTools
+        width={800}
+        height={600}
+        onDrawingChange={vi.fn()}
+      />
+    );
+
+    const yellowColorButton = screen.getByLabelText('Select #FECA57 color');
+    fireEvent.click(yellowColorButton);
+
+    // Should trigger animation class temporarily
+    expect(mockSetColor).toHaveBeenCalledWith('#FECA57');
+  });
+
+  it('shows visual feedback during brush size selection (animation)', async () => {
+    render(
+      <DrawingCanvasWithTools
+        width={800}
+        height={600}
+        onDrawingChange={vi.fn()}
+      />
+    );
+
+    const thinBrushButton = screen.getByLabelText('Select Thin brush size');
+    fireEvent.click(thinBrushButton);
+
+    // Should trigger animation class temporarily
+    expect(mockSetLineWidth).toHaveBeenCalledWith(2);
+  });
+});

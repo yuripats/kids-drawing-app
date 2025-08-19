@@ -1,4 +1,4 @@
-import { useRef, useCallback, useEffect } from 'react';
+import { useRef, useCallback, useEffect, useState } from 'react';
 import { CanvasState, DrawingPoint, DrawingPath } from '../types/Drawing';
 
 interface UseCanvasProps {
@@ -10,6 +10,11 @@ interface UseCanvasProps {
 export const useCanvas = ({ width, height, onDrawingChange }: UseCanvasProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const contextRef = useRef<CanvasRenderingContext2D | null>(null);
+  
+  // Reactive state for UI components
+  const [currentColor, setCurrentColorState] = useState('#FF6B6B');
+  const [currentLineWidth, setCurrentLineWidthState] = useState(4);
+  
   const stateRef = useRef<CanvasState>({
     isDrawing: false,
     currentPath: [],
@@ -196,11 +201,13 @@ export const useCanvas = ({ width, height, onDrawingChange }: UseCanvasProps) =>
   // Change drawing color
   const setColor = useCallback((color: string) => {
     stateRef.current.currentColor = color;
+    setCurrentColorState(color);
   }, []);
 
   // Change line width
   const setLineWidth = useCallback((lineWidth: number) => {
     stateRef.current.currentLineWidth = lineWidth;
+    setCurrentLineWidthState(lineWidth);
   }, []);
 
   return {
@@ -212,7 +219,7 @@ export const useCanvas = ({ width, height, onDrawingChange }: UseCanvasProps) =>
     setColor,
     setLineWidth,
     redrawCanvas,
-    currentColor: stateRef.current.currentColor,
-    currentLineWidth: stateRef.current.currentLineWidth
+    currentColor,
+    currentLineWidth
   };
 };
