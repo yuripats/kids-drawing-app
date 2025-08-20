@@ -26,5 +26,6 @@ export interface CanvasProps {
   height?: number;
   className?: string;
   onDrawingChange?: (dataURL: string) => void;
+  clearCanvasRef?: React.MutableRefObject<(() => void) | null>;
   stencil?: Stencil | null;
 }

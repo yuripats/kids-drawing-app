@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useCanvas } from '../../hooks/useCanvas';
 import DrawingToolPanel from '../Tools/DrawingToolPanel';
 import { CanvasProps } from '../../types/Drawing';
@@ -9,6 +9,7 @@ const DrawingCanvasWithTools = ({
   height = 600, 
   className = '',
   onDrawingChange,
+  clearCanvasRef,
   stencil 
 }: CanvasProps) => {
   const [isMobile] = useState(isMobileDevice());
@@ -43,6 +44,13 @@ const DrawingCanvasWithTools = ({
     clearCanvas();
   }, [clearCanvas]);
 
+  // Set the clear function in the ref so parent can call it
+  useEffect(() => {
+    if (clearCanvasRef) {
+      clearCanvasRef.current = handleClearCanvas;
+    }
+  }, [clearCanvasRef, handleClearCanvas]);
+
   const handleTouchStart = (e: React.TouchEvent) => {
     startDrawing(e);
   };
@@ -72,6 +80,47 @@ const DrawingCanvasWithTools = ({
     ? "bg-white touch-none select-none rounded-lg shadow-sm" // Mobile: no border, subtle shadow
     : "border-4 border-primary-200 rounded-2xl bg-white touch-none select-none shadow-lg"; // Desktop: decorative border
 
+  if (isMobile) {
+    // Mobile: Full-screen layout with top/bottom tool bars
+    return (
+      <div className="flex flex-col h-full">
+        {/* Top Tool Bar */}
+        <DrawingToolPanel
+          currentColor={currentColor}
+          currentBrushSize={currentLineWidth}
+          currentTool={currentTool}
+          onColorChange={handleColorChange}
+          onBrushSizeChange={handleBrushSizeChange}
+          onToolChange={handleToolChange}
+          onClearCanvas={() => {}} // Empty function since clear is handled by parent
+        />
+
+        {/* Canvas Area - takes remaining space */}
+        <div className="flex-1 flex items-center justify-center p-4">
+          <canvas
+            ref={canvasRef}
+            width={width}
+            height={height}
+            className={canvasClassName}
+            style={{ touchAction: 'none' }}
+            data-testid="drawing-canvas"
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+            onMouseDown={handleMouseDown}
+            onMouseMove={handleMouseMove}
+            onMouseUp={handleMouseUp}
+            onMouseLeave={handleMouseUp}
+          />
+        </div>
+
+        {/* Bottom Tool Bar (second part from DrawingToolPanel) */}
+        {/* Note: This is rendered as part of DrawingToolPanel's fragment */}
+      </div>
+    );
+  }
+
+  // Desktop: Keep the existing centered layout
   return (
     <div className="flex flex-col items-center">
       {/* Drawing Tools Panel */}
@@ -86,7 +135,7 @@ const DrawingCanvasWithTools = ({
       />
 
       {/* Canvas */}
-      <div className={`relative ${className} ${isMobile ? 'mb-20' : 'mb-4'}`}>
+      <div className={`relative ${className} mb-4`}>
         <canvas
           ref={canvasRef}
           width={width}

@@ -23,69 +23,83 @@ const DrawingToolPanel = ({
   onToolChange,
   onClearCanvas
 }: DrawingToolPanelProps) => {
-  const [isCollapsed, setIsCollapsed] = useState(false);
   const isMobile = isMobileDevice();
+  const [showBrushSizePicker, setShowBrushSizePicker] = useState(false);
 
-  const handleToggleCollapse = () => {
-    setIsCollapsed(!isCollapsed);
+  const handleBrushOptionsToggle = () => {
+    setShowBrushSizePicker(!showBrushSizePicker);
   };
 
-  return (
-    <div className={`
-      ${isMobile 
-        ? 'fixed bottom-4 left-4 right-4 z-10' 
-        : 'mb-6'
-      }
-    `}>
-      <div className={`
-        bg-white rounded-2xl shadow-lg border-2 border-gray-100 overflow-hidden
-        ${isMobile ? 'mx-auto max-w-sm' : 'max-w-2xl mx-auto'}
-        transition-all duration-300 ease-in-out
-        ${isCollapsed ? 'h-16' : 'h-auto'}
-      `}>
-        {/* Toggle header for mobile */}
-        {isMobile && (
-          <button
-            onClick={handleToggleCollapse}
-            className={`
-              w-full p-4 flex items-center justify-between
-              text-gray-700 hover:bg-gray-50 transition-colors
-              ${isCollapsed ? '' : 'border-b border-gray-100'}
-            `}
-            aria-label={isCollapsed ? "Show drawing tools" : "Hide drawing tools"}
-          >
-            <span className="font-semibold">🎨 Drawing Tools</span>
-            <span className={`
-              transform transition-transform duration-200
-              ${isCollapsed ? 'rotate-0' : 'rotate-180'}
-            `}>
-              ▲
-            </span>
-          </button>
-        )}
+  const handleBrushSizeChange = (size: number) => {
+    onBrushSizeChange(size);
+    setShowBrushSizePicker(false); // Hide picker after selection
+  };
 
-        {/* Tool panel content */}
-        <div className={`
-          ${isMobile && isCollapsed ? 'hidden' : 'block'}
-          ${isMobile ? 'p-3' : 'p-4'}
-        `}>
-          {!isMobile && (
-            <h2 className="text-lg font-bold text-center text-gray-800 mb-4">
-              🎨 Drawing Tools
-            </h2>
-          )}
-
-          <div className={`
-            ${isMobile 
-              ? 'flex flex-col space-y-4' 
-              : 'grid grid-cols-1 md:grid-cols-3 gap-6'
-            }
-          `}>
-            <div className="flex-1">
+  if (isMobile) {
+    // Mobile: Return separate components for top and bottom bars
+    return (
+      <>
+        {/* Top Bar - Tool Selector and Colors */}
+        <div className="bg-white border-b border-gray-200 px-4 py-3">
+          <div className="flex items-center justify-between">
+            {/* Tool Selector */}
+            <div className="flex-shrink-0 relative">
               <ToolSelector 
                 selectedTool={currentTool} 
-                onToolChange={onToolChange} 
+                onToolChange={onToolChange}
+                onBrushOptionsToggle={handleBrushOptionsToggle}
               />
+              
+              {/* Brush Size Picker Popup */}
+              {showBrushSizePicker && (
+                <div className="absolute top-full mt-2 left-0 bg-white rounded-lg shadow-lg border border-gray-200 p-3 z-50">
+                  <BrushSizePicker 
+                    selectedSize={currentBrushSize} 
+                    onSizeChange={handleBrushSizeChange} 
+                  />
+                </div>
+              )}
+            </div>
+            
+            {/* Colors */}
+            <div className="flex-1 px-4">
+              <ColorPicker 
+                selectedColor={currentColor} 
+                onColorChange={onColorChange} 
+              />
+            </div>
+          </div>
+        </div>
+      </>
+    );
+  }
+
+  // Desktop: Keep the existing centered layout
+  return (
+    <div className="mb-6">
+      <div className="bg-white rounded-2xl shadow-lg border-2 border-gray-100 overflow-hidden max-w-2xl mx-auto">
+        <div className="p-4">
+          <h2 className="text-lg font-bold text-center text-gray-800 mb-4">
+            🎨 Drawing Tools
+          </h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="flex-1 relative">
+              <ToolSelector 
+                selectedTool={currentTool} 
+                onToolChange={onToolChange}
+                onBrushOptionsToggle={handleBrushOptionsToggle}
+              />
+              
+              {/* Brush Size Picker Popup */}
+              {showBrushSizePicker && (
+                <div className="absolute top-full mt-2 left-1/2 transform -translate-x-1/2 bg-white rounded-lg shadow-lg border border-gray-200 p-3 z-50">
+                  <BrushSizePicker 
+                    selectedSize={currentBrushSize} 
+                    onSizeChange={handleBrushSizeChange} 
+                  />
+                </div>
+              )}
             </div>
 
             <div className="flex-1">
@@ -94,26 +108,13 @@ const DrawingToolPanel = ({
                 onColorChange={onColorChange} 
               />
             </div>
-
-            <div className="flex-1">
-              <BrushSizePicker 
-                selectedSize={currentBrushSize} 
-                onSizeChange={onBrushSizeChange} 
-              />
-            </div>
           </div>
 
           {/* Action buttons */}
-          <div className={`
-            flex justify-center gap-3 mt-4 pt-4 border-t border-gray-100
-          `}>
+          <div className="flex justify-center gap-3 mt-4 pt-4 border-t border-gray-100">
             <button
               onClick={onClearCanvas}
-              className={`
-                kid-button bg-red-500 hover:bg-red-600 active:bg-red-700 
-                ${isMobile ? 'text-sm px-4 py-2' : 'text-base px-6 py-3'}
-                flex items-center gap-2
-              `}
+              className="kid-button bg-red-500 hover:bg-red-600 active:bg-red-700 text-base px-6 py-3 flex items-center gap-2"
             >
               <span>🗑️</span>
               Clear Canvas

@@ -2,6 +2,11 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import BrushSizePicker from './BrushSizePicker';
 
+// Mock device utils
+vi.mock('../../utils/DeviceUtils', () => ({
+  isMobileDevice: () => false
+}));
+
 describe('BrushSizePicker', () => {
   const mockOnSizeChange = vi.fn();
 

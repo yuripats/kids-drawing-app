@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { isMobileDevice } from '../../utils/DeviceUtils';
 
 interface BrushSizePickerProps {
   selectedSize: number;
@@ -13,6 +14,7 @@ const brushSizes = [
 
 const BrushSizePicker = ({ selectedSize, onSizeChange }: BrushSizePickerProps) => {
   const [isAnimating, setIsAnimating] = useState<number | null>(null);
+  const isMobile = isMobileDevice();
 
   const handleSizeSelect = (size: number) => {
     setIsAnimating(size);
@@ -22,6 +24,46 @@ const BrushSizePicker = ({ selectedSize, onSizeChange }: BrushSizePickerProps) =
     setTimeout(() => setIsAnimating(null), 200);
   };
 
+  if (isMobile) {
+    // Mobile: Compact horizontal layout
+    return (
+      <div className="flex gap-2">
+        {brushSizes.map(({ size, label, emoji, description }) => {
+          const isSelected = selectedSize === size;
+          const isCurrentlyAnimating = isAnimating === size;
+          
+          return (
+            <button
+              key={size}
+              className={`
+                flex items-center gap-1 px-2 py-1 rounded-lg border-2 transition-all duration-200
+                ${isSelected 
+                  ? 'border-primary-500 bg-primary-50 shadow-md' 
+                  : 'border-gray-200 bg-white hover:border-primary-300'
+                }
+                ${isCurrentlyAnimating ? 'animate-pulse' : ''}
+                active:scale-95
+              `}
+              onClick={() => handleSizeSelect(size)}
+              aria-label={`Select ${label} brush size`}
+              title={description}
+            >
+              <span className="text-sm">{emoji}</span>
+              <div
+                className="rounded-full bg-gray-600"
+                style={{
+                  width: Math.max(3, size / 1.5),
+                  height: Math.max(3, size / 1.5)
+                }}
+              />
+            </button>
+          );
+        })}
+      </div>
+    );
+  }
+
+  // Desktop: Keep the existing layout
   return (
     <div className="flex flex-col items-center p-2">
       <h3 className="text-sm font-semibold text-gray-700 mb-3">

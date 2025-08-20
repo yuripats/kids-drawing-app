@@ -47,7 +47,7 @@ describe('DrawingCanvasWithTools', () => {
     expect(screen.getByText('🎨 Drawing Tools')).toBeInTheDocument();
     expect(screen.getByText('🛠️ Drawing Tool')).toBeInTheDocument();
     expect(screen.getByText('🎨 Choose Your Color')).toBeInTheDocument();
-    expect(screen.getByText('📏 Brush Size')).toBeInTheDocument();
+    // Brush size picker is now in a popup, not shown by default
     expect(screen.getByTestId('drawing-canvas')).toBeInTheDocument();
   });
 
@@ -66,7 +66,7 @@ describe('DrawingCanvasWithTools', () => {
     expect(redColorButton.querySelector('span')).toHaveTextContent('✓');
   });
 
-  it('shows default brush size selection (medium) visually', () => {
+  it('shows brush size picker popup when brush tool is clicked twice', () => {
     render(
       <DrawingCanvasWithTools
         width={800}
@@ -75,9 +75,16 @@ describe('DrawingCanvasWithTools', () => {
       />
     );
 
-    // The medium brush button should be selected
-    const mediumBrushButton = screen.getByLabelText('Select Medium brush size');
-    expect(mediumBrushButton).toHaveClass('border-primary-500', 'bg-primary-50', 'scale-110', 'shadow-lg');
+    // Initially, brush size picker should not be visible
+    expect(screen.queryByText('📏 Brush Size')).not.toBeInTheDocument();
+    
+    // Click on brush tool (it's already selected, so this triggers the popup)
+    const brushToolButton = screen.getByLabelText('Select Brush tool');
+    fireEvent.click(brushToolButton);
+
+    // Now brush size picker popup should be visible
+    expect(screen.getByText('📏 Brush Size')).toBeInTheDocument();
+    expect(screen.getByLabelText('Select Medium brush size')).toBeInTheDocument();
   });
 
   it('shows default tool selection (brush) visually', () => {
@@ -118,6 +125,11 @@ describe('DrawingCanvasWithTools', () => {
       />
     );
 
+    // First click on brush tool to show the size picker popup
+    const brushToolButton = screen.getByLabelText('Select Brush tool');
+    fireEvent.click(brushToolButton);
+
+    // Now click on the thick brush size
     const thickBrushButton = screen.getByLabelText('Select Thick brush size');
     fireEvent.click(thickBrushButton);
 
@@ -179,6 +191,11 @@ describe('DrawingCanvasWithTools', () => {
       />
     );
 
+    // First click on brush tool to show the size picker popup
+    const brushToolButton = screen.getByLabelText('Select Brush tool');
+    fireEvent.click(brushToolButton);
+
+    // Now click on the thin brush size
     const thinBrushButton = screen.getByLabelText('Select Thin brush size');
     fireEvent.click(thinBrushButton);
 

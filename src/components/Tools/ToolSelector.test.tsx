@@ -100,8 +100,7 @@ describe('ToolSelector', () => {
 
     expect(screen.getByText('🖌️')).toBeInTheDocument(); // Brush emoji
     expect(screen.getByText('🪣')).toBeInTheDocument(); // Fill emoji
-    expect(screen.getByText('Brush')).toBeInTheDocument();
-    expect(screen.getByText('Fill')).toBeInTheDocument();
+    // Text labels have been removed - only emojis are shown
   });
 
   it('has proper accessibility attributes', () => {
