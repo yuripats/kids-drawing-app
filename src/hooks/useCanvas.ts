@@ -48,7 +48,10 @@ export const useCanvas = ({ width, height, onDrawingChange, stencil }: UseCanvas
     try {
       const maskContext = stencilMaskContextRef.current;
       
-      // Clear canvas before drawing to prevent overlaps
+      // Get device pixel ratio for high-DPI stencil rendering
+      const devicePixelRatio = window.devicePixelRatio || 1;
+      
+      // Clear canvas before drawing to prevent overlaps (use display dimensions)
       context.fillStyle = '#FFFFFF';
       context.fillRect(0, 0, width, height);
       
@@ -56,13 +59,14 @@ export const useCanvas = ({ width, height, onDrawingChange, stencil }: UseCanvas
         maskContext.clearRect(0, 0, width, height);
       }
       
-      // Create SVG element from the stencil's path data
+      // Create ultra-thin hairline SVG element
+      const hairlineStrokeWidth = 0.5;
       const svgString = `
         <svg viewBox="${stencil.viewBox}" xmlns="http://www.w3.org/2000/svg">
           <path d="${stencil.svgPath}" 
                 fill="none" 
                 stroke="#000000" 
-                stroke-width="3" 
+                stroke-width="${hairlineStrokeWidth}" 
                 stroke-linecap="round" 
                 stroke-linejoin="round"/>
         </svg>
@@ -77,8 +81,8 @@ export const useCanvas = ({ width, height, onDrawingChange, stencil }: UseCanvas
         const viewBoxParts = stencil.viewBox.split(' ').map(Number);
         const [, , viewWidth, viewHeight] = viewBoxParts;
         
-        // Scale the stencil to fit the canvas while maintaining aspect ratio
-        const scale = Math.min((width * 0.8) / viewWidth, (height * 0.8) / viewHeight);
+        // Scale the stencil to fill the viewport, allowing parts to be cut off
+        const scale = Math.min((width * 1.3) / viewWidth, (height * 1.3) / viewHeight);
         const scaledWidth = viewWidth * scale;
         const scaledHeight = viewHeight * scale;
         const x = (width - scaledWidth) / 2;
@@ -88,15 +92,16 @@ export const useCanvas = ({ width, height, onDrawingChange, stencil }: UseCanvas
         // Draw on visible canvas
         context.drawImage(img, x, y, scaledWidth, scaledHeight);
         
-        // Draw on mask canvas if available (thicker for collision detection)
+        // Draw on mask canvas if available (maximum precision collision detection)
         if (maskContext) {
-          // Create a thicker version for the mask
+          // Create the thinnest possible mask for maximum coloring precision
+          const maskStrokeWidth = Math.max(0.4, 0.5 * devicePixelRatio);
           const maskSvgString = `
             <svg viewBox="${stencil.viewBox}" xmlns="http://www.w3.org/2000/svg">
               <path d="${stencil.svgPath}" 
                     fill="none" 
                     stroke="#FF0000" 
-                    stroke-width="8" 
+                    stroke-width="${maskStrokeWidth}" 
                     stroke-linecap="round" 
                     stroke-linejoin="round"/>
             </svg>
@@ -151,8 +156,13 @@ export const useCanvas = ({ width, height, onDrawingChange, stencil }: UseCanvas
     if (!maskContext || !stencil) return false;
     
     try {
-      // Get pixel data at the point
-      const imageData = maskContext.getImageData(Math.floor(x), Math.floor(y), 1, 1);
+      // Convert display coordinates to internal canvas pixel coordinates
+      const devicePixelRatio = window.devicePixelRatio || 1;
+      const pixelX = Math.floor(x * devicePixelRatio);
+      const pixelY = Math.floor(y * devicePixelRatio);
+      
+      // Get pixel data at the scaled point
+      const imageData = maskContext.getImageData(pixelX, pixelY, 1, 1);
       const data = imageData.data;
       
       // Check if pixel is not transparent (alpha > 0)
@@ -172,6 +182,20 @@ export const useCanvas = ({ width, height, onDrawingChange, stencil }: UseCanvas
     const context = canvas.getContext('2d');
     if (!context) return;
 
+    // Get device pixel ratio for high-DPI displays
+    const devicePixelRatio = window.devicePixelRatio || 1;
+    
+    // Set canvas internal resolution to device pixel ratio
+    canvas.width = width * devicePixelRatio;
+    canvas.height = height * devicePixelRatio;
+    
+    // Scale the CSS size to match display size
+    canvas.style.width = `${width}px`;
+    canvas.style.height = `${height}px`;
+    
+    // Scale the drawing context to match device pixel ratio
+    context.scale(devicePixelRatio, devicePixelRatio);
+
     // Set up canvas for drawing
     context.lineCap = 'round';
     context.lineJoin = 'round';
@@ -179,21 +203,18 @@ export const useCanvas = ({ width, height, onDrawingChange, stencil }: UseCanvas
     
     contextRef.current = context;
     
-    // Set canvas size
-    canvas.width = width;
-    canvas.height = height;
-    
-    // Create stencil mask canvas
+    // Create stencil mask canvas with same high-DPI scaling
     if (!stencilMaskRef.current) {
       stencilMaskRef.current = document.createElement('canvas');
     }
     const maskCanvas = stencilMaskRef.current;
-    maskCanvas.width = width;
-    maskCanvas.height = height;
+    maskCanvas.width = width * devicePixelRatio;
+    maskCanvas.height = height * devicePixelRatio;
     
     const maskContext = maskCanvas.getContext('2d');
     if (maskContext) {
       stencilMaskContextRef.current = maskContext;
+      maskContext.scale(devicePixelRatio, devicePixelRatio);
       maskContext.lineCap = 'round';
       maskContext.lineJoin = 'round';
     }
@@ -219,9 +240,7 @@ export const useCanvas = ({ width, height, onDrawingChange, stencil }: UseCanvas
     if (!canvas) return { x: 0, y: 0 };
 
     const rect = canvas.getBoundingClientRect();
-    const scaleX = canvas.width / rect.width;
-    const scaleY = canvas.height / rect.height;
-
+    
     let clientX: number, clientY: number;
 
     if ('touches' in event) {
@@ -235,9 +254,10 @@ export const useCanvas = ({ width, height, onDrawingChange, stencil }: UseCanvas
       clientY = event.clientY;
     }
 
+    // Since context is scaled by devicePixelRatio, we use display coordinates directly
     return {
-      x: (clientX - rect.left) * scaleX,
-      y: (clientY - rect.top) * scaleY,
+      x: clientX - rect.left,
+      y: clientY - rect.top,
     };
   }, []);
 
@@ -321,6 +341,11 @@ export const useCanvas = ({ width, height, onDrawingChange, stencil }: UseCanvas
     const context = contextRef.current;
     if (!canvas || !context) return;
 
+    // Convert display coordinates to internal canvas pixel coordinates
+    const devicePixelRatio = window.devicePixelRatio || 1;
+    const pixelX = Math.floor(startX * devicePixelRatio);
+    const pixelY = Math.floor(startY * devicePixelRatio);
+
     // Get image data
     const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
     const pixels = imageData.data;
@@ -329,8 +354,8 @@ export const useCanvas = ({ width, height, onDrawingChange, stencil }: UseCanvas
     const fillRgb = hexToRgb(fillColor);
     if (!fillRgb) return;
 
-    // Get the color at the starting position
-    const startPos = (Math.floor(startY) * canvas.width + Math.floor(startX)) * 4;
+    // Get the color at the starting position using scaled coordinates
+    const startPos = (pixelY * canvas.width + pixelX) * 4;
     const startR = pixels[startPos];
     const startG = pixels[startPos + 1];
     const startB = pixels[startPos + 2];
@@ -342,7 +367,7 @@ export const useCanvas = ({ width, height, onDrawingChange, stencil }: UseCanvas
     }
 
     // Flood fill using stack-based approach (more efficient than recursion)
-    const stack: Array<[number, number]> = [[Math.floor(startX), Math.floor(startY)]];
+    const stack: Array<[number, number]> = [[pixelX, pixelY]];
     const visited = new Set<string>();
 
     while (stack.length > 0) {
