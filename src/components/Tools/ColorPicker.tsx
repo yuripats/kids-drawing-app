@@ -34,8 +34,12 @@ const ColorPicker = ({ selectedColor, onColorChange }: ColorPickerProps) => {
     return (
       <div className="w-full">
         <div 
-          className="flex gap-1 overflow-x-auto pb-1" 
-          style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+          className="flex overflow-x-auto pb-1" 
+          style={{ 
+            scrollbarWidth: 'none', 
+            msOverflowStyle: 'none',
+            gap: '3px'
+          }}
         >
           {kidColors.map((color) => {
             const isSelected = selectedColor === color;
@@ -45,7 +49,7 @@ const ColorPicker = ({ selectedColor, onColorChange }: ColorPickerProps) => {
               <button
                 key={color}
                 className={`
-                  flex-shrink-0 w-8 h-8 rounded-full border-2 transition-all duration-200
+                  flex-shrink-0 rounded-full border-2 transition-all duration-200
                   ${isSelected 
                     ? 'border-gray-800 scale-110 shadow-lg' 
                     : 'border-white hover:border-gray-300'
@@ -55,8 +59,10 @@ const ColorPicker = ({ selectedColor, onColorChange }: ColorPickerProps) => {
                 `}
                 style={{ 
                   backgroundColor: color,
-                  minWidth: '32px',
-                  minHeight: '32px'
+                  width: '29px',
+                  height: '29px',
+                  minWidth: '29px',
+                  minHeight: '29px'
                 }}
                 onClick={() => handleColorSelect(color)}
                 aria-label={`Select ${color} color`}
