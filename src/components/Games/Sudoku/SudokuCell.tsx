@@ -1,4 +1,4 @@
-import { Cell, Settings } from '../../../types/sudoku';
+import { Cell } from '../../../types/sudoku';
 
 export default function SudokuCell({
   cell,
@@ -6,7 +6,6 @@ export default function SudokuCell({
   col,
   selected,
   highlighted,
-  settings,
   onSelect,
 }: {
   cell: Cell;
@@ -14,7 +13,6 @@ export default function SudokuCell({
   col: number;
   selected: boolean;
   highlighted: boolean;
-  settings: Settings;
   onSelect: () => void;
 }) {
   const base = 'w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 flex items-center justify-center select-none';

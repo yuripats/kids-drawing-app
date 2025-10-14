@@ -8,7 +8,7 @@ export interface Cell {
   conflict: { row: boolean; col: boolean; box: boolean };
 }
 
-export interface Selection { row: number; col: number } | null;
+export type Selection = { row: number; col: number } | null;
 
 export interface Settings {
   validateOnInput: boolean;

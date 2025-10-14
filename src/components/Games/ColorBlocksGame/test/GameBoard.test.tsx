@@ -1,5 +1,5 @@
 import { describe, test, expect } from 'vitest'
-import { initializeGame } from '../GameBoard'
+import { initializeGame } from '../gameUtils'
 import { GameConfig } from '../types'
 
 describe('Color Blocks Game Initialization', () => {

@@ -42,7 +42,6 @@ export default function SudokuBoard({
                 col={c}
                 selected={selection?.row === r && selection?.col === c}
                 highlighted={isHighlighted}
-                settings={settings}
                 onSelect={() => onSelect(r, c)}
               />
             </div>

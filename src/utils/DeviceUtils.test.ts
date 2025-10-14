@@ -53,6 +53,8 @@ describe('DeviceUtils', () => {
 
   describe('isStandalone', () => {
     it('returns a boolean value', () => {
+      const mockMatchMedia = vi.fn().mockReturnValue({ matches: false });
+      window.matchMedia = mockMatchMedia;
       const result = isStandalone();
       expect(typeof result).toBe('boolean');
     });

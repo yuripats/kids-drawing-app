@@ -46,7 +46,7 @@ export default function SudokuPage({ onNavigateHome }: { onNavigateHome: () => v
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [game.selection, game.status, game.mode, game.setValue, game.toggleNote, game.clearCell, game.toggleNoteMode]);
+  }, [game]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-secondary-100 via-primary-50 to-secondary-50 p-4">

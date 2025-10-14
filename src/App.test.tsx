@@ -16,22 +16,28 @@ vi.mock('./components/Canvas/DrawingCanvasWithTools', () => ({
 
 describe('HomePage', () => {
   const mockNavigateToDrawing = vi.fn()
+  const mockProps = {
+    onNavigateToDrawing: mockNavigateToDrawing,
+    onNavigateToStencil: vi.fn(),
+    onNavigateToGame: vi.fn(),
+    onNavigateToSudoku: vi.fn()
+  }
 
   it('renders home page content', () => {
-    render(<HomePage onNavigateToDrawing={mockNavigateToDrawing} onNavigateToStencil={vi.fn()} />)
+    render(<HomePage {...mockProps} />)
     expect(screen.getByText('🎨 Kids Drawing App')).toBeInTheDocument()
     expect(screen.getByText('Welcome to Your Creative Space!')).toBeInTheDocument()
   })
 
   it('renders feature cards', () => {
-    render(<HomePage onNavigateToDrawing={mockNavigateToDrawing} onNavigateToStencil={vi.fn()} />)
+    render(<HomePage {...mockProps} />)
     expect(screen.getByText('Touch & Draw')).toBeInTheDocument()
     expect(screen.getByText('Bright Colors')).toBeInTheDocument()
     expect(screen.getByText('Save Your Art')).toBeInTheDocument()
   })
 
   it('renders start drawing button', () => {
-    render(<HomePage onNavigateToDrawing={mockNavigateToDrawing} onNavigateToStencil={vi.fn()} />)
+    render(<HomePage {...mockProps} />)
     expect(screen.getByText('🖌️ Free Drawing!')).toBeInTheDocument()
   })
 })

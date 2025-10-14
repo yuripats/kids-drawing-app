@@ -1,6 +1,6 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Cell, Difficulty, GameState, Settings, Status } from '../types/sudoku';
-import { createEmptyBoard, fromPuzzleString, peersOf, validateConflicts } from '../utils/sudoku';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { Difficulty, GameState, Settings } from '../types/sudoku';
+import { createEmptyBoard, validateConflicts } from '../utils/sudoku';
 import { loadPuzzle } from '../services/sudoku/SudokuEngine';
 
 interface Options { difficulty: Difficulty }
@@ -22,7 +22,9 @@ export function useSudokuGame({ difficulty }: Options) {
           const parsed: GameState = revive(JSON.parse(raw));
           setGame(parsed);
           return;
-        } catch {}
+        } catch {
+          // Ignore parsing errors for invalid stored games
+        }
       }
     }
     // otherwise new game
@@ -209,9 +211,36 @@ function serialize(g: GameState) {
   };
 }
 
-function revive(g: any): GameState {
+interface SerializedCell {
+  value: number | null;
+  given: boolean;
+  notes: number[];
+  conflict: { row: boolean; col: boolean; box: boolean };
+}
+
+interface SerializedGameState {
+  id: string;
+  difficulty: Difficulty;
+  board: SerializedCell[];
+  selection: { row: number; col: number } | null;
+  mode: 'value' | 'note';
+  history: SerializedCell[][];
+  future: SerializedCell[][];
+  elapsedMs: number;
+  status: 'in_progress' | 'completed';
+  settings: Settings;
+  version: number;
+}
+
+function revive(g: SerializedGameState): GameState {
   return {
     ...g,
-    board: g.board.map((c: any) => ({ ...c, notes: new Set<number>(c.notes || []) })),
-  } as GameState;
+    board: g.board.map((c) => ({ ...c, notes: new Set<number>(c.notes || []) })),
+    history: g.history.map((boardState) => 
+      boardState.map((c) => ({ ...c, notes: new Set<number>(c.notes || []) }))
+    ),
+    future: g.future.map((boardState) => 
+      boardState.map((c) => ({ ...c, notes: new Set<number>(c.notes || []) }))
+    ),
+  };
 }
