@@ -8,7 +8,7 @@ export interface Stencil {
   viewBox: string; // SVG viewBox for proper scaling
 }
 
-export type StencilCategory = 'princess' | 'unicorns' | 'castles' | 'vehicles' | 'animals';
+export type StencilCategory = 'princess' | 'unicorns' | 'castles' | 'vehicles' | 'animals' | 'others';
 
 export interface StencilCollection {
   category: StencilCategory;

@@ -5,9 +5,11 @@ import { Stencil } from '../types/Stencil';
 interface HomePageProps {
   onNavigateToDrawing: () => void;
   onNavigateToStencil: (stencil: Stencil) => void;
+  onNavigateToGame: () => void;
+  onNavigateToSudoku: () => void;
 }
 
-function HomePage({ onNavigateToDrawing, onNavigateToStencil }: HomePageProps) {
+function HomePage({ onNavigateToDrawing, onNavigateToStencil, onNavigateToGame, onNavigateToSudoku }: HomePageProps) {
   const [isExcited, setIsExcited] = useState(false);
   const [showStencils, setShowStencils] = useState(false);
 
@@ -65,13 +67,29 @@ function HomePage({ onNavigateToDrawing, onNavigateToStencil }: HomePageProps) {
               🎭 Color Stencils!
             </button>
             
-            <button 
-              className="kid-button bg-secondary-500 hover:bg-secondary-600 active:bg-secondary-700 text-xl"
-              onClick={() => setIsExcited(!isExcited)}
-              onTouchStart={() => setIsExcited(true)}
-            >
-              {isExcited ? 'So Excited!' : 'Tell Me More!'}
-            </button>
+          <button 
+            className="kid-button bg-secondary-500 hover:bg-secondary-600 active:bg-secondary-700 text-xl"
+            onClick={() => setIsExcited(!isExcited)}
+            onTouchStart={() => setIsExcited(true)}
+          >
+            {isExcited ? 'So Excited!' : 'Tell Me More!'}
+          </button>
+
+          <button 
+            className="kid-button bg-green-500 hover:bg-green-600 active:bg-green-700 text-xl"
+            onClick={() => onNavigateToGame()}
+            onTouchStart={() => setIsExcited(true)}
+          >
+            🎮 Color Blocks Game
+          </button>
+
+          <button 
+            className="kid-button bg-blue-500 hover:bg-blue-600 active:bg-blue-700 text-xl"
+            onClick={() => onNavigateToSudoku()}
+            onTouchStart={() => setIsExcited(true)}
+          >
+            🧩 Sudoku
+          </button>
           </div>
         </div>
 
