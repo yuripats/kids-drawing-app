@@ -7,9 +7,10 @@ interface HomePageProps {
   onNavigateToStencil: (stencil: Stencil) => void;
   onNavigateToGame: () => void;
   onNavigateToSudoku: () => void;
+  onNavigateToTetris: () => void;
 }
 
-function HomePage({ onNavigateToDrawing, onNavigateToStencil, onNavigateToGame, onNavigateToSudoku }: HomePageProps) {
+function HomePage({ onNavigateToDrawing, onNavigateToStencil, onNavigateToGame, onNavigateToSudoku, onNavigateToTetris }: HomePageProps) {
   const [isExcited, setIsExcited] = useState(false);
   const [showStencils, setShowStencils] = useState(false);
 
@@ -75,7 +76,7 @@ function HomePage({ onNavigateToDrawing, onNavigateToStencil, onNavigateToGame, 
             {isExcited ? 'So Excited!' : 'Tell Me More!'}
           </button>
 
-          <button 
+<button 
             className="kid-button bg-green-500 hover:bg-green-600 active:bg-green-700 text-xl"
             onClick={() => onNavigateToGame()}
             onTouchStart={() => setIsExcited(true)}
@@ -89,6 +90,14 @@ function HomePage({ onNavigateToDrawing, onNavigateToStencil, onNavigateToGame, 
             onTouchStart={() => setIsExcited(true)}
           >
             🧩 Sudoku
+          </button>
+
+          <button 
+            className="kid-button bg-orange-500 hover:bg-orange-600 active:bg-orange-700 text-xl"
+            onClick={() => onNavigateToTetris()}
+            onTouchStart={() => setIsExcited(true)}
+          >
+            🧱 Tetris
           </button>
           </div>
         </div>

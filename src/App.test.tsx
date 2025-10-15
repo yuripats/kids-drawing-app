@@ -20,7 +20,8 @@ describe('HomePage', () => {
     onNavigateToDrawing: mockNavigateToDrawing,
     onNavigateToStencil: vi.fn(),
     onNavigateToGame: vi.fn(),
-    onNavigateToSudoku: vi.fn()
+    onNavigateToSudoku: vi.fn(),
+    onNavigateToTetris: vi.fn(),
   }
 
   it('renders home page content', () => {

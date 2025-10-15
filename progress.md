@@ -220,3 +220,24 @@ Hosting: GitHub Pages
 
 ---
 *Last Updated: 2025-08-20 - Step 17 Mobile UI Enhancement & Tool Interface Redesign completed*
+
+## New Work: Tetris Mini-Game (MVP)
+- ✅ Added Tetris MVP (UI-only) with configurable board size (width/height)
+- ✅ Implemented 7 tetrominoes, gravity, left/right/rotate/soft drop, line clears, scoring, levels
+- ✅ Mobile-friendly controls with large touch buttons
+- ✅ Navigation: Home → Tetris page and back
+- 🔍 Verification: Use Playwright MCP server to browse and interact
+
+### How to verify with MCP
+1. Start dev server:
+   ```bash
+   npm run dev
+   ```
+2. Launch MCP Playwright server (opens an interactive browser you can control):
+   ```bash
+   npm run mcp:playwright
+   ```
+3. In the MCP session, navigate to the Tetris page from Home and validate:
+   - Pieces fall at a steady pace and respond to Left/Right/Rotate/Down
+   - Full rows clear and score increases; level speeds up every 10 lines
+   - Changing Width/Height re-initializes a new game grid

@@ -4,8 +4,9 @@ import DrawingPage from './components/DrawingPage';
 import GameBoard from './components/Games/ColorBlocksGame/GameBoard';
 import { Stencil } from './types/Stencil';
 import SudokuPage from './components/Games/Sudoku/SudokuPage';
+import TetrisPage from './components/Games/Tetris/TetrisPage';
 
-type AppPage = 'home' | 'draw' | 'stencil' | 'game' | 'sudoku';
+type AppPage = 'home' | 'draw' | 'stencil' | 'game' | 'sudoku' | 'tetris';
 
 function App() {
   const [currentPage, setCurrentPage] = useState<AppPage>('home');
@@ -24,11 +25,12 @@ function App() {
     switch (currentPage) {
       case 'home':
         return (
-          <HomePage 
+<HomePage 
             onNavigateToDrawing={() => navigateTo('draw')} 
             onNavigateToStencil={navigateToStencil}
             onNavigateToGame={() => navigateTo('game')}
             onNavigateToSudoku={() => navigateTo('sudoku')}
+            onNavigateToTetris={() => navigateTo('tetris')}
           />
         );
       case 'draw':
@@ -53,17 +55,22 @@ function App() {
             </button>
           </div>
         );
-      case 'sudoku':
+case 'sudoku':
         return (
           <SudokuPage onNavigateHome={() => navigateTo('home')} />
         );
+      case 'tetris':
+        return (
+          <TetrisPage onNavigateHome={() => navigateTo('home')} />
+        );
       default:
         return (
-          <HomePage 
+<HomePage 
             onNavigateToDrawing={() => navigateTo('draw')} 
             onNavigateToStencil={navigateToStencil}
             onNavigateToGame={() => navigateTo('game')}
             onNavigateToSudoku={() => navigateTo('sudoku')}
+            onNavigateToTetris={() => navigateTo('tetris')}
           />
         );
     }
