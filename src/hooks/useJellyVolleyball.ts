@@ -16,7 +16,7 @@ const DEFAULT_CONFIG: GameConfig = {
   netHeight: 100,
   playerRadius: 35,
   ballRadius: 12,
-  gravity: 0.5,
+  gravity: 0.2, // Space gravity for floaty gameplay
   pointsToWin: 7,
 };
 
