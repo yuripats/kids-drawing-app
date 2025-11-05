@@ -13,7 +13,7 @@ import { calculateAIControls, defaultAIConfig } from '../components/Games/JellyV
 const DEFAULT_CONFIG: GameConfig = {
   courtWidth: 800,
   courtHeight: 400,
-  netHeight: 100,
+  netHeight: 100, // 1/4 of courtHeight (400 / 4 = 100)
   playerRadius: 35,
   ballRadius: 32, // Big ball - almost as big as the jelly players!
   gravity: 0.06, // Even lower gravity - ball floats much longer

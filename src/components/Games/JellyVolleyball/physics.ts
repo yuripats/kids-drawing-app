@@ -129,6 +129,15 @@ export function updatePlayer(
   player.position.x += player.velocity.x * deltaTime;
   player.position.y += player.velocity.y * deltaTime;
 
+  // Top boundary collision (ceiling) - player bounces back
+  if (player.position.y - player.radius < 0) {
+    player.position.y = player.radius;
+    player.velocity.y *= -config.playerBounciness;
+    if (Math.abs(player.velocity.y) < 0.5) {
+      player.velocity.y = 0;
+    }
+  }
+
   // Ground collision
   if (player.position.y + player.radius > court.height) {
     player.position.y = court.height - player.radius;
@@ -138,11 +147,13 @@ export function updatePlayer(
     }
   }
 
-  // Wall collision
+  // Left wall collision - player stops
   if (player.position.x - player.radius < 0) {
     player.position.x = player.radius;
     player.velocity.x = 0;
   }
+
+  // Right wall collision - player stops
   if (player.position.x + player.radius > court.width) {
     player.position.x = court.width - player.radius;
     player.velocity.x = 0;
@@ -204,6 +215,12 @@ export function updateBall(
   let scored = false;
   let scoringSide: 'left' | 'right' | null = null;
 
+  // Top boundary collision (ceiling) - ball bounces back
+  if (ball.position.y - ball.radius < 0) {
+    ball.position.y = ball.radius;
+    ball.velocity.y *= -config.ballBounciness;
+  }
+
   // Ground collision
   if (ball.position.y + ball.radius > court.height) {
     ball.position.y = court.height - ball.radius;
@@ -216,11 +233,13 @@ export function updateBall(
     }
   }
 
-  // Wall collision
+  // Left wall collision - ball bounces back
   if (ball.position.x - ball.radius < 0) {
     ball.position.x = ball.radius;
     ball.velocity.x *= -config.ballBounciness;
   }
+
+  // Right wall collision - ball bounces back
   if (ball.position.x + ball.radius > court.width) {
     ball.position.x = court.width - ball.radius;
     ball.velocity.x *= -config.ballBounciness;
