@@ -190,6 +190,21 @@ export function useJellyVolleyball(config: GameConfig = DEFAULT_CONFIG) {
     animationFrameRef.current = requestAnimationFrame(gameLoop);
   }, [config.pointsToWin, isPaused]);
 
+  // Control functions for touch/button controls
+  const setControl = useCallback((control: keyof Controls, value: boolean) => {
+    player1ControlsRef.current[control] = value;
+  }, []);
+
+  const resetGame = useCallback(() => {
+    setGameState(createInitialState(config));
+    player1ControlsRef.current = { left: false, right: false, jump: false };
+    setIsPaused(false);
+  }, [config]);
+
+  const togglePause = useCallback(() => {
+    setIsPaused((prev: boolean) => !prev);
+  }, []);
+
   // Start game loop
   useEffect(() => {
     lastTimeRef.current = Date.now();
@@ -251,22 +266,7 @@ export function useJellyVolleyball(config: GameConfig = DEFAULT_CONFIG) {
       window.removeEventListener('keydown', handleKeyDown);
       window.removeEventListener('keyup', handleKeyUp);
     };
-  }, [gameState.gameStatus]);
-
-  // Control functions for touch/button controls
-  const setControl = useCallback((control: keyof Controls, value: boolean) => {
-    player1ControlsRef.current[control] = value;
-  }, []);
-
-  const resetGame = useCallback(() => {
-    setGameState(createInitialState(config));
-    player1ControlsRef.current = { left: false, right: false, jump: false };
-    setIsPaused(false);
-  }, [config]);
-
-  const togglePause = useCallback(() => {
-    setIsPaused((prev: boolean) => !prev);
-  }, []);
+  }, [gameState.gameStatus, resetGame]);
 
   return {
     gameState,
