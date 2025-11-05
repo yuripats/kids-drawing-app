@@ -106,6 +106,11 @@ export function useJellyVolleyball(config: GameConfig = DEFAULT_CONFIG) {
   const lastTimeRef = useRef<number>(Date.now());
   const scorePopupTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
+  // Mouse and touch control refs
+  const mouseXRef = useRef<number | null>(null);
+  const touchStartYRef = useRef<number | null>(null);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+
   // Game loop
   const gameLoop = useCallback(() => {
     if (isPaused) {
@@ -129,12 +134,31 @@ export function useJellyVolleyball(config: GameConfig = DEFAULT_CONFIG) {
         ? calculateAIControls(newState.player2, newState.ball, newState.court, defaultAIConfig)
         : { left: false, right: false, jump: false };
 
+      // Apply mouse/touch controls to player 1 if mouse position is set
+      const player1Controls = { ...player1ControlsRef.current };
+      if (mouseXRef.current !== null) {
+        const targetX = mouseXRef.current;
+        const playerX = newState.player1.position.x;
+        const threshold = 20; // Dead zone to prevent jittering
+
+        if (targetX < playerX - threshold) {
+          player1Controls.left = true;
+          player1Controls.right = false;
+        } else if (targetX > playerX + threshold) {
+          player1Controls.left = false;
+          player1Controls.right = true;
+        } else {
+          player1Controls.left = false;
+          player1Controls.right = false;
+        }
+      }
+
       // Update players
       updatePlayer(
         newState.player1,
         newState.court,
         defaultPhysicsConfig,
-        player1ControlsRef.current,
+        player1Controls,
         deltaTime,
         'left'
       );
@@ -271,6 +295,82 @@ export function useJellyVolleyball(config: GameConfig = DEFAULT_CONFIG) {
     };
   }, [gameState.gameStatus, resetGame]);
 
+  // Mouse and touch controls
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!canvas) return;
+      const rect = canvas.getBoundingClientRect();
+      const scaleX = gameState.court.width / rect.width;
+      mouseXRef.current = (e.clientX - rect.left) * scaleX;
+    };
+
+    const handleMouseDown = (e: MouseEvent) => {
+      if (e.button === 2) { // Right click
+        e.preventDefault();
+        player1ControlsRef.current.jump = true;
+        setTimeout(() => {
+          player1ControlsRef.current.jump = false;
+        }, 100);
+      }
+    };
+
+    const handleContextMenu = (e: MouseEvent) => {
+      e.preventDefault(); // Prevent context menu on right-click
+    };
+
+    const handleTouchStart = (e: TouchEvent) => {
+      if (!canvas || e.touches.length === 0) return;
+      const touch = e.touches[0];
+      const rect = canvas.getBoundingClientRect();
+      const scaleX = gameState.court.width / rect.width;
+      mouseXRef.current = (touch.clientX - rect.left) * scaleX;
+      touchStartYRef.current = touch.clientY;
+    };
+
+    const handleTouchMove = (e: TouchEvent) => {
+      if (!canvas || e.touches.length === 0) return;
+      e.preventDefault();
+      const touch = e.touches[0];
+      const rect = canvas.getBoundingClientRect();
+      const scaleX = gameState.court.width / rect.width;
+      mouseXRef.current = (touch.clientX - rect.left) * scaleX;
+
+      // Check for upward drag to jump
+      if (touchStartYRef.current !== null) {
+        const dragDistance = touchStartYRef.current - touch.clientY;
+        if (dragDistance > 30) { // Drag up at least 30px to jump
+          player1ControlsRef.current.jump = true;
+          touchStartYRef.current = touch.clientY; // Reset to prevent continuous jumping
+        }
+      }
+    };
+
+    const handleTouchEnd = () => {
+      player1ControlsRef.current.jump = false;
+      touchStartYRef.current = null;
+    };
+
+    // Add event listeners
+    canvas.addEventListener('mousemove', handleMouseMove);
+    canvas.addEventListener('mousedown', handleMouseDown);
+    canvas.addEventListener('contextmenu', handleContextMenu);
+    canvas.addEventListener('touchstart', handleTouchStart);
+    canvas.addEventListener('touchmove', handleTouchMove, { passive: false });
+    canvas.addEventListener('touchend', handleTouchEnd);
+
+    return () => {
+      canvas.removeEventListener('mousemove', handleMouseMove);
+      canvas.removeEventListener('mousedown', handleMouseDown);
+      canvas.removeEventListener('contextmenu', handleContextMenu);
+      canvas.removeEventListener('touchstart', handleTouchStart);
+      canvas.removeEventListener('touchmove', handleTouchMove);
+      canvas.removeEventListener('touchend', handleTouchEnd);
+    };
+  }, [gameState.court.width]);
+
   // Clear score popup after 2 seconds
   useEffect(() => {
     if (gameState.lastScorer !== null) {
@@ -299,6 +399,7 @@ export function useJellyVolleyball(config: GameConfig = DEFAULT_CONFIG) {
   return {
     gameState,
     isPaused,
+    canvasRef,
     controls: {
       setControl,
       resetGame,

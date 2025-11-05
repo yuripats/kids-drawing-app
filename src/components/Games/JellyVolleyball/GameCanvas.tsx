@@ -1,6 +1,6 @@
 // Canvas component for rendering Jelly Volleyball
 
-import { useEffect, useRef } from 'react';
+import { useEffect, forwardRef } from 'react';
 import type { GameState } from './types';
 import {
   clearCanvas,
@@ -17,8 +17,9 @@ interface GameCanvasProps {
   height: number;
 }
 
-export default function GameCanvas({ gameState, width, height }: GameCanvasProps) {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+const GameCanvas = forwardRef<HTMLCanvasElement, GameCanvasProps>(
+  ({ gameState, width, height }, ref) => {
+  const canvasRef = ref as React.RefObject<HTMLCanvasElement>;
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -48,7 +49,7 @@ export default function GameCanvas({ gameState, width, height }: GameCanvasProps
       const winnerColor = gameState.winner === 1 ? gameState.player1.color : gameState.player2.color;
       drawGameOver(ctx, gameState.winner, winnerColor, gameState.court);
     }
-  }, [gameState, width, height]);
+  }, [gameState, width, height, canvasRef]);
 
   return (
     <canvas
@@ -59,4 +60,8 @@ export default function GameCanvas({ gameState, width, height }: GameCanvasProps
       style={{ maxWidth: '100%', height: 'auto' }}
     />
   );
-}
+});
+
+GameCanvas.displayName = 'GameCanvas';
+
+export default GameCanvas;

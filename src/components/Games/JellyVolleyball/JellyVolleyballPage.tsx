@@ -9,7 +9,7 @@ interface Props {
 
 export default function JellyVolleyballPage({ onNavigateHome }: Props) {
   const courtHeight = 400;
-  const { gameState, isPaused, controls } = useJellyVolleyball({
+  const { gameState, isPaused, canvasRef, controls } = useJellyVolleyball({
     courtWidth: 800,
     courtHeight: courtHeight,
     netHeight: courtHeight / 4, // Net is 1/4 of viewport height
@@ -37,6 +37,7 @@ export default function JellyVolleyballPage({ onNavigateHome }: Props) {
       {/* Game Canvas */}
       <div className="flex justify-center mb-4">
         <GameCanvas
+          ref={canvasRef}
           gameState={gameState}
           width={gameState.court.width}
           height={gameState.court.height}
@@ -55,16 +56,16 @@ export default function JellyVolleyballPage({ onNavigateHome }: Props) {
             </h3>
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
-                <span className="font-semibold">Move Left:</span>
-                <span className="bg-white px-2 py-1 rounded">A or ←</span>
+                <span className="font-semibold">Keyboard:</span>
+                <span className="bg-white px-2 py-1 rounded">A/D/← →/W ↑ Space</span>
               </div>
               <div className="flex justify-between">
-                <span className="font-semibold">Move Right:</span>
-                <span className="bg-white px-2 py-1 rounded">D or →</span>
+                <span className="font-semibold">Mouse:</span>
+                <span className="bg-white px-2 py-1 rounded">Move + Right-Click to Jump</span>
               </div>
               <div className="flex justify-between">
-                <span className="font-semibold">Jump:</span>
-                <span className="bg-white px-2 py-1 rounded">W or ↑ or Space</span>
+                <span className="font-semibold">Touch:</span>
+                <span className="bg-white px-2 py-1 rounded">Drag + Swipe Up to Jump</span>
               </div>
             </div>
 
