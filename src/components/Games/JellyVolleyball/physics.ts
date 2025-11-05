@@ -102,7 +102,8 @@ export function updatePlayer(
   court: Court,
   config: PhysicsConfig,
   controls: { left: boolean; right: boolean; jump: boolean },
-  deltaTime: number = 1
+  deltaTime: number = 1,
+  playerSide: 'left' | 'right' = 'left'
 ): void {
   // Apply gravity
   player.velocity.y += config.gravity * deltaTime;
@@ -145,6 +146,22 @@ export function updatePlayer(
   if (player.position.x + player.radius > court.width) {
     player.position.x = court.width - player.radius;
     player.velocity.x = 0;
+  }
+
+  // Net boundary (prevent crossing to opponent's side)
+  const netX = court.width / 2;
+  if (playerSide === 'left') {
+    // Player 1 cannot go past the net to the right
+    if (player.position.x + player.radius > netX) {
+      player.position.x = netX - player.radius;
+      player.velocity.x = 0;
+    }
+  } else {
+    // Player 2 cannot go past the net to the left
+    if (player.position.x - player.radius < netX) {
+      player.position.x = netX + player.radius;
+      player.velocity.x = 0;
+    }
   }
 
   // Update jelly wobble effect (spring-mass damping)

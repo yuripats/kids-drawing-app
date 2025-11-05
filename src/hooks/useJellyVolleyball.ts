@@ -49,7 +49,7 @@ function createInitialState(config: GameConfig): GameState {
     },
     ball: {
       position: { x: config.courtWidth / 2, y: 100 },
-      velocity: { x: -3, y: 0 },
+      velocity: { x: -1.5, y: 0 },
       radius: config.ballRadius,
       mass: 0.5,
     },
@@ -76,7 +76,7 @@ function resetBall(state: GameState, servingPlayer: number): void {
 
   state.ball.position.x = startX;
   state.ball.position.y = state.court.height - 150;
-  state.ball.velocity.x = servingPlayer === 1 ? 3 : -3;
+  state.ball.velocity.x = servingPlayer === 1 ? 1.5 : -1.5;
   state.ball.velocity.y = 0;
 }
 
@@ -104,6 +104,7 @@ export function useJellyVolleyball(config: GameConfig = DEFAULT_CONFIG) {
   const player1ControlsRef = useRef<Controls>({ left: false, right: false, jump: false });
   const animationFrameRef = useRef<number>();
   const lastTimeRef = useRef<number>(Date.now());
+  const scorePopupTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // Game loop
   const gameLoop = useCallback(() => {
@@ -134,14 +135,16 @@ export function useJellyVolleyball(config: GameConfig = DEFAULT_CONFIG) {
         newState.court,
         defaultPhysicsConfig,
         player1ControlsRef.current,
-        deltaTime
+        deltaTime,
+        'left'
       );
       updatePlayer(
         newState.player2,
         newState.court,
         defaultPhysicsConfig,
         player2Controls,
-        deltaTime
+        deltaTime,
+        'right'
       );
 
       // Update ball
@@ -267,6 +270,31 @@ export function useJellyVolleyball(config: GameConfig = DEFAULT_CONFIG) {
       window.removeEventListener('keyup', handleKeyUp);
     };
   }, [gameState.gameStatus, resetGame]);
+
+  // Clear score popup after 2 seconds
+  useEffect(() => {
+    if (gameState.lastScorer !== null) {
+      // Clear any existing timeout
+      if (scorePopupTimeoutRef.current) {
+        clearTimeout(scorePopupTimeoutRef.current);
+      }
+
+      // Set timeout to clear the popup after 2 seconds
+      scorePopupTimeoutRef.current = setTimeout(() => {
+        setGameState((prev) => ({
+          ...prev,
+          lastScorer: null,
+        }));
+        scorePopupTimeoutRef.current = null;
+      }, 2000);
+    }
+
+    return () => {
+      if (scorePopupTimeoutRef.current) {
+        clearTimeout(scorePopupTimeoutRef.current);
+      }
+    };
+  }, [gameState.lastScorer]);
 
   return {
     gameState,
