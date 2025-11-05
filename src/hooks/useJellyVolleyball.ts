@@ -16,7 +16,7 @@ const DEFAULT_CONFIG: GameConfig = {
   netHeight: 100,
   playerRadius: 35,
   ballRadius: 32, // Big ball - almost as big as the jelly players!
-  gravity: 0.1, // Ultra-low gravity for very floaty gameplay
+  gravity: 0.06, // Even lower gravity - ball floats much longer
   pointsToWin: 7,
 };
 
@@ -48,8 +48,8 @@ function createInitialState(config: GameConfig): GameState {
       isAI: true,
     },
     ball: {
-      position: { x: config.courtWidth / 2, y: 100 },
-      velocity: { x: -1.5, y: 0 },
+      position: { x: config.courtWidth / 2, y: 60 }, // Higher start position
+      velocity: { x: -1.0, y: 0 }, // Slower initial speed
       radius: config.ballRadius,
       mass: 0.5,
     },
@@ -75,8 +75,8 @@ function resetBall(state: GameState, servingPlayer: number): void {
   const startX = servingPlayer === 1 ? state.court.width / 4 : (state.court.width * 3) / 4;
 
   state.ball.position.x = startX;
-  state.ball.position.y = state.court.height - 150;
-  state.ball.velocity.x = servingPlayer === 1 ? 1.5 : -1.5;
+  state.ball.position.y = 80; // Much higher starting position for better reaction time
+  state.ball.velocity.x = servingPlayer === 1 ? 1.0 : -1.0; // Slower serve speed
   state.ball.velocity.y = 0;
 }
 
