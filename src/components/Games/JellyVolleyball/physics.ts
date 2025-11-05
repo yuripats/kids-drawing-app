@@ -215,16 +215,20 @@ export function updateBall(
   let scored = false;
   let scoringSide: 'left' | 'right' | null = null;
 
-  // Top boundary collision (ceiling) - ball bounces back
+  // Top boundary collision (ceiling) - ball bounces back with reduced velocity
   if (ball.position.y - ball.radius < 0) {
     ball.position.y = ball.radius;
-    ball.velocity.y *= -config.ballBounciness;
+    // Ensure velocity doesn't increase: reverse direction and apply dampening
+    const speedBefore = Math.abs(ball.velocity.y);
+    ball.velocity.y = Math.min(speedBefore, Math.abs(ball.velocity.y * config.ballBounciness));
   }
 
   // Ground collision
   if (ball.position.y + ball.radius > court.height) {
     ball.position.y = court.height - ball.radius;
-    ball.velocity.y *= -config.ballBounciness;
+    // Reverse direction and reduce velocity
+    const speedBefore = Math.abs(ball.velocity.y);
+    ball.velocity.y = -Math.min(speedBefore, Math.abs(ball.velocity.y * config.ballBounciness));
 
     // Check if ball hit the ground (scoring condition)
     if (Math.abs(ball.velocity.y) < 2) {
@@ -233,16 +237,20 @@ export function updateBall(
     }
   }
 
-  // Left wall collision - ball bounces back
+  // Left wall collision - ball bounces back with reduced velocity
   if (ball.position.x - ball.radius < 0) {
     ball.position.x = ball.radius;
-    ball.velocity.x *= -config.ballBounciness;
+    // Ensure velocity doesn't increase: reverse direction and apply dampening
+    const speedBefore = Math.abs(ball.velocity.x);
+    ball.velocity.x = Math.min(speedBefore, Math.abs(ball.velocity.x * config.ballBounciness));
   }
 
-  // Right wall collision - ball bounces back
+  // Right wall collision - ball bounces back with reduced velocity
   if (ball.position.x + ball.radius > court.width) {
     ball.position.x = court.width - ball.radius;
-    ball.velocity.x *= -config.ballBounciness;
+    // Ensure velocity doesn't increase: reverse direction and apply dampening
+    const speedBefore = Math.abs(ball.velocity.x);
+    ball.velocity.x = -Math.min(speedBefore, Math.abs(ball.velocity.x * config.ballBounciness));
   }
 
   // Net collision (top of net)
@@ -258,18 +266,22 @@ export function updateBall(
   ) {
     // Ball hit the net
     if (ball.position.y < netTop + ball.radius) {
-      // Hit top of net
+      // Hit top of net - reduce velocity
       ball.position.y = netTop - ball.radius;
-      ball.velocity.y *= -config.ballBounciness;
-      ball.velocity.x *= 0.8; // Reduce horizontal speed
+      const speedBefore = Math.abs(ball.velocity.y);
+      ball.velocity.y = -Math.min(speedBefore, Math.abs(ball.velocity.y * config.ballBounciness));
+      ball.velocity.x *= 0.75; // Reduce horizontal speed more when hitting net
     } else {
-      // Hit side of net
+      // Hit side of net - reduce velocity
       if (ball.position.x < netX) {
         ball.position.x = netX - netWidth / 2 - ball.radius;
+        const speedBefore = Math.abs(ball.velocity.x);
+        ball.velocity.x = -Math.min(speedBefore, Math.abs(ball.velocity.x * config.ballBounciness));
       } else {
         ball.position.x = netX + netWidth / 2 + ball.radius;
+        const speedBefore = Math.abs(ball.velocity.x);
+        ball.velocity.x = Math.min(speedBefore, Math.abs(ball.velocity.x * config.ballBounciness));
       }
-      ball.velocity.x *= -config.ballBounciness;
     }
   }
 
@@ -283,7 +295,27 @@ export function handleBallPlayerCollision(
   config: PhysicsConfig
 ): void {
   if (checkCircleCollision(ball.position, ball.radius, player.position, player.radius)) {
+    // Store ball's velocity magnitude before collision
+    const ballSpeedBefore = Math.sqrt(ball.velocity.x * ball.velocity.x + ball.velocity.y * ball.velocity.y);
+
+    // Perform collision
     resolveCircleCollision(player, ball, config.ballBounciness);
+
+    // Calculate ball's velocity magnitude after collision
+    const ballSpeedAfter = Math.sqrt(ball.velocity.x * ball.velocity.x + ball.velocity.y * ball.velocity.y);
+
+    // If ball sped up significantly, cap it to maintain reasonable speed
+    if (ballSpeedAfter > ballSpeedBefore * 1.1) {
+      // Reduce to slightly less than original speed (95% of original)
+      const targetSpeed = ballSpeedBefore * 0.95;
+      const scale = targetSpeed / ballSpeedAfter;
+      ball.velocity.x *= scale;
+      ball.velocity.y *= scale;
+    } else if (ballSpeedAfter > 0) {
+      // Normal case: reduce velocity slightly (to 95% of result)
+      ball.velocity.x *= 0.95;
+      ball.velocity.y *= 0.95;
+    }
 
     // Add wobble to player on collision
     const dx = ball.position.x - player.position.x;
