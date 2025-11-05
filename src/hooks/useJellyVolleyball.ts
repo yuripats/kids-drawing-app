@@ -15,7 +15,7 @@ const DEFAULT_CONFIG: GameConfig = {
   courtHeight: 400,
   netHeight: 100,
   playerRadius: 35,
-  ballRadius: 18, // Bigger ball for better visibility
+  ballRadius: 32, // Big ball - almost as big as the jelly players!
   gravity: 0.1, // Ultra-low gravity for very floaty gameplay
   pointsToWin: 7,
 };
