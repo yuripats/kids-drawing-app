@@ -3,8 +3,8 @@
 import type { Vector2D, Player, Ball, Court, PhysicsConfig } from './types';
 
 export const defaultPhysicsConfig: PhysicsConfig = {
-  gravity: 0.2, // Space gravity for floaty gameplay
-  playerJumpForce: 12,
+  gravity: 0.1, // Ultra-low gravity for very floaty gameplay
+  playerJumpForce: 8, // Reduced jump height for better control
   playerMoveSpeed: 6,
   playerBounciness: 0.3,
   ballBounciness: 0.80, // Slightly reduced for more control

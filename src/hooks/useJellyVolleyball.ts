@@ -15,8 +15,8 @@ const DEFAULT_CONFIG: GameConfig = {
   courtHeight: 400,
   netHeight: 100,
   playerRadius: 35,
-  ballRadius: 12,
-  gravity: 0.2, // Space gravity for floaty gameplay
+  ballRadius: 18, // Bigger ball for better visibility
+  gravity: 0.1, // Ultra-low gravity for very floaty gameplay
   pointsToWin: 7,
 };
 
