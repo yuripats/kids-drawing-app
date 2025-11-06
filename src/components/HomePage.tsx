@@ -8,9 +8,10 @@ interface HomePageProps {
   onNavigateToGame: () => void;
   onNavigateToSudoku: () => void;
   onNavigateToTetris: () => void;
+  onNavigateToJellyVolleyball: () => void;
 }
 
-function HomePage({ onNavigateToDrawing, onNavigateToStencil, onNavigateToGame, onNavigateToSudoku, onNavigateToTetris }: HomePageProps) {
+function HomePage({ onNavigateToDrawing, onNavigateToStencil, onNavigateToGame, onNavigateToSudoku, onNavigateToTetris, onNavigateToJellyVolleyball }: HomePageProps) {
   const [isExcited, setIsExcited] = useState(false);
   const [showStencils, setShowStencils] = useState(false);
 
@@ -92,12 +93,20 @@ function HomePage({ onNavigateToDrawing, onNavigateToStencil, onNavigateToGame, 
             🧩 Sudoku
           </button>
 
-          <button 
+          <button
             className="kid-button bg-orange-500 hover:bg-orange-600 active:bg-orange-700 text-xl"
             onClick={() => onNavigateToTetris()}
             onTouchStart={() => setIsExcited(true)}
           >
             🧱 Tetris
+          </button>
+
+          <button
+            className="kid-button bg-teal-500 hover:bg-teal-600 active:bg-teal-700 text-xl"
+            onClick={() => onNavigateToJellyVolleyball()}
+            onTouchStart={() => setIsExcited(true)}
+          >
+            🏐 Jelly Volleyball
           </button>
           </div>
         </div>
