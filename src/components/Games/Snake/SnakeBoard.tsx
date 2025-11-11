@@ -42,10 +42,10 @@ export const SnakeBoard: React.FC<SnakeBoardProps> = ({ gameState, config }) => 
    * Get cell className based on content
    */
   const getCellClassName = (x: number, y: number): string => {
-    const baseClass = 'flex items-center justify-center transition-colors duration-100 rounded-sm';
+    const baseClass = 'flex items-center justify-center transition-colors duration-100 rounded-sm aspect-square overflow-hidden';
 
     if (isSnakeHead(x, y)) {
-      return `${baseClass} bg-lime-600 text-xl`;
+      return `${baseClass} bg-lime-600 text-xl leading-none`;
     }
 
     if (isSnakeBody(x, y)) {
@@ -53,7 +53,7 @@ export const SnakeBoard: React.FC<SnakeBoardProps> = ({ gameState, config }) => 
     }
 
     if (isFood(x, y)) {
-      return `${baseClass} bg-red-500 text-xl`;
+      return `${baseClass} bg-red-500 text-xl leading-none`;
     }
 
     return `${baseClass} bg-slate-800`;

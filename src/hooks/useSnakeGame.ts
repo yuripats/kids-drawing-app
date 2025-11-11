@@ -9,10 +9,11 @@ import type {
   Direction,
   GameState,
   Difficulty,
+  GridSize,
   SnakeControls,
   SnakeConfig,
 } from '../components/Games/Snake/types';
-import { DIFFICULTY_CONFIG } from '../components/Games/Snake/types';
+import { buildSnakeConfig } from '../components/Games/Snake/types';
 
 const HIGH_SCORE_KEY = 'snakeHighScore';
 
@@ -93,8 +94,8 @@ const spawnFood = (snake: Position[], config: SnakeConfig): Position => {
 /**
  * Initialize game state
  */
-const initializeGameState = (difficulty: Difficulty): GameState => {
-  const config = DIFFICULTY_CONFIG[difficulty];
+const initializeGameState = (difficulty: Difficulty, gridSize: GridSize): GameState => {
+  const config = buildSnakeConfig(difficulty, gridSize);
   const snake = initializeSnake(config);
   const food = spawnFood(snake, config);
   const highScore = getHighScore();
@@ -108,22 +109,24 @@ const initializeGameState = (difficulty: Difficulty): GameState => {
     highScore,
     gameStatus: 'ready',
     difficulty,
+    gridSize,
   };
 };
 
 export const useSnakeGame = () => {
   const [difficulty, setDifficulty] = useState<Difficulty>('easy');
+  const [gridSize, setGridSize] = useState<GridSize>('medium');
   const [gameState, setGameState] = useState<GameState>(() =>
-    initializeGameState(difficulty)
+    initializeGameState(difficulty, gridSize)
   );
 
   const gameLoopRef = useRef<number | null>(null);
   const nextDirectionRef = useRef<Direction>('right');
 
   /**
-   * Get current config based on difficulty
+   * Get current config based on difficulty and grid size
    */
-  const config: SnakeConfig = DIFFICULTY_CONFIG[gameState.difficulty];
+  const config: SnakeConfig = buildSnakeConfig(gameState.difficulty, gameState.gridSize);
 
   /**
    * Check if two positions are equal
@@ -300,21 +303,32 @@ export const useSnakeGame = () => {
    */
   const resetGame = useCallback(() => {
     stopGameLoop();
-    const newState = initializeGameState(gameState.difficulty);
+    const newState = initializeGameState(gameState.difficulty, gameState.gridSize);
     nextDirectionRef.current = 'right';
     setGameState(newState);
-  }, [stopGameLoop, gameState.difficulty]);
+  }, [stopGameLoop, gameState.difficulty, gameState.gridSize]);
 
   /**
-   * Change difficulty (resets game)
+   * Change difficulty (resets game, keeps grid size)
    */
   const changeDifficulty = useCallback((newDifficulty: Difficulty) => {
     stopGameLoop();
-    const newState = initializeGameState(newDifficulty);
+    const newState = initializeGameState(newDifficulty, gameState.gridSize);
     nextDirectionRef.current = 'right';
     setGameState(newState);
     setDifficulty(newDifficulty);
-  }, [stopGameLoop]);
+  }, [stopGameLoop, gameState.gridSize]);
+
+  /**
+   * Change grid size (resets game, keeps difficulty)
+   */
+  const changeGridSize = useCallback((newGridSize: GridSize) => {
+    stopGameLoop();
+    const newState = initializeGameState(gameState.difficulty, newGridSize);
+    nextDirectionRef.current = 'right';
+    setGameState(newState);
+    setGridSize(newGridSize);
+  }, [stopGameLoop, gameState.difficulty]);
 
   /**
    * Handle keyboard input
@@ -391,6 +405,7 @@ export const useSnakeGame = () => {
     togglePause,
     resetGame,
     setDifficulty: changeDifficulty,
+    setGridSize: changeGridSize,
   };
 
   return {
