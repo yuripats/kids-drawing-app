@@ -71,12 +71,12 @@ const PopBalloonsPage: React.FC<PopBalloonsPageProps> = ({ onNavigateHome }) => 
 
   const headerActions = (
     <>
-      {/* Difficulty Selector */}
+      {/* Difficulty Selector - Compact on mobile */}
       <select
         value={difficulty}
         onChange={handleDifficultyChange}
         disabled={gameStatus === 'playing'}
-        className="kid-input text-sm px-3 py-2"
+        className="kid-input text-xs md:text-sm px-2 md:px-3 py-1 md:py-2"
         title="Game Difficulty"
       >
         {Object.entries(difficultySettings).map(([key, settings]) => (
@@ -86,12 +86,12 @@ const PopBalloonsPage: React.FC<PopBalloonsPageProps> = ({ onNavigateHome }) => 
         ))}
       </select>
 
-      {/* Grid Size Selector */}
+      {/* Grid Size Selector - Compact on mobile */}
       <select
         value={gridSize}
         onChange={handleGridSizeChange}
         disabled={gameStatus === 'playing'}
-        className="kid-input text-sm px-3 py-2"
+        className="kid-input text-xs md:text-sm px-2 md:px-3 py-1 md:py-2"
         title="Grid Size"
       >
         {Object.entries(gridSizeSettings).map(([key, settings]) => (
@@ -101,13 +101,14 @@ const PopBalloonsPage: React.FC<PopBalloonsPageProps> = ({ onNavigateHome }) => 
         ))}
       </select>
 
-      {/* New Game Button */}
+      {/* New Game Button - Compact on mobile */}
       {gameStatus !== 'ready' && (
         <button
-          className="kid-button text-sm bg-blue-500 hover:bg-blue-600"
+          className="kid-button text-xs md:text-sm bg-blue-500 hover:bg-blue-600 px-2 md:px-4 py-1 md:py-2"
           onClick={resetGame}
         >
-          🔄 New Game
+          <span className="md:hidden">🔄</span>
+          <span className="hidden md:inline">🔄 New Game</span>
         </button>
       )}
     </>
@@ -129,61 +130,61 @@ const PopBalloonsPage: React.FC<PopBalloonsPageProps> = ({ onNavigateHome }) => 
       headerActions={headerActions}
       bgColorClass="bg-gradient-to-b from-yellow-100 to-orange-100"
     >
-      {/* Stats Panel */}
-      <div className="kid-card max-w-4xl mx-auto mb-4">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      {/* Stats Panel - Compact on mobile */}
+      <div className="kid-card max-w-4xl mx-auto mb-2 md:mb-4 p-2 md:p-4">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-4">
           {/* Score */}
           <div className="text-center">
-            <p className="text-sm text-slate-600 font-semibold">Score</p>
-            <p className="text-3xl font-bold text-blue-600">{score}</p>
+            <p className="text-xs md:text-sm text-slate-600 font-semibold">Score</p>
+            <p className="text-xl md:text-3xl font-bold text-blue-600">{score}</p>
           </div>
 
           {/* High Score */}
           <div className="text-center">
-            <p className="text-sm text-slate-600 font-semibold">High Score</p>
-            <p className="text-3xl font-bold text-yellow-600">{highScore}</p>
+            <p className="text-xs md:text-sm text-slate-600 font-semibold">High</p>
+            <p className="text-xl md:text-3xl font-bold text-yellow-600">{highScore}</p>
           </div>
 
           {/* Time */}
           <div className="text-center">
-            <p className="text-sm text-slate-600 font-semibold">Time</p>
-            <p className={`text-3xl font-bold ${timeRemaining < 10 ? 'text-red-600 animate-pulse' : 'text-green-600'}`}>
+            <p className="text-xs md:text-sm text-slate-600 font-semibold">Time</p>
+            <p className={`text-xl md:text-3xl font-bold ${timeRemaining < 10 ? 'text-red-600 animate-pulse' : 'text-green-600'}`}>
               {timeRemaining}s
             </p>
           </div>
 
           {/* Lives */}
           <div className="text-center">
-            <p className="text-sm text-slate-600 font-semibold">Lives</p>
-            <p className="text-3xl font-bold text-pink-600">
+            <p className="text-xs md:text-sm text-slate-600 font-semibold">Lives</p>
+            <p className="text-xl md:text-3xl font-bold text-pink-600">
               {Array.from({ length: lives }, () => '❤️').join('')}
               {lives === 0 && '💔'}
             </p>
           </div>
         </div>
 
-        {/* Combo Display */}
+        {/* Combo Display - Smaller on mobile */}
         {combo > 1 && gameStatus === 'playing' && (
-          <div className="mt-4 text-center">
-            <div className="inline-block bg-orange-500 text-white px-6 py-2 rounded-full font-bold text-xl animate-pulse">
+          <div className="mt-2 md:mt-4 text-center">
+            <div className="inline-block bg-orange-500 text-white px-4 md:px-6 py-1 md:py-2 rounded-full font-bold text-base md:text-xl animate-pulse">
               🔥 {combo}x COMBO! 🔥
             </div>
           </div>
         )}
       </div>
 
-      {/* Status Message */}
-      <div className="text-center mb-4">
-        <p className={`text-lg font-semibold ${getStatusColor()}`}>
+      {/* Status Message - Smaller on mobile */}
+      <div className="text-center mb-2 md:mb-4">
+        <p className={`text-sm md:text-lg font-semibold ${getStatusColor()}`}>
           {getStatusMessage()}
         </p>
       </div>
 
-      {/* Start Game Button */}
+      {/* Start Game Button - Smaller on mobile */}
       {gameStatus === 'ready' && (
-        <div className="text-center mb-6">
+        <div className="text-center mb-2 md:mb-6">
           <button
-            className="kid-button bg-yellow-500 hover:bg-yellow-600 text-2xl px-12 py-4"
+            className="kid-button bg-yellow-500 hover:bg-yellow-600 text-lg md:text-2xl px-6 md:px-12 py-2 md:py-4"
             onClick={startGame}
           >
             🎯 Start Game!
@@ -192,40 +193,40 @@ const PopBalloonsPage: React.FC<PopBalloonsPageProps> = ({ onNavigateHome }) => 
       )}
 
       {/* Game Board */}
-      <div className="mb-6">
+      <div className="mb-2 md:mb-6">
         <GameBoard gameState={gameState} onBalloonPop={handleBalloonClick} />
       </div>
 
-      {/* Legend */}
+      {/* Legend - More compact on mobile */}
       {gameStatus === 'ready' && (
-        <div className="kid-card max-w-xl mx-auto mb-4">
-          <div className="flex justify-around items-center text-center">
+        <div className="kid-card max-w-xl mx-auto mb-2 md:mb-4 p-2 md:p-4">
+          <div className="grid grid-cols-4 gap-2 md:flex md:justify-around items-center text-center">
             <div>
-              <div className="text-4xl mb-1">🎈</div>
-              <p className="text-sm font-semibold">Normal</p>
-              <p className="text-xs text-slate-600">+10 pts</p>
+              <div className="text-2xl md:text-4xl mb-1">🎈</div>
+              <p className="text-xs md:text-sm font-semibold">Normal</p>
+              <p className="text-xs text-slate-600">+10</p>
             </div>
             <div>
-              <div className="text-4xl mb-1">⭐</div>
-              <p className="text-sm font-semibold">Golden</p>
-              <p className="text-xs text-slate-600">+30 pts</p>
+              <div className="text-2xl md:text-4xl mb-1">⭐</div>
+              <p className="text-xs md:text-sm font-semibold">Golden</p>
+              <p className="text-xs text-slate-600">+30</p>
             </div>
             <div>
-              <div className="text-4xl mb-1">💣</div>
-              <p className="text-sm font-semibold">Bomb</p>
-              <p className="text-xs text-red-600">-1 life!</p>
+              <div className="text-2xl md:text-4xl mb-1">💣</div>
+              <p className="text-xs md:text-sm font-semibold">Bomb</p>
+              <p className="text-xs text-red-600">-1♥</p>
             </div>
             <div>
-              <div className="text-4xl mb-1">🔥</div>
-              <p className="text-sm font-semibold">Combo</p>
-              <p className="text-xs text-slate-600">+5 per level</p>
+              <div className="text-2xl md:text-4xl mb-1">🔥</div>
+              <p className="text-xs md:text-sm font-semibold">Combo</p>
+              <p className="text-xs text-slate-600">+5</p>
             </div>
           </div>
         </div>
       )}
 
-      {/* Instructions */}
-      <div className="kid-card max-w-4xl mx-auto">
+      {/* Instructions - Hidden on mobile */}
+      <div className="kid-card max-w-4xl mx-auto hidden md:block">
         <h2 className="text-xl font-bold mb-3 text-center text-orange-800">
           How to Play
         </h2>

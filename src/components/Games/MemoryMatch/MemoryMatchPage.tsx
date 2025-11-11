@@ -78,12 +78,12 @@ const MemoryMatchPage: React.FC<MemoryMatchPageProps> = ({ onNavigateHome }) => 
 
   const headerActions = (
     <>
-      {/* Difficulty Selector */}
+      {/* Difficulty Selector - Compact on mobile */}
       <select
         value={difficulty}
         onChange={handleDifficultyChange}
         disabled={gameStatus === 'playing'}
-        className="kid-input text-sm px-3 py-2"
+        className="kid-input text-xs md:text-sm px-2 md:px-3 py-1 md:py-2"
         title="Game Difficulty"
       >
         {Object.entries(difficultySettings).map(([key, settings]) => (
@@ -93,12 +93,12 @@ const MemoryMatchPage: React.FC<MemoryMatchPageProps> = ({ onNavigateHome }) => 
         ))}
       </select>
 
-      {/* Theme Selector */}
+      {/* Theme Selector - Compact on mobile */}
       <select
         value={theme}
         onChange={handleThemeChange}
         disabled={gameStatus === 'playing'}
-        className="kid-input text-sm px-3 py-2"
+        className="kid-input text-xs md:text-sm px-2 md:px-3 py-1 md:py-2"
         title="Card Theme"
       >
         {Object.entries(themeNames).map(([key, name]) => (
@@ -108,12 +108,13 @@ const MemoryMatchPage: React.FC<MemoryMatchPageProps> = ({ onNavigateHome }) => 
         ))}
       </select>
 
-      {/* New Game Button */}
+      {/* New Game Button - Compact on mobile */}
       <button
-        className="kid-button text-sm bg-blue-500 hover:bg-blue-600"
+        className="kid-button text-xs md:text-sm bg-blue-500 hover:bg-blue-600 px-2 md:px-4 py-1 md:py-2"
         onClick={resetGame}
       >
-        🔄 New Game
+        <span className="md:hidden">🔄</span>
+        <span className="hidden md:inline">🔄 New Game</span>
       </button>
     </>
   );
@@ -126,39 +127,39 @@ const MemoryMatchPage: React.FC<MemoryMatchPageProps> = ({ onNavigateHome }) => 
       headerActions={headerActions}
       bgColorClass="bg-gradient-to-b from-pink-100 to-purple-100"
     >
-      {/* Stats Panel */}
-      <div className="kid-card max-w-4xl mx-auto mb-4">
-        <div className="grid grid-cols-3 gap-4">
+      {/* Stats Panel - Compact on mobile */}
+      <div className="kid-card max-w-4xl mx-auto mb-2 md:mb-4 p-2 md:p-4">
+        <div className="grid grid-cols-3 gap-2 md:gap-4">
           {/* Moves */}
           <div className="text-center">
-            <p className="text-sm text-slate-600 font-semibold">Moves</p>
-            <p className="text-3xl font-bold text-blue-600">{moves}</p>
+            <p className="text-xs md:text-sm text-slate-600 font-semibold">Moves</p>
+            <p className="text-xl md:text-3xl font-bold text-blue-600">{moves}</p>
           </div>
 
           {/* Timer */}
           <div className="text-center">
-            <p className="text-sm text-slate-600 font-semibold">Time</p>
-            <p className="text-3xl font-bold text-purple-600">
+            <p className="text-xs md:text-sm text-slate-600 font-semibold">Time</p>
+            <p className="text-xl md:text-3xl font-bold text-purple-600">
               {formatTime(timer)}
             </p>
           </div>
 
           {/* Best Time */}
           <div className="text-center">
-            <p className="text-sm text-slate-600 font-semibold">Best Time</p>
-            <p className="text-3xl font-bold text-yellow-600">
+            <p className="text-xs md:text-sm text-slate-600 font-semibold">Best</p>
+            <p className="text-xl md:text-3xl font-bold text-yellow-600">
               {bestTime > 0 ? formatTime(bestTime) : '--:--'}
             </p>
           </div>
         </div>
 
-        {/* Progress Bar */}
-        <div className="mt-4">
-          <div className="flex justify-between text-sm text-slate-600 mb-1">
+        {/* Progress Bar - Smaller on mobile */}
+        <div className="mt-2 md:mt-4">
+          <div className="flex justify-between text-xs md:text-sm text-slate-600 mb-1">
             <span>Progress</span>
-            <span>{matchedPairs.size} / {totalPairs} pairs</span>
+            <span>{matchedPairs.size} / {totalPairs}</span>
           </div>
-          <div className="w-full bg-slate-200 rounded-full h-4 overflow-hidden">
+          <div className="w-full bg-slate-200 rounded-full h-2 md:h-4 overflow-hidden">
             <div
               className="bg-gradient-to-r from-blue-500 to-purple-500 h-full transition-all duration-300 rounded-full"
               style={{ width: `${progress}%` }}
@@ -167,20 +168,20 @@ const MemoryMatchPage: React.FC<MemoryMatchPageProps> = ({ onNavigateHome }) => 
         </div>
       </div>
 
-      {/* Status Message */}
-      <div className="text-center mb-4">
-        <p className={`text-lg font-semibold ${getStatusColor()}`}>
+      {/* Status Message - Smaller on mobile */}
+      <div className="text-center mb-2 md:mb-4">
+        <p className={`text-sm md:text-lg font-semibold ${getStatusColor()}`}>
           {getStatusMessage()}
         </p>
       </div>
 
       {/* Game Board */}
-      <div className="mb-6">
+      <div className="mb-2 md:mb-6">
         <GameBoard gameState={gameState} onCardClick={handleCardClick} />
       </div>
 
-      {/* Instructions */}
-      <div className="kid-card max-w-4xl mx-auto">
+      {/* Instructions - Hidden on mobile, visible on larger screens */}
+      <div className="kid-card max-w-4xl mx-auto hidden md:block">
         <h2 className="text-xl font-bold mb-3 text-center text-purple-800">
           How to Play
         </h2>

@@ -55,109 +55,115 @@ const SnakePage: React.FC<SnakePageProps> = ({ onNavigateHome }) => {
   };
 
   return (
-    <div className="p-4 min-h-screen bg-gradient-to-b from-emerald-100 to-emerald-200">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-4 flex-wrap gap-4">
-        <h1 className="text-3xl font-bold text-emerald-800">🐍 Snake Game</h1>
+    <div className="p-2 md:p-4 min-h-screen bg-gradient-to-b from-emerald-100 to-emerald-200">
+      {/* Header - Mobile First */}
+      <div className="flex items-center justify-between mb-2 md:mb-4 gap-2">
+        <h1 className="text-xl md:text-3xl font-bold text-emerald-800 flex items-center gap-1 md:gap-2">
+          <span className="text-2xl md:text-3xl">🐍</span>
+          <span className="hidden sm:inline">Snake Game</span>
+        </h1>
 
-        <div className="flex gap-2 flex-wrap">
-          {/* Speed Selector */}
+        <div className="flex gap-1 md:gap-2 flex-wrap items-center justify-end">
+          {/* Speed Selector - Compact on mobile */}
           <select
             value={gameState.difficulty}
             onChange={handleDifficultyChange}
             disabled={gameState.gameStatus === 'playing'}
-            className="kid-input text-sm px-3 py-2"
+            className="kid-input text-xs md:text-sm px-2 md:px-3 py-1 md:py-2"
             title="Game Speed"
           >
             <option value="easy">🐌 Slow</option>
-            <option value="medium">🏃 Medium</option>
+            <option value="medium">🏃 Med</option>
             <option value="hard">⚡ Fast</option>
           </select>
 
-          {/* Grid Size Selector */}
+          {/* Grid Size Selector - Compact on mobile */}
           <select
             value={gameState.gridSize}
             onChange={handleGridSizeChange}
             disabled={gameState.gameStatus === 'playing'}
-            className="kid-input text-sm px-3 py-2"
+            className="kid-input text-xs md:text-sm px-2 md:px-3 py-1 md:py-2"
             title="Grid Size"
           >
-            <option value="small">📐 Small (15×15)</option>
-            <option value="medium">📏 Medium (20×20)</option>
-            <option value="large">📊 Large (25×25)</option>
-            <option value="xlarge">🗺️ X-Large (30×30)</option>
+            <option value="small">📐 15×15</option>
+            <option value="medium">📏 20×20</option>
+            <option value="large">📊 25×25</option>
+            <option value="xlarge">🗺️ 30×30</option>
           </select>
 
-          {/* Pause/Resume Button */}
+          {/* Pause/Resume Button - Compact on mobile */}
           {(gameState.gameStatus === 'playing' || gameState.gameStatus === 'paused') && (
             <button
-              className="kid-button text-sm bg-yellow-500 hover:bg-yellow-600"
+              className="kid-button text-xs md:text-sm bg-yellow-500 hover:bg-yellow-600 px-2 md:px-4 py-1 md:py-2"
               onClick={controls.togglePause}
             >
-              {gameState.gameStatus === 'paused' ? '▶️ Resume' : '⏸️ Pause'}
+              {gameState.gameStatus === 'paused' ? '▶️' : '⏸️'}
+              <span className="hidden md:inline ml-1">{gameState.gameStatus === 'paused' ? 'Resume' : 'Pause'}</span>
             </button>
           )}
 
-          {/* Reset Button */}
+          {/* Reset Button - Compact on mobile */}
           {gameState.gameStatus !== 'ready' && (
             <button
-              className="kid-button text-sm bg-blue-500 hover:bg-blue-600"
+              className="kid-button text-xs md:text-sm bg-blue-500 hover:bg-blue-600 px-2 md:px-4 py-1 md:py-2"
               onClick={controls.resetGame}
             >
-              🔄 Play Again
+              🔄<span className="hidden md:inline ml-1">Play Again</span>
             </button>
           )}
 
-          {/* Home Button */}
+          {/* Home Button - Compact on mobile */}
           <button
-            className="kid-button text-sm bg-slate-500 hover:bg-slate-600"
+            className="kid-button text-xs md:text-sm bg-slate-500 hover:bg-slate-600 px-2 md:px-4 py-1 md:py-2"
             onClick={onNavigateHome}
+            title="Home"
           >
-            ← Home
+            <span className="md:hidden">←</span>
+            <span className="hidden md:inline">← Home</span>
           </button>
         </div>
       </div>
 
-      {/* Score Display */}
-      <div className="kid-card max-w-4xl mx-auto mb-4">
-        <div className="flex justify-around items-center">
+      {/* Score Display - Compact on mobile */}
+      <div className="kid-card max-w-4xl mx-auto mb-2 md:mb-4 p-2 md:p-4">
+        <div className="grid grid-cols-3 gap-2 md:gap-4">
           <div className="text-center">
-            <p className="text-sm text-slate-600 font-semibold">Score</p>
-            <p className="text-3xl font-bold text-lime-600">{gameState.score}</p>
+            <p className="text-xs md:text-sm text-slate-600 font-semibold">Score</p>
+            <p className="text-xl md:text-3xl font-bold text-lime-600">{gameState.score}</p>
           </div>
           <div className="text-center">
-            <p className="text-sm text-slate-600 font-semibold">High Score</p>
-            <p className="text-3xl font-bold text-yellow-600">{gameState.highScore}</p>
+            <p className="text-xs md:text-sm text-slate-600 font-semibold">High</p>
+            <p className="text-xl md:text-3xl font-bold text-yellow-600">{gameState.highScore}</p>
           </div>
           <div className="text-center">
-            <p className="text-sm text-slate-600 font-semibold">Length</p>
-            <p className="text-3xl font-bold text-blue-600">{gameState.snake.length}</p>
+            <p className="text-xs md:text-sm text-slate-600 font-semibold">Length</p>
+            <p className="text-xl md:text-3xl font-bold text-blue-600">{gameState.snake.length}</p>
           </div>
         </div>
       </div>
 
-      {/* Status Message */}
-      <div className="text-center mb-4">
-        <p className={`text-lg font-semibold ${getStatusColor()}`}>
+      {/* Status Message - Smaller on mobile */}
+      <div className="text-center mb-2 md:mb-4">
+        <p className={`text-sm md:text-lg font-semibold ${getStatusColor()}`}>
           {getStatusMessage()}
         </p>
       </div>
 
       {/* Game Board */}
-      <div className="mb-4">
+      <div className="mb-2 md:mb-4">
         <SnakeBoard gameState={gameState} config={config} />
       </div>
 
       {/* Mobile Controls */}
-      <div className="md:hidden">
+      <div className="md:hidden mb-2">
         <SnakeControls
           onDirectionChange={controls.changeDirection}
           disabled={gameState.gameStatus === 'gameOver' || gameState.gameStatus === 'paused'}
         />
       </div>
 
-      {/* Instructions */}
-      <div className="kid-card max-w-4xl mx-auto">
+      {/* Instructions - Hidden on mobile */}
+      <div className="kid-card max-w-4xl mx-auto hidden md:block">
         <h2 className="text-xl font-bold mb-3 text-center text-emerald-800">
           How to Play
         </h2>

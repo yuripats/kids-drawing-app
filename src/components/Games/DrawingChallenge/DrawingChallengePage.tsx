@@ -79,12 +79,12 @@ const DrawingChallengePage: React.FC<DrawingChallengePageProps> = ({ onNavigateH
 
   const headerActions = (
     <>
-      {/* Category Selector */}
+      {/* Category Selector - Compact on mobile */}
       <select
         value={category}
         onChange={handleCategoryChange}
         disabled={gameStatus === 'drawing'}
-        className="kid-input text-sm px-3 py-2"
+        className="kid-input text-xs md:text-sm px-2 md:px-3 py-1 md:py-2"
         title="Drawing Category"
       >
         {Object.entries(categoryNames).map(([key, name]) => (
@@ -94,31 +94,31 @@ const DrawingChallengePage: React.FC<DrawingChallengePageProps> = ({ onNavigateH
         ))}
       </select>
 
-      {/* Mode Selector */}
+      {/* Mode Selector - Compact on mobile */}
       <select
         value={mode}
         onChange={handleModeChange}
         disabled={gameStatus === 'drawing'}
-        className="kid-input text-sm px-3 py-2"
+        className="kid-input text-xs md:text-sm px-2 md:px-3 py-1 md:py-2"
         title="Game Mode"
       >
-        <option value="free">✨ Free Mode</option>
-        <option value="timed">⏱️ Timed Mode</option>
+        <option value="free">✨ Free</option>
+        <option value="timed">⏱️ Timed</option>
       </select>
 
-      {/* Time Limit Selector (only in timed mode) */}
+      {/* Time Limit Selector (only in timed mode) - Compact on mobile */}
       {mode === 'timed' && (
         <select
           value={timeLimit}
           onChange={handleTimeLimitChange}
           disabled={gameStatus === 'drawing'}
-          className="kid-input text-sm px-3 py-2"
+          className="kid-input text-xs md:text-sm px-2 md:px-3 py-1 md:py-2"
           title="Time Limit"
         >
-          <option value={60}>1 minute</option>
-          <option value={120}>2 minutes</option>
-          <option value={180}>3 minutes</option>
-          <option value={300}>5 minutes</option>
+          <option value={60}>1m</option>
+          <option value={120}>2m</option>
+          <option value={180}>3m</option>
+          <option value={300}>5m</option>
         </select>
       )}
     </>
@@ -132,13 +132,13 @@ const DrawingChallengePage: React.FC<DrawingChallengePageProps> = ({ onNavigateH
       headerActions={headerActions}
       bgColorClass="bg-gradient-to-b from-purple-100 to-pink-100"
     >
-      {/* Stats Panel */}
-      <div className="kid-card max-w-4xl mx-auto mb-4">
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+      {/* Stats Panel - Compact on mobile */}
+      <div className="kid-card max-w-4xl mx-auto mb-2 md:mb-4 p-2 md:p-4">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-4">
           {/* Challenges Completed */}
           <div className="text-center">
-            <p className="text-sm text-slate-600 font-semibold">Completed</p>
-            <p className="text-3xl font-bold text-green-600">
+            <p className="text-xs md:text-sm text-slate-600 font-semibold">Completed</p>
+            <p className="text-xl md:text-3xl font-bold text-green-600">
               {completedChallenges.length}
             </p>
           </div>
@@ -146,8 +146,8 @@ const DrawingChallengePage: React.FC<DrawingChallengePageProps> = ({ onNavigateH
           {/* Current Difficulty */}
           {currentPrompt && (
             <div className="text-center">
-              <p className="text-sm text-slate-600 font-semibold">Difficulty</p>
-              <p className="text-3xl font-bold text-purple-600">
+              <p className="text-xs md:text-sm text-slate-600 font-semibold">Difficulty</p>
+              <p className="text-xl md:text-3xl font-bold text-purple-600">
                 {currentPrompt.difficulty === 1 ? '⭐' : currentPrompt.difficulty === 2 ? '⭐⭐' : '⭐⭐⭐'}
               </p>
             </div>
@@ -156,8 +156,8 @@ const DrawingChallengePage: React.FC<DrawingChallengePageProps> = ({ onNavigateH
           {/* Timer (timed mode only) */}
           {mode === 'timed' && gameStatus === 'drawing' && (
             <div className="text-center">
-              <p className="text-sm text-slate-600 font-semibold">Time Left</p>
-              <p className={`text-3xl font-bold ${timeRemaining < 30 ? 'text-red-600' : 'text-blue-600'}`}>
+              <p className="text-xs md:text-sm text-slate-600 font-semibold">Time Left</p>
+              <p className={`text-xl md:text-3xl font-bold ${timeRemaining < 30 ? 'text-red-600' : 'text-blue-600'}`}>
                 {formatTime(timeRemaining)}
               </p>
             </div>
@@ -165,25 +165,25 @@ const DrawingChallengePage: React.FC<DrawingChallengePageProps> = ({ onNavigateH
         </div>
       </div>
 
-      {/* Prompt Display (when not drawing) */}
+      {/* Prompt Display (when not drawing) - Compact on mobile */}
       {!showCanvas && currentPrompt && (
-        <div className="max-w-2xl mx-auto mb-6">
-          <div className="kid-card text-center bg-white p-8">
-            <div className="text-8xl mb-4 animate-bounce-once">
+        <div className="max-w-2xl mx-auto mb-2 md:mb-6">
+          <div className="kid-card text-center bg-white p-4 md:p-8">
+            <div className="text-5xl md:text-8xl mb-2 md:mb-4 animate-bounce-once">
               {currentPrompt.emoji}
             </div>
-            <h2 className="text-4xl font-bold text-purple-700 mb-2">
+            <h2 className="text-2xl md:text-4xl font-bold text-purple-700 mb-2">
               Draw a {currentPrompt.text}!
             </h2>
-            <p className="text-lg text-slate-600 mb-6">
+            <p className="text-sm md:text-lg text-slate-600 mb-4 md:mb-6">
               {mode === 'timed'
                 ? `You have ${formatTime(timeLimit)} to draw it!`
                 : 'Take your time and be creative!'}
             </p>
 
-            <div className="flex gap-3 justify-center">
+            <div className="flex gap-2 md:gap-3 justify-center flex-wrap">
               <button
-                className="kid-button bg-purple-500 hover:bg-purple-600 text-xl px-8"
+                className="kid-button bg-purple-500 hover:bg-purple-600 text-base md:text-xl px-4 md:px-8"
                 onClick={handleStartDrawing}
               >
                 🖌️ Start Drawing!
@@ -191,7 +191,7 @@ const DrawingChallengePage: React.FC<DrawingChallengePageProps> = ({ onNavigateH
 
               {gameStatus !== 'drawing' && (
                 <button
-                  className="kid-button bg-blue-500 hover:bg-blue-600 text-xl px-8"
+                  className="kid-button bg-blue-500 hover:bg-blue-600 text-base md:text-xl px-4 md:px-8"
                   onClick={handleNextPrompt}
                 >
                   🎲 Different Prompt
@@ -271,9 +271,9 @@ const DrawingChallengePage: React.FC<DrawingChallengePageProps> = ({ onNavigateH
         </div>
       )}
 
-      {/* Instructions */}
+      {/* Instructions - Hidden on mobile */}
       {!showCanvas && (
-        <div className="kid-card max-w-4xl mx-auto mt-6">
+        <div className="kid-card max-w-4xl mx-auto mt-6 hidden md:block">
           <h2 className="text-xl font-bold mb-3 text-center text-purple-800">
             How to Play
           </h2>
