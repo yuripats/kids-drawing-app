@@ -135,21 +135,21 @@ export const useSnakeGame = () => {
   /**
    * Check wall collision
    */
-  const checkWallCollision = (head: Position): boolean => {
+  const checkWallCollision = useCallback((head: Position): boolean => {
     return (
       head.x < 0 ||
       head.x >= config.gridWidth ||
       head.y < 0 ||
       head.y >= config.gridHeight
     );
-  };
+  }, [config]);
 
   /**
    * Check self collision
    */
-  const checkSelfCollision = (head: Position, snake: Position[]): boolean => {
+  const checkSelfCollision = useCallback((head: Position, snake: Position[]): boolean => {
     return snake.some(segment => positionsEqual(segment, head));
-  };
+  }, []);
 
   /**
    * Game tick - move snake and update state
@@ -218,7 +218,7 @@ export const useSnakeGame = () => {
         highScore: Math.max(newScore, highScore),
       };
     });
-  }, [config]);
+  }, [config, checkWallCollision, checkSelfCollision]);
 
   /**
    * Start game loop
