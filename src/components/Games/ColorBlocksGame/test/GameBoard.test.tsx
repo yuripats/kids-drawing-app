@@ -3,11 +3,11 @@ import { initializeGame } from '../gameUtils'
 import { GameConfig } from '../types'
 
 describe('Color Blocks Game Initialization', () => {
-  test('creates 6x7 grid with 3 colors by default', () => {
+  test('creates 8x10 grid with 4 colors by default', () => {
     const gameState = initializeGame({})
-    expect(gameState.grid.length).toBe(7) // rows
-    expect(gameState.grid[0].length).toBe(6) // columns
-    expect(new Set(gameState.grid.flat()).size).toBe(3)
+    expect(gameState.grid.length).toBe(10) // rows
+    expect(gameState.grid[0].length).toBe(8) // columns
+    expect(new Set(gameState.grid.flat()).size).toBe(4)
   })
 
   test('respects custom grid dimensions', () => {
