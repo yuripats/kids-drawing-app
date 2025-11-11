@@ -7,7 +7,7 @@ import React from 'react';
 import { useSnakeGame } from '../../../hooks/useSnakeGame';
 import { SnakeBoard } from './SnakeBoard';
 import { SnakeControls } from './SnakeControls';
-import type { Difficulty } from './types';
+import type { Difficulty, GridSize } from './types';
 
 interface SnakePageProps {
   onNavigateHome: () => void;
@@ -18,6 +18,10 @@ const SnakePage: React.FC<SnakePageProps> = ({ onNavigateHome }) => {
 
   const handleDifficultyChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     controls.setDifficulty(e.target.value as Difficulty);
+  };
+
+  const handleGridSizeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    controls.setGridSize(e.target.value as GridSize);
   };
 
   const getStatusMessage = (): string => {
@@ -57,16 +61,31 @@ const SnakePage: React.FC<SnakePageProps> = ({ onNavigateHome }) => {
         <h1 className="text-3xl font-bold text-emerald-800">🐍 Snake Game</h1>
 
         <div className="flex gap-2 flex-wrap">
-          {/* Difficulty Selector */}
+          {/* Speed Selector */}
           <select
             value={gameState.difficulty}
             onChange={handleDifficultyChange}
             disabled={gameState.gameStatus === 'playing'}
             className="kid-input text-sm px-3 py-2"
+            title="Game Speed"
           >
-            <option value="easy">Easy</option>
-            <option value="medium">Medium</option>
-            <option value="hard">Hard</option>
+            <option value="easy">🐌 Slow</option>
+            <option value="medium">🏃 Medium</option>
+            <option value="hard">⚡ Fast</option>
+          </select>
+
+          {/* Grid Size Selector */}
+          <select
+            value={gameState.gridSize}
+            onChange={handleGridSizeChange}
+            disabled={gameState.gameStatus === 'playing'}
+            className="kid-input text-sm px-3 py-2"
+            title="Grid Size"
+          >
+            <option value="small">📐 Small (15×15)</option>
+            <option value="medium">📏 Medium (20×20)</option>
+            <option value="large">📊 Large (25×25)</option>
+            <option value="xlarge">🗺️ X-Large (30×30)</option>
           </select>
 
           {/* Pause/Resume Button */}
@@ -175,12 +194,27 @@ const SnakePage: React.FC<SnakePageProps> = ({ onNavigateHome }) => {
           </div>
 
           <div>
-            <h3 className="font-semibold text-lg mb-1">🎮 Difficulty Levels</h3>
-            <ul className="text-slate-700 space-y-1">
-              <li><strong>Easy</strong> - Slower speed, 20×20 grid</li>
-              <li><strong>Medium</strong> - Medium speed, 20×20 grid</li>
-              <li><strong>Hard</strong> - Fast speed, 25×25 grid (more room!)</li>
-            </ul>
+            <h3 className="font-semibold text-lg mb-1">⚙️ Game Settings</h3>
+            <div className="text-slate-700 space-y-2">
+              <div>
+                <strong>Speed:</strong>
+                <ul className="ml-4 mt-1 space-y-1">
+                  <li>🐌 <strong>Slow</strong> - Relaxed pace (200ms)</li>
+                  <li>🏃 <strong>Medium</strong> - Moderate speed (150ms)</li>
+                  <li>⚡ <strong>Fast</strong> - Quick reflexes needed! (100ms)</li>
+                </ul>
+              </div>
+              <div>
+                <strong>Grid Size:</strong>
+                <ul className="ml-4 mt-1 space-y-1">
+                  <li>📐 <strong>Small</strong> - Cozy 15×15 grid</li>
+                  <li>📏 <strong>Medium</strong> - Standard 20×20 grid</li>
+                  <li>📊 <strong>Large</strong> - Spacious 25×25 grid</li>
+                  <li>🗺️ <strong>X-Large</strong> - Huge 30×30 grid!</li>
+                </ul>
+              </div>
+              <p className="text-sm italic">Mix and match speed and grid size for your perfect challenge!</p>
+            </div>
           </div>
         </div>
       </div>

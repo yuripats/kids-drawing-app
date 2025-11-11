@@ -13,6 +13,8 @@ export type GameStatus = 'ready' | 'playing' | 'paused' | 'gameOver';
 
 export type Difficulty = 'easy' | 'medium' | 'hard';
 
+export type GridSize = 'small' | 'medium' | 'large' | 'xlarge';
+
 export interface SnakeConfig {
   gridWidth: number;
   gridHeight: number;
@@ -29,6 +31,7 @@ export interface GameState {
   highScore: number;
   gameStatus: GameStatus;
   difficulty: Difficulty;
+  gridSize: GridSize;
 }
 
 export interface SnakeControls {
@@ -36,25 +39,31 @@ export interface SnakeControls {
   togglePause: () => void;
   resetGame: () => void;
   setDifficulty: (diff: Difficulty) => void;
+  setGridSize: (size: GridSize) => void;
 }
 
-export const DIFFICULTY_CONFIG: Record<Difficulty, SnakeConfig> = {
-  easy: {
-    gridWidth: 20,
-    gridHeight: 20,
+// Speed configuration (based on difficulty)
+export const SPEED_CONFIG: Record<Difficulty, number> = {
+  easy: 200,    // 200ms per tick
+  medium: 150,  // 150ms per tick
+  hard: 100,    // 100ms per tick
+};
+
+// Grid size configuration
+export const GRID_SIZE_CONFIG: Record<GridSize, { width: number; height: number }> = {
+  small: { width: 15, height: 15 },
+  medium: { width: 20, height: 20 },
+  large: { width: 25, height: 25 },
+  xlarge: { width: 30, height: 30 },
+};
+
+// Helper to build full config from difficulty and grid size
+export const buildSnakeConfig = (difficulty: Difficulty, gridSize: GridSize): SnakeConfig => {
+  const gridConfig = GRID_SIZE_CONFIG[gridSize];
+  return {
+    gridWidth: gridConfig.width,
+    gridHeight: gridConfig.height,
     initialLength: 3,
-    tickMs: 200,
-  },
-  medium: {
-    gridWidth: 20,
-    gridHeight: 20,
-    initialLength: 3,
-    tickMs: 150,
-  },
-  hard: {
-    gridWidth: 25,
-    gridHeight: 25,
-    initialLength: 3,
-    tickMs: 100,
-  },
+    tickMs: SPEED_CONFIG[difficulty],
+  };
 };
