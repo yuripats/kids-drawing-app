@@ -19,7 +19,7 @@ describe('HomePage', () => {
   const mockProps = {
     onNavigateToDrawing: mockNavigateToDrawing,
     onNavigateToStencil: vi.fn(),
-    onNavigateToGame: vi.fn(),
+    onNavigateToColorBlocks: vi.fn(),
     onNavigateToSudoku: vi.fn(),
     onNavigateToTetris: vi.fn(),
     onNavigateToJellyVolleyball: vi.fn(),

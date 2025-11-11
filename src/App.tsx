@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import HomePage from './components/HomePage';
 import DrawingPage from './components/DrawingPage';
-import GameBoard from './components/Games/ColorBlocksGame/GameBoard';
+import ColorBlocksPage from './components/Games/ColorBlocksGame/ColorBlocksPage';
 import { Stencil } from './types/Stencil';
 import SudokuPage from './components/Games/Sudoku/SudokuPage';
 import TetrisPage from './components/Games/Tetris/TetrisPage';
@@ -11,7 +11,7 @@ import MemoryMatchPage from './components/Games/MemoryMatch/MemoryMatchPage';
 import DrawingChallengePage from './components/Games/DrawingChallenge/DrawingChallengePage';
 import PopBalloonsPage from './components/Games/PopBalloons/PopBalloonsPage';
 
-type AppPage = 'home' | 'draw' | 'stencil' | 'game' | 'sudoku' | 'tetris' | 'jellyvolleyball' | 'snake' | 'memoryMatch' | 'drawingChallenge' | 'popBalloons';
+type AppPage = 'home' | 'draw' | 'stencil' | 'colorblocks' | 'sudoku' | 'tetris' | 'jellyvolleyball' | 'snake' | 'memoryMatch' | 'drawingChallenge' | 'popBalloons';
 
 function App() {
   const [currentPage, setCurrentPage] = useState<AppPage>('home');
@@ -33,7 +33,7 @@ function App() {
 <HomePage
             onNavigateToDrawing={() => navigateTo('draw')}
             onNavigateToStencil={navigateToStencil}
-            onNavigateToGame={() => navigateTo('game')}
+            onNavigateToColorBlocks={() => navigateTo('colorblocks')}
             onNavigateToSudoku={() => navigateTo('sudoku')}
             onNavigateToTetris={() => navigateTo('tetris')}
             onNavigateToJellyVolleyball={() => navigateTo('jellyvolleyball')}
@@ -52,20 +52,9 @@ function App() {
             stencil={selectedStencil}
           />
         );
-      case 'game':
-        return (
-          <div className="p-4">
-            <h1 className="text-2xl font-bold mb-4">Color Blocks Game</h1>
-            <GameBoard config={{ gridWidth: 6, gridHeight: 7, initialColors: 4 }} />
-            <button
-              className="kid-button mt-4"
-              onClick={() => navigateTo('home')}
-            >
-              ← Back to Home
-            </button>
-          </div>
-        );
-case 'sudoku':
+      case 'colorblocks':
+        return <ColorBlocksPage onNavigateHome={() => navigateTo('home')} />;
+      case 'sudoku':
         return (
           <SudokuPage onNavigateHome={() => navigateTo('home')} />
         );
@@ -98,7 +87,7 @@ case 'sudoku':
 <HomePage
             onNavigateToDrawing={() => navigateTo('draw')}
             onNavigateToStencil={navigateToStencil}
-            onNavigateToGame={() => navigateTo('game')}
+            onNavigateToColorBlocks={() => navigateTo('colorblocks')}
             onNavigateToSudoku={() => navigateTo('sudoku')}
             onNavigateToTetris={() => navigateTo('tetris')}
             onNavigateToJellyVolleyball={() => navigateTo('jellyvolleyball')}
