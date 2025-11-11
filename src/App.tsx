@@ -6,8 +6,9 @@ import { Stencil } from './types/Stencil';
 import SudokuPage from './components/Games/Sudoku/SudokuPage';
 import TetrisPage from './components/Games/Tetris/TetrisPage';
 import JellyVolleyballPage from './components/Games/JellyVolleyball/JellyVolleyballPage';
+import SnakePage from './components/Games/Snake/SnakePage';
 
-type AppPage = 'home' | 'draw' | 'stencil' | 'game' | 'sudoku' | 'tetris' | 'jellyvolleyball';
+type AppPage = 'home' | 'draw' | 'stencil' | 'game' | 'sudoku' | 'tetris' | 'jellyvolleyball' | 'snake';
 
 function App() {
   const [currentPage, setCurrentPage] = useState<AppPage>('home');
@@ -33,6 +34,7 @@ function App() {
             onNavigateToSudoku={() => navigateTo('sudoku')}
             onNavigateToTetris={() => navigateTo('tetris')}
             onNavigateToJellyVolleyball={() => navigateTo('jellyvolleyball')}
+            onNavigateToSnake={() => navigateTo('snake')}
           />
         );
       case 'draw':
@@ -69,6 +71,10 @@ case 'sudoku':
         return (
           <JellyVolleyballPage onNavigateHome={() => navigateTo('home')} />
         );
+      case 'snake':
+        return (
+          <SnakePage onNavigateHome={() => navigateTo('home')} />
+        );
       default:
         return (
 <HomePage
@@ -78,6 +84,7 @@ case 'sudoku':
             onNavigateToSudoku={() => navigateTo('sudoku')}
             onNavigateToTetris={() => navigateTo('tetris')}
             onNavigateToJellyVolleyball={() => navigateTo('jellyvolleyball')}
+            onNavigateToSnake={() => navigateTo('snake')}
           />
         );
     }

@@ -9,9 +9,10 @@ interface HomePageProps {
   onNavigateToSudoku: () => void;
   onNavigateToTetris: () => void;
   onNavigateToJellyVolleyball: () => void;
+  onNavigateToSnake: () => void;
 }
 
-function HomePage({ onNavigateToDrawing, onNavigateToStencil, onNavigateToGame, onNavigateToSudoku, onNavigateToTetris, onNavigateToJellyVolleyball }: HomePageProps) {
+function HomePage({ onNavigateToDrawing, onNavigateToStencil, onNavigateToGame, onNavigateToSudoku, onNavigateToTetris, onNavigateToJellyVolleyball, onNavigateToSnake }: HomePageProps) {
   const [isExcited, setIsExcited] = useState(false);
   const [showStencils, setShowStencils] = useState(false);
 
@@ -107,6 +108,14 @@ function HomePage({ onNavigateToDrawing, onNavigateToStencil, onNavigateToGame, 
             onTouchStart={() => setIsExcited(true)}
           >
             🏐 Jelly Volleyball
+          </button>
+
+          <button
+            className="kid-button bg-lime-500 hover:bg-lime-600 active:bg-lime-700 text-xl"
+            onClick={() => onNavigateToSnake()}
+            onTouchStart={() => setIsExcited(true)}
+          >
+            🐍 Snake Game
           </button>
           </div>
         </div>

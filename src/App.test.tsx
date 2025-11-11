@@ -23,6 +23,7 @@ describe('HomePage', () => {
     onNavigateToSudoku: vi.fn(),
     onNavigateToTetris: vi.fn(),
     onNavigateToJellyVolleyball: vi.fn(),
+    onNavigateToSnake: vi.fn(),
   }
 
   it('renders home page content', () => {
