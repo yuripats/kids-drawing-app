@@ -3,11 +3,16 @@
  */
 
 export type ShapeType = 'circle' | 'square' | 'triangle' | 'star';
+export type FieldSize = 6 | 9 | 12 | 15 | 18 | 24;
 
 export interface Shape {
   id: string;
   type: ShapeType;
   color: string;
+}
+
+export interface ShapeSortingSettings {
+  fieldSize: FieldSize;
 }
 
 export interface ShapeSortingState {
@@ -16,4 +21,5 @@ export interface ShapeSortingState {
   score: number;
   round: number;
   correctSorts: number;
+  settings: ShapeSortingSettings;
 }

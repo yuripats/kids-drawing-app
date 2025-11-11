@@ -2,9 +2,14 @@
  * Shape Sorting Game Tests
  */
 
-import { describe, test, expect } from 'vitest';
+import { describe, test, expect, beforeEach } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
 import { useShapeSorting } from '../../../../hooks/useShapeSorting';
+
+// Clear localStorage before each test
+beforeEach(() => {
+  localStorage.clear();
+});
 
 describe('useShapeSorting Hook', () => {
   test('initializes with correct default state', () => {
@@ -13,8 +18,10 @@ describe('useShapeSorting Hook', () => {
     expect(result.current.gameState.score).toBe(0);
     expect(result.current.gameState.round).toBe(1);
     expect(result.current.gameState.correctSorts).toBe(0);
-    expect(result.current.gameState.currentShapes.length).toBe(6);
+    expect(result.current.gameState.currentShapes.length).toBe(12); // Default field size
     expect(result.current.gameState.targetShape).toBeTruthy();
+    expect(result.current.gameState.settings).toBeTruthy();
+    expect(result.current.gameState.settings.fieldSize).toBe(12);
   });
 
   test('currentShapes have valid properties', () => {
@@ -90,6 +97,7 @@ describe('useShapeSorting Hook', () => {
     if (matchingShape) {
       const initialCount = result.current.gameState.currentShapes.length;
       const initialRound = result.current.gameState.round;
+      const fieldSize = result.current.gameState.settings.fieldSize;
 
       act(() => {
         result.current.sortShape(matchingShape);
@@ -98,11 +106,11 @@ describe('useShapeSorting Hook', () => {
       const afterRound = result.current.gameState.round;
 
       // If round didn't advance, count should decrease
-      // If round advanced (all shapes sorted), count resets to 6
+      // If round advanced (all shapes sorted), count resets to field size
       if (afterRound === initialRound) {
         expect(result.current.gameState.currentShapes.length).toBeLessThan(initialCount);
       } else {
-        expect(result.current.gameState.currentShapes.length).toBe(6);
+        expect(result.current.gameState.currentShapes.length).toBe(fieldSize);
       }
 
       // In either case, the original matching shape should be gone
@@ -117,6 +125,7 @@ describe('useShapeSorting Hook', () => {
 
     const initialRound = result.current.gameState.round;
     const targetType = result.current.gameState.targetShape;
+    const fieldSize = result.current.gameState.settings.fieldSize;
 
     // Sort all matching shapes
     act(() => {
@@ -133,14 +142,51 @@ describe('useShapeSorting Hook', () => {
 
     // Either round increased or we got new shapes (if there were no matching shapes initially)
     expect(afterRound >= initialRound).toBe(true);
-    // Should have 6 shapes again if round advanced
+    // Should have field size shapes again if round advanced
     if (afterRound > initialRound) {
-      expect(result.current.gameState.currentShapes.length).toBe(6);
+      expect(result.current.gameState.currentShapes.length).toBe(fieldSize);
     }
   });
 
-  test('resetGame resets all stats to initial state', () => {
+  test('setFieldSize changes field size and resets game', () => {
     const { result } = renderHook(() => useShapeSorting());
+
+    expect(result.current.gameState.settings.fieldSize).toBe(12);
+
+    act(() => {
+      result.current.setFieldSize(18);
+    });
+
+    expect(result.current.gameState.settings.fieldSize).toBe(18);
+    expect(result.current.gameState.currentShapes.length).toBe(18);
+    expect(result.current.gameState.score).toBe(0);
+    expect(result.current.gameState.round).toBe(1);
+  });
+
+  test('settings persist across hook instances', () => {
+    const { result: result1 } = renderHook(() => useShapeSorting());
+
+    act(() => {
+      result1.current.setFieldSize(24);
+    });
+
+    expect(result1.current.gameState.settings.fieldSize).toBe(24);
+
+    // Create new hook instance
+    const { result: result2 } = renderHook(() => useShapeSorting());
+
+    // Should load the same settings
+    expect(result2.current.gameState.settings.fieldSize).toBe(24);
+    expect(result2.current.gameState.currentShapes.length).toBe(24);
+  });
+
+  test('resetGame resets all stats but keeps settings', () => {
+    const { result } = renderHook(() => useShapeSorting());
+
+    // Change field size
+    act(() => {
+      result.current.setFieldSize(18);
+    });
 
     // Make some progress
     const targetType = result.current.gameState.targetShape;
@@ -162,7 +208,8 @@ describe('useShapeSorting Hook', () => {
     expect(result.current.gameState.score).toBe(0);
     expect(result.current.gameState.round).toBe(1);
     expect(result.current.gameState.correctSorts).toBe(0);
-    expect(result.current.gameState.currentShapes.length).toBe(6);
+    expect(result.current.gameState.currentShapes.length).toBe(18); // Kept settings
+    expect(result.current.gameState.settings.fieldSize).toBe(18); // Kept settings
     expect(result.current.gameState.targetShape).toBeTruthy();
   });
 
