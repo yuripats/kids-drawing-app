@@ -7,8 +7,16 @@ import SudokuPage from './components/Games/Sudoku/SudokuPage';
 import TetrisPage from './components/Games/Tetris/TetrisPage';
 import JellyVolleyballPage from './components/Games/JellyVolleyball/JellyVolleyballPage';
 import SnakePage from './components/Games/Snake/SnakePage';
+import MemoryMatchPage from './components/Games/MemoryMatch/MemoryMatchPage';
+import DrawingChallengePage from './components/Games/DrawingChallenge/DrawingChallengePage';
+import PopBalloonsPage from './components/Games/PopBalloons/PopBalloonsPage';
+import SimonSaysPage from './components/Games/SimonSays/SimonSaysPage';
+import BubblePopPage from './components/Games/BubblePop/BubblePopPage';
+import ColorMixerPage from './components/Games/ColorMixer/ColorMixerPage';
+import MathFactsPage from './components/Games/MathFacts/MathFactsPage';
+import ShapeSortingPage from './components/Games/ShapeSorting/ShapeSortingPage';
 
-type AppPage = 'home' | 'draw' | 'stencil' | 'colorblocks' | 'sudoku' | 'tetris' | 'jellyvolleyball' | 'snake';
+type AppPage = 'home' | 'draw' | 'stencil' | 'colorblocks' | 'sudoku' | 'tetris' | 'jellyvolleyball' | 'snake' | 'memoryMatch' | 'drawingChallenge' | 'popBalloons' | 'simonSays' | 'bubblePop' | 'colorMixer' | 'mathFacts' | 'shapeSorting';
 
 function App() {
   const [currentPage, setCurrentPage] = useState<AppPage>('home');
@@ -35,6 +43,14 @@ function App() {
             onNavigateToTetris={() => navigateTo('tetris')}
             onNavigateToJellyVolleyball={() => navigateTo('jellyvolleyball')}
             onNavigateToSnake={() => navigateTo('snake')}
+            onNavigateToMemoryMatch={() => navigateTo('memoryMatch')}
+            onNavigateToDrawingChallenge={() => navigateTo('drawingChallenge')}
+            onNavigateToPopBalloons={() => navigateTo('popBalloons')}
+            onNavigateToSimonSays={() => navigateTo('simonSays')}
+            onNavigateToBubblePop={() => navigateTo('bubblePop')}
+            onNavigateToColorMixer={() => navigateTo('colorMixer')}
+            onNavigateToMathFacts={() => navigateTo('mathFacts')}
+            onNavigateToShapeSorting={() => navigateTo('shapeSorting')}
           />
         );
       case 'draw':
@@ -64,6 +80,38 @@ function App() {
         return (
           <SnakePage onNavigateHome={() => navigateTo('home')} />
         );
+      case 'memoryMatch':
+        return (
+          <MemoryMatchPage onNavigateHome={() => navigateTo('home')} />
+        );
+      case 'drawingChallenge':
+        return (
+          <DrawingChallengePage onNavigateHome={() => navigateTo('home')} />
+        );
+      case 'popBalloons':
+        return (
+          <PopBalloonsPage onNavigateHome={() => navigateTo('home')} />
+        );
+      case 'simonSays':
+        return (
+          <SimonSaysPage onNavigateHome={() => navigateTo('home')} />
+        );
+      case 'bubblePop':
+        return (
+          <BubblePopPage onNavigateHome={() => navigateTo('home')} />
+        );
+      case 'colorMixer':
+        return (
+          <ColorMixerPage onNavigateHome={() => navigateTo('home')} />
+        );
+      case 'mathFacts':
+        return (
+          <MathFactsPage onNavigateHome={() => navigateTo('home')} />
+        );
+      case 'shapeSorting':
+        return (
+          <ShapeSortingPage onNavigateHome={() => navigateTo('home')} />
+        );
       default:
         return (
 <HomePage
@@ -74,6 +122,14 @@ function App() {
             onNavigateToTetris={() => navigateTo('tetris')}
             onNavigateToJellyVolleyball={() => navigateTo('jellyvolleyball')}
             onNavigateToSnake={() => navigateTo('snake')}
+            onNavigateToMemoryMatch={() => navigateTo('memoryMatch')}
+            onNavigateToDrawingChallenge={() => navigateTo('drawingChallenge')}
+            onNavigateToPopBalloons={() => navigateTo('popBalloons')}
+            onNavigateToSimonSays={() => navigateTo('simonSays')}
+            onNavigateToBubblePop={() => navigateTo('bubblePop')}
+            onNavigateToColorMixer={() => navigateTo('colorMixer')}
+            onNavigateToMathFacts={() => navigateTo('mathFacts')}
+            onNavigateToShapeSorting={() => navigateTo('shapeSorting')}
           />
         );
     }

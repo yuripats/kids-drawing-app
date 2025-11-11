@@ -10,9 +10,17 @@ interface HomePageProps {
   onNavigateToTetris: () => void;
   onNavigateToJellyVolleyball: () => void;
   onNavigateToSnake: () => void;
+  onNavigateToMemoryMatch: () => void;
+  onNavigateToDrawingChallenge: () => void;
+  onNavigateToPopBalloons: () => void;
+  onNavigateToSimonSays: () => void;
+  onNavigateToBubblePop: () => void;
+  onNavigateToColorMixer: () => void;
+  onNavigateToMathFacts: () => void;
+  onNavigateToShapeSorting: () => void;
 }
 
-function HomePage({ onNavigateToDrawing, onNavigateToStencil, onNavigateToColorBlocks, onNavigateToSudoku, onNavigateToTetris, onNavigateToJellyVolleyball, onNavigateToSnake }: HomePageProps) {
+function HomePage({ onNavigateToDrawing, onNavigateToStencil, onNavigateToColorBlocks, onNavigateToSudoku, onNavigateToTetris, onNavigateToJellyVolleyball, onNavigateToSnake, onNavigateToMemoryMatch, onNavigateToDrawingChallenge, onNavigateToPopBalloons, onNavigateToSimonSays, onNavigateToBubblePop, onNavigateToColorMixer, onNavigateToMathFacts, onNavigateToShapeSorting }: HomePageProps) {
   const [isExcited, setIsExcited] = useState(false);
   const [showStencils, setShowStencils] = useState(false);
 
@@ -135,6 +143,86 @@ function HomePage({ onNavigateToDrawing, onNavigateToStencil, onNavigateToColorB
             >
               <div className="text-5xl mb-2">🐍</div>
               <div className="text-white font-bold text-lg">Snake</div>
+            </button>
+
+            {/* Memory Match - NEW! */}
+            <button
+              className="kid-card bg-pink-500 hover:bg-pink-600 active:bg-pink-700 transition-colors duration-200 p-6 text-center cursor-pointer border-2 border-transparent hover:border-pink-700"
+              onClick={() => onNavigateToMemoryMatch()}
+              onTouchStart={() => setIsExcited(true)}
+            >
+              <div className="text-5xl mb-2">🃏</div>
+              <div className="text-white font-bold text-lg">Memory Match</div>
+            </button>
+
+            {/* Drawing Challenge - NEW! */}
+            <button
+              className="kid-card bg-purple-500 hover:bg-purple-600 active:bg-purple-700 transition-colors duration-200 p-6 text-center cursor-pointer border-2 border-transparent hover:border-purple-700"
+              onClick={() => onNavigateToDrawingChallenge()}
+              onTouchStart={() => setIsExcited(true)}
+            >
+              <div className="text-5xl mb-2">🎨</div>
+              <div className="text-white font-bold text-lg">Drawing Challenge</div>
+            </button>
+
+            {/* Pop the Balloons - NEW! */}
+            <button
+              className="kid-card bg-yellow-500 hover:bg-yellow-600 active:bg-yellow-700 transition-colors duration-200 p-6 text-center cursor-pointer border-2 border-transparent hover:border-yellow-700"
+              onClick={() => onNavigateToPopBalloons()}
+              onTouchStart={() => setIsExcited(true)}
+            >
+              <div className="text-5xl mb-2">🎯</div>
+              <div className="text-white font-bold text-lg">Pop Balloons</div>
+            </button>
+
+            {/* Simon Says - NEW! */}
+            <button
+              className="kid-card bg-indigo-500 hover:bg-indigo-600 active:bg-indigo-700 transition-colors duration-200 p-6 text-center cursor-pointer border-2 border-transparent hover:border-indigo-700"
+              onClick={() => onNavigateToSimonSays()}
+              onTouchStart={() => setIsExcited(true)}
+            >
+              <div className="text-5xl mb-2">🎵</div>
+              <div className="text-white font-bold text-lg">Simon Says</div>
+            </button>
+
+            {/* Bubble Pop - NEW! */}
+            <button
+              className="kid-card bg-cyan-500 hover:bg-cyan-600 active:bg-cyan-700 transition-colors duration-200 p-6 text-center cursor-pointer border-2 border-transparent hover:border-cyan-700"
+              onClick={() => onNavigateToBubblePop()}
+              onTouchStart={() => setIsExcited(true)}
+            >
+              <div className="text-5xl mb-2">🫧</div>
+              <div className="text-white font-bold text-lg">Bubble Pop</div>
+            </button>
+
+            {/* Color Mixer - NEW! */}
+            <button
+              className="kid-card bg-rose-500 hover:bg-rose-600 active:bg-rose-700 transition-colors duration-200 p-6 text-center cursor-pointer border-2 border-transparent hover:border-rose-700"
+              onClick={() => onNavigateToColorMixer()}
+              onTouchStart={() => setIsExcited(true)}
+            >
+              <div className="text-5xl mb-2">🎨</div>
+              <div className="text-white font-bold text-lg">Color Mixer</div>
+            </button>
+
+            {/* Math Facts - NEW! */}
+            <button
+              className="kid-card bg-emerald-500 hover:bg-emerald-600 active:bg-emerald-700 transition-colors duration-200 p-6 text-center cursor-pointer border-2 border-transparent hover:border-emerald-700"
+              onClick={() => onNavigateToMathFacts()}
+              onTouchStart={() => setIsExcited(true)}
+            >
+              <div className="text-5xl mb-2">🔢</div>
+              <div className="text-white font-bold text-lg">Math Facts</div>
+            </button>
+
+            {/* Shape Sorting - NEW! */}
+            <button
+              className="kid-card bg-amber-500 hover:bg-amber-600 active:bg-amber-700 transition-colors duration-200 p-6 text-center cursor-pointer border-2 border-transparent hover:border-amber-700"
+              onClick={() => onNavigateToShapeSorting()}
+              onTouchStart={() => setIsExcited(true)}
+            >
+              <div className="text-5xl mb-2">🎪</div>
+              <div className="text-white font-bold text-lg">Shape Sorting</div>
             </button>
           </div>
         </div>

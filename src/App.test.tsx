@@ -24,6 +24,14 @@ describe('HomePage', () => {
     onNavigateToTetris: vi.fn(),
     onNavigateToJellyVolleyball: vi.fn(),
     onNavigateToSnake: vi.fn(),
+    onNavigateToMemoryMatch: vi.fn(),
+    onNavigateToDrawingChallenge: vi.fn(),
+    onNavigateToPopBalloons: vi.fn(),
+    onNavigateToSimonSays: vi.fn(),
+    onNavigateToBubblePop: vi.fn(),
+    onNavigateToColorMixer: vi.fn(),
+    onNavigateToMathFacts: vi.fn(),
+    onNavigateToShapeSorting: vi.fn(),
   }
 
   it('renders home page content', () => {
