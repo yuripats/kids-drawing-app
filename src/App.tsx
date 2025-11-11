@@ -11,8 +11,12 @@ import MemoryMatchPage from './components/Games/MemoryMatch/MemoryMatchPage';
 import DrawingChallengePage from './components/Games/DrawingChallenge/DrawingChallengePage';
 import PopBalloonsPage from './components/Games/PopBalloons/PopBalloonsPage';
 import SimonSaysPage from './components/Games/SimonSays/SimonSaysPage';
+import BubblePopPage from './components/Games/BubblePop/BubblePopPage';
+import ColorMixerPage from './components/Games/ColorMixer/ColorMixerPage';
+import MathFactsPage from './components/Games/MathFacts/MathFactsPage';
+import ShapeSortingPage from './components/Games/ShapeSorting/ShapeSortingPage';
 
-type AppPage = 'home' | 'draw' | 'stencil' | 'colorblocks' | 'sudoku' | 'tetris' | 'jellyvolleyball' | 'snake' | 'memoryMatch' | 'drawingChallenge' | 'popBalloons' | 'simonSays';
+type AppPage = 'home' | 'draw' | 'stencil' | 'colorblocks' | 'sudoku' | 'tetris' | 'jellyvolleyball' | 'snake' | 'memoryMatch' | 'drawingChallenge' | 'popBalloons' | 'simonSays' | 'bubblePop' | 'colorMixer' | 'mathFacts' | 'shapeSorting';
 
 function App() {
   const [currentPage, setCurrentPage] = useState<AppPage>('home');
@@ -43,6 +47,10 @@ function App() {
             onNavigateToDrawingChallenge={() => navigateTo('drawingChallenge')}
             onNavigateToPopBalloons={() => navigateTo('popBalloons')}
             onNavigateToSimonSays={() => navigateTo('simonSays')}
+            onNavigateToBubblePop={() => navigateTo('bubblePop')}
+            onNavigateToColorMixer={() => navigateTo('colorMixer')}
+            onNavigateToMathFacts={() => navigateTo('mathFacts')}
+            onNavigateToShapeSorting={() => navigateTo('shapeSorting')}
           />
         );
       case 'draw':
@@ -88,6 +96,22 @@ function App() {
         return (
           <SimonSaysPage onNavigateHome={() => navigateTo('home')} />
         );
+      case 'bubblePop':
+        return (
+          <BubblePopPage onNavigateHome={() => navigateTo('home')} />
+        );
+      case 'colorMixer':
+        return (
+          <ColorMixerPage onNavigateHome={() => navigateTo('home')} />
+        );
+      case 'mathFacts':
+        return (
+          <MathFactsPage onNavigateHome={() => navigateTo('home')} />
+        );
+      case 'shapeSorting':
+        return (
+          <ShapeSortingPage onNavigateHome={() => navigateTo('home')} />
+        );
       default:
         return (
 <HomePage
@@ -102,6 +126,10 @@ function App() {
             onNavigateToDrawingChallenge={() => navigateTo('drawingChallenge')}
             onNavigateToPopBalloons={() => navigateTo('popBalloons')}
             onNavigateToSimonSays={() => navigateTo('simonSays')}
+            onNavigateToBubblePop={() => navigateTo('bubblePop')}
+            onNavigateToColorMixer={() => navigateTo('colorMixer')}
+            onNavigateToMathFacts={() => navigateTo('mathFacts')}
+            onNavigateToShapeSorting={() => navigateTo('shapeSorting')}
           />
         );
     }

@@ -28,6 +28,10 @@ describe('HomePage', () => {
     onNavigateToDrawingChallenge: vi.fn(),
     onNavigateToPopBalloons: vi.fn(),
     onNavigateToSimonSays: vi.fn(),
+    onNavigateToBubblePop: vi.fn(),
+    onNavigateToColorMixer: vi.fn(),
+    onNavigateToMathFacts: vi.fn(),
+    onNavigateToShapeSorting: vi.fn(),
   }
 
   it('renders home page content', () => {
