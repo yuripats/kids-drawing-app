@@ -2,8 +2,7 @@ import { useState, useCallback } from 'react';
 import {
   GameState,
   GameConfig,
-  ColorBlocksControls,
-  Position
+  ColorBlocksControls
 } from '../components/Games/ColorBlocksGame/types';
 import {
   initializeGame,
