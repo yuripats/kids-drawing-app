@@ -36,9 +36,9 @@ const ColorBlocksBoard: React.FC<ColorBlocksBoardProps> = ({
                   className={`
                     w-12 h-12 rounded-lg transition-all duration-150
                     ${isEmpty ? 'invisible' : 'visible'}
-                    ${isSelected ? 'scale-110 ring-4 ring-white shadow-2xl' : 'hover:scale-105'}
+                    ${isSelected ? 'ring-4 ring-white ring-inset shadow-2xl brightness-110' : 'hover:brightness-105'}
                     ${!isEmpty && !isSelected ? 'shadow-md hover:shadow-lg' : ''}
-                    active:scale-95
+                    active:brightness-95
                   `}
                   style={{
                     backgroundColor: isEmpty ? 'transparent' : color,
@@ -47,7 +47,7 @@ const ColorBlocksBoard: React.FC<ColorBlocksBoardProps> = ({
                   onClick={() => !isEmpty && onBlockClick(x, y)}
                   onMouseEnter={() => !isEmpty && onBlockHover(x, y)}
                   onTouchStart={() => !isEmpty && onBlockHover(x, y)}
-                  disabled={isEmpty || gameState.gameStatus === 'won' || gameState.gameStatus === 'gameOver'}
+                  disabled={isEmpty}
                   aria-label={isEmpty ? 'Empty cell' : `Block at ${x}, ${y}`}
                 />
               );

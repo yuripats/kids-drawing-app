@@ -10,8 +10,7 @@ import {
   removeBlocks,
   applyGravity,
   removeEmptyColumns,
-  isGridEmpty,
-  hasValidMoves,
+  fillEmptySpaces,
   calculateScore,
   saveHighScore
 } from '../components/Games/ColorBlocksGame/gameUtils';
@@ -21,10 +20,6 @@ export const useColorBlocksGame = (config: GameConfig = {}) => {
 
   const handleBlockHover = useCallback((x: number, y: number) => {
     setGameState(prev => {
-      if (prev.gameStatus === 'won' || prev.gameStatus === 'gameOver') {
-        return prev;
-      }
-
       const connected = findConnectedBlocks(prev.grid, x, y);
 
       if (connected.length < 2) {
@@ -45,10 +40,6 @@ export const useColorBlocksGame = (config: GameConfig = {}) => {
 
   const handleBlockClick = useCallback((x: number, y: number) => {
     setGameState(prev => {
-      if (prev.gameStatus === 'won' || prev.gameStatus === 'gameOver') {
-        return prev;
-      }
-
       const connected = findConnectedBlocks(prev.grid, x, y);
 
       // Need at least 2 connected blocks
@@ -69,50 +60,27 @@ export const useColorBlocksGame = (config: GameConfig = {}) => {
       // Remove empty columns
       newGrid = removeEmptyColumns(newGrid);
 
+      // Fill empty spaces with new blocks (endless mode)
+      newGrid = fillEmptySpaces(newGrid, prev.colorPalette);
+
       // Calculate new score
       const pointsEarned = calculateScore(connected.length);
       const newScore = prev.score + pointsEarned;
       const newMoves = prev.moves + 1;
 
-      // Check win condition
-      if (isGridEmpty(newGrid)) {
-        saveHighScore(newScore);
-        return {
-          ...prev,
-          grid: newGrid,
-          score: newScore,
-          highScore: Math.max(prev.highScore, newScore),
-          moves: newMoves,
-          gameStatus: 'won',
-          selectedBlocks: [],
-          message: `🎉 You cleared the board in ${newMoves} moves! Score: ${newScore}`
-        };
-      }
+      // Update high score
+      saveHighScore(newScore);
 
-      // Check if game over (no valid moves)
-      if (!hasValidMoves(newGrid)) {
-        saveHighScore(newScore);
-        return {
-          ...prev,
-          grid: newGrid,
-          score: newScore,
-          highScore: Math.max(prev.highScore, newScore),
-          moves: newMoves,
-          gameStatus: 'gameOver',
-          selectedBlocks: [],
-          message: `Game Over! Final Score: ${newScore} in ${newMoves} moves`
-        };
-      }
-
-      // Game continues
+      // Game continues endlessly
       return {
         ...prev,
         grid: newGrid,
         score: newScore,
+        highScore: Math.max(prev.highScore, newScore),
         moves: newMoves,
         gameStatus: 'playing',
         selectedBlocks: [],
-        message: `Great! +${pointsEarned} points!`
+        message: `Awesome! +${pointsEarned} points!`
       };
     });
   }, []);

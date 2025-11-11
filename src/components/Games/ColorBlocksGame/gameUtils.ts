@@ -3,7 +3,7 @@ import { GameState, GameConfig, Position } from './types';
 const STORAGE_KEY = 'colorBlocksHighScore';
 
 // Kid-friendly bright colors
-const generateColorPalette = (count: number): string[] => {
+export const generateColorPalette = (count: number): string[] => {
   const colors = [
     '#FF6B6B', // Red
     '#4ECDC4', // Teal
@@ -48,6 +48,7 @@ export const initializeGame = (config: GameConfig): GameState => {
     score: 0,
     highScore: loadHighScore(),
     colorCount: colors.length,
+    colorPalette: colors,
     gridSize: [config.gridWidth || 8, config.gridHeight || 10],
     gameStatus: 'ready',
     moves: 0,
@@ -199,4 +200,23 @@ export const calculateScore = (blocksRemoved: number): number => {
   // Score formula: (blocks)² × 10
   // Encourages removing larger groups
   return blocksRemoved * blocksRemoved * 10;
+};
+
+// Fill empty spaces with new random blocks for endless mode
+export const fillEmptySpaces = (grid: string[][], colorPalette: string[]): string[][] => {
+  const width = grid[0]?.length || 0;
+  const height = grid.length;
+  const newGrid = grid.map(row => [...row]);
+
+  // For each column, fill empty cells from top
+  for (let x = 0; x < width; x++) {
+    for (let y = 0; y < height; y++) {
+      if (newGrid[y][x] === '') {
+        // Add random color from palette
+        newGrid[y][x] = colorPalette[Math.floor(Math.random() * colorPalette.length)];
+      }
+    }
+  }
+
+  return newGrid;
 };

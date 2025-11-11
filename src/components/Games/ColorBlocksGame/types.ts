@@ -9,13 +9,14 @@ export interface Position {
   y: number;
 }
 
-export type GameStatus = 'ready' | 'playing' | 'won' | 'gameOver';
+export type GameStatus = 'ready' | 'playing';
 
 export interface GameState {
   grid: string[][];
   score: number;
   highScore: number;
   colorCount: number;
+  colorPalette: string[];
   gridSize: [number, number];
   gameStatus: GameStatus;
   moves: number;
