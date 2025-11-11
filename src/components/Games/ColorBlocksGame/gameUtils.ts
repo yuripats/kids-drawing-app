@@ -203,17 +203,25 @@ export const calculateScore = (blocksRemoved: number): number => {
 };
 
 // Fill empty spaces with new random blocks for endless mode
-export const fillEmptySpaces = (grid: string[][], colorPalette: string[]): string[][] => {
-  const width = grid[0]?.length || 0;
+export const fillEmptySpaces = (grid: string[][], colorPalette: string[], originalWidth: number): string[][] => {
   const height = grid.length;
+  const currentWidth = grid[0]?.length || 0;
   const newGrid = grid.map(row => [...row]);
 
-  // For each column, fill empty cells from top
-  for (let x = 0; x < width; x++) {
-    for (let y = 0; y < height; y++) {
+  // First, fill any empty cells within existing columns
+  for (let y = 0; y < height; y++) {
+    for (let x = 0; x < currentWidth; x++) {
       if (newGrid[y][x] === '') {
-        // Add random color from palette
         newGrid[y][x] = colorPalette[Math.floor(Math.random() * colorPalette.length)];
+      }
+    }
+  }
+
+  // If columns were removed, add new columns on the right to restore original width
+  if (currentWidth < originalWidth) {
+    for (let y = 0; y < height; y++) {
+      while (newGrid[y].length < originalWidth) {
+        newGrid[y].push(colorPalette[Math.floor(Math.random() * colorPalette.length)]);
       }
     }
   }

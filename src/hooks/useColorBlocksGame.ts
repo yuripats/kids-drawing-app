@@ -61,7 +61,7 @@ export const useColorBlocksGame = (config: GameConfig = {}) => {
       newGrid = removeEmptyColumns(newGrid);
 
       // Fill empty spaces with new blocks (endless mode)
-      newGrid = fillEmptySpaces(newGrid, prev.colorPalette);
+      newGrid = fillEmptySpaces(newGrid, prev.colorPalette, prev.gridSize[0]);
 
       // Calculate new score
       const pointsEarned = calculateScore(connected.length);
