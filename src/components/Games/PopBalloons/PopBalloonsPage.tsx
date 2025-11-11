@@ -7,15 +7,15 @@ import React from 'react';
 import { usePopBalloons } from '../../../hooks/usePopBalloons';
 import GameLayout from '../../shared/GameLayout';
 import GameBoard from './GameBoard';
-import type { Difficulty } from './types';
-import { difficultySettings } from './constants';
+import type { Difficulty, GridSize } from './types';
+import { difficultySettings, gridSizeSettings } from './constants';
 
 interface PopBalloonsPageProps {
   onNavigateHome: () => void;
 }
 
 const PopBalloonsPage: React.FC<PopBalloonsPageProps> = ({ onNavigateHome }) => {
-  const { gameState, handleBalloonPop, startGame, resetGame, setDifficulty } = usePopBalloons();
+  const { gameState, handleBalloonPop, startGame, resetGame, setDifficulty, setGridSize } = usePopBalloons();
 
   const {
     score,
@@ -24,6 +24,7 @@ const PopBalloonsPage: React.FC<PopBalloonsPageProps> = ({ onNavigateHome }) => 
     maxCombo,
     gameStatus,
     difficulty,
+    gridSize,
     timeRemaining,
     lives,
     totalPopped,
@@ -33,6 +34,12 @@ const PopBalloonsPage: React.FC<PopBalloonsPageProps> = ({ onNavigateHome }) => 
   const handleDifficultyChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     if (gameStatus !== 'playing') {
       setDifficulty(e.target.value as Difficulty);
+    }
+  };
+
+  const handleGridSizeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    if (gameStatus !== 'playing') {
+      setGridSize(e.target.value as GridSize);
     }
   };
 
@@ -73,6 +80,21 @@ const PopBalloonsPage: React.FC<PopBalloonsPageProps> = ({ onNavigateHome }) => 
         title="Game Difficulty"
       >
         {Object.entries(difficultySettings).map(([key, settings]) => (
+          <option key={key} value={key}>
+            {settings.name}
+          </option>
+        ))}
+      </select>
+
+      {/* Grid Size Selector */}
+      <select
+        value={gridSize}
+        onChange={handleGridSizeChange}
+        disabled={gameStatus === 'playing'}
+        className="kid-input text-sm px-3 py-2"
+        title="Grid Size"
+      >
+        {Object.entries(gridSizeSettings).map(([key, settings]) => (
           <option key={key} value={key}>
             {settings.name}
           </option>

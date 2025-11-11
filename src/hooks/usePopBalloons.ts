@@ -4,8 +4,8 @@
  */
 
 import { useState, useEffect, useCallback, useRef } from 'react';
-import type { PopBalloonsState, Balloon, BalloonType, Difficulty, GameStatus } from '../components/Games/PopBalloons/types';
-import { difficultySettings, GRID_SIZE, POINTS, balloonColors, COMBO_WINDOW } from '../components/Games/PopBalloons/constants';
+import type { PopBalloonsState, Balloon, BalloonType, Difficulty, GridSize, GameStatus } from '../components/Games/PopBalloons/types';
+import { difficultySettings, gridSizeSettings, POINTS, balloonColors, COMBO_WINDOW } from '../components/Games/PopBalloons/constants';
 import { saveHighScore, getHighScore, playSound, randomChoice } from '../utils/gameUtils';
 
 const GAME_KEY = 'popBalloons';
@@ -16,10 +16,12 @@ interface UsePopBalloonsReturn {
   startGame: () => void;
   resetGame: () => void;
   setDifficulty: (difficulty: Difficulty) => void;
+  setGridSize: (gridSize: GridSize) => void;
 }
 
 export const usePopBalloons = (): UsePopBalloonsReturn => {
   const [difficulty, setDifficultyState] = useState<Difficulty>('easy');
+  const [gridSize, setGridSizeState] = useState<GridSize>('small');
   const [balloons, setBalloons] = useState<Balloon[]>([]);
   const [score, setScore] = useState(0);
   const [highScore, setHighScore] = useState(0);
@@ -61,9 +63,10 @@ export const usePopBalloons = (): UsePopBalloonsReturn => {
   // Get random unoccupied position
   const getRandomPosition = useCallback((): { row: number; col: number } | null => {
     const available: { row: number; col: number }[] = [];
+    const currentGridSize = gridSizeSettings[gridSize].size;
 
-    for (let row = 0; row < GRID_SIZE; row++) {
-      for (let col = 0; col < GRID_SIZE; col++) {
+    for (let row = 0; row < currentGridSize; row++) {
+      for (let col = 0; col < currentGridSize; col++) {
         const key = `${row}-${col}`;
         if (!occupiedPositionsRef.current.has(key)) {
           available.push({ row, col });
@@ -73,7 +76,7 @@ export const usePopBalloons = (): UsePopBalloonsReturn => {
 
     if (available.length === 0) return null;
     return randomChoice(available);
-  }, []);
+  }, [gridSize]);
 
   // Determine balloon type based on difficulty
   const getBalloonType = useCallback((): BalloonType => {
@@ -202,6 +205,11 @@ export const usePopBalloons = (): UsePopBalloonsReturn => {
     setDifficultyState(newDifficulty);
   }, []);
 
+  // Set grid size
+  const setGridSize = useCallback((newGridSize: GridSize) => {
+    setGridSizeState(newGridSize);
+  }, []);
+
   // Spawn balloons during play
   useEffect(() => {
     if (gameStatus === 'playing') {
@@ -272,6 +280,7 @@ export const usePopBalloons = (): UsePopBalloonsReturn => {
     maxCombo,
     gameStatus,
     difficulty,
+    gridSize,
     timeRemaining,
     lives,
     totalPopped,
@@ -283,6 +292,7 @@ export const usePopBalloons = (): UsePopBalloonsReturn => {
     handleBalloonPop,
     startGame,
     resetGame,
-    setDifficulty
+    setDifficulty,
+    setGridSize
   };
 };

@@ -2,9 +2,8 @@
  * Pop the Balloons Game Constants
  */
 
-import type { Difficulty, DifficultySettings } from './types';
+import type { Difficulty, DifficultySettings, GridSize, GridSizeSettings } from './types';
 
-export const GRID_SIZE = 3; // 3x3 grid
 export const GAME_DURATION = 60; // 60 seconds
 
 export const POINTS = {
@@ -40,6 +39,21 @@ export const difficultySettings: Record<Difficulty, DifficultySettings> = {
     gameDuration: 60,
     goldenChance: 0.15,      // 15% golden balloons
     name: '⚡ Hard'
+  }
+};
+
+export const gridSizeSettings: Record<GridSize, GridSizeSettings> = {
+  small: {
+    size: 3,
+    name: '📐 Small (3×3)'
+  },
+  medium: {
+    size: 4,
+    name: '📏 Medium (4×4)'
+  },
+  large: {
+    size: 5,
+    name: '📊 Large (5×5)'
   }
 };
 
