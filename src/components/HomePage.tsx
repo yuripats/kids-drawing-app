@@ -10,9 +10,12 @@ interface HomePageProps {
   onNavigateToTetris: () => void;
   onNavigateToJellyVolleyball: () => void;
   onNavigateToSnake: () => void;
+  onNavigateToMemoryMatch: () => void;
+  onNavigateToDrawingChallenge: () => void;
+  onNavigateToPopBalloons: () => void;
 }
 
-function HomePage({ onNavigateToDrawing, onNavigateToStencil, onNavigateToGame, onNavigateToSudoku, onNavigateToTetris, onNavigateToJellyVolleyball, onNavigateToSnake }: HomePageProps) {
+function HomePage({ onNavigateToDrawing, onNavigateToStencil, onNavigateToGame, onNavigateToSudoku, onNavigateToTetris, onNavigateToJellyVolleyball, onNavigateToSnake, onNavigateToMemoryMatch, onNavigateToDrawingChallenge, onNavigateToPopBalloons }: HomePageProps) {
   const [isExcited, setIsExcited] = useState(false);
   const [showStencils, setShowStencils] = useState(false);
 
@@ -135,6 +138,36 @@ function HomePage({ onNavigateToDrawing, onNavigateToStencil, onNavigateToGame, 
             >
               <div className="text-5xl mb-2">🐍</div>
               <div className="text-white font-bold text-lg">Snake</div>
+            </button>
+
+            {/* Memory Match - NEW! */}
+            <button
+              className="kid-card bg-pink-500 hover:bg-pink-600 active:bg-pink-700 transition-colors duration-200 p-6 text-center cursor-pointer border-2 border-transparent hover:border-pink-700"
+              onClick={() => onNavigateToMemoryMatch()}
+              onTouchStart={() => setIsExcited(true)}
+            >
+              <div className="text-5xl mb-2">🃏</div>
+              <div className="text-white font-bold text-lg">Memory Match</div>
+            </button>
+
+            {/* Drawing Challenge - NEW! */}
+            <button
+              className="kid-card bg-purple-500 hover:bg-purple-600 active:bg-purple-700 transition-colors duration-200 p-6 text-center cursor-pointer border-2 border-transparent hover:border-purple-700"
+              onClick={() => onNavigateToDrawingChallenge()}
+              onTouchStart={() => setIsExcited(true)}
+            >
+              <div className="text-5xl mb-2">🎨</div>
+              <div className="text-white font-bold text-lg">Drawing Challenge</div>
+            </button>
+
+            {/* Pop the Balloons - NEW! */}
+            <button
+              className="kid-card bg-yellow-500 hover:bg-yellow-600 active:bg-yellow-700 transition-colors duration-200 p-6 text-center cursor-pointer border-2 border-transparent hover:border-yellow-700"
+              onClick={() => onNavigateToPopBalloons()}
+              onTouchStart={() => setIsExcited(true)}
+            >
+              <div className="text-5xl mb-2">🎯</div>
+              <div className="text-white font-bold text-lg">Pop Balloons</div>
             </button>
           </div>
         </div>

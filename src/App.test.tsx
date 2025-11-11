@@ -24,6 +24,9 @@ describe('HomePage', () => {
     onNavigateToTetris: vi.fn(),
     onNavigateToJellyVolleyball: vi.fn(),
     onNavigateToSnake: vi.fn(),
+    onNavigateToMemoryMatch: vi.fn(),
+    onNavigateToDrawingChallenge: vi.fn(),
+    onNavigateToPopBalloons: vi.fn(),
   }
 
   it('renders home page content', () => {

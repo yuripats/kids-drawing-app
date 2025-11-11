@@ -7,8 +7,11 @@ import SudokuPage from './components/Games/Sudoku/SudokuPage';
 import TetrisPage from './components/Games/Tetris/TetrisPage';
 import JellyVolleyballPage from './components/Games/JellyVolleyball/JellyVolleyballPage';
 import SnakePage from './components/Games/Snake/SnakePage';
+import MemoryMatchPage from './components/Games/MemoryMatch/MemoryMatchPage';
+import DrawingChallengePage from './components/Games/DrawingChallenge/DrawingChallengePage';
+import PopBalloonsPage from './components/Games/PopBalloons/PopBalloonsPage';
 
-type AppPage = 'home' | 'draw' | 'stencil' | 'game' | 'sudoku' | 'tetris' | 'jellyvolleyball' | 'snake';
+type AppPage = 'home' | 'draw' | 'stencil' | 'game' | 'sudoku' | 'tetris' | 'jellyvolleyball' | 'snake' | 'memoryMatch' | 'drawingChallenge' | 'popBalloons';
 
 function App() {
   const [currentPage, setCurrentPage] = useState<AppPage>('home');
@@ -35,6 +38,9 @@ function App() {
             onNavigateToTetris={() => navigateTo('tetris')}
             onNavigateToJellyVolleyball={() => navigateTo('jellyvolleyball')}
             onNavigateToSnake={() => navigateTo('snake')}
+            onNavigateToMemoryMatch={() => navigateTo('memoryMatch')}
+            onNavigateToDrawingChallenge={() => navigateTo('drawingChallenge')}
+            onNavigateToPopBalloons={() => navigateTo('popBalloons')}
           />
         );
       case 'draw':
@@ -75,6 +81,18 @@ case 'sudoku':
         return (
           <SnakePage onNavigateHome={() => navigateTo('home')} />
         );
+      case 'memoryMatch':
+        return (
+          <MemoryMatchPage onNavigateHome={() => navigateTo('home')} />
+        );
+      case 'drawingChallenge':
+        return (
+          <DrawingChallengePage onNavigateHome={() => navigateTo('home')} />
+        );
+      case 'popBalloons':
+        return (
+          <PopBalloonsPage onNavigateHome={() => navigateTo('home')} />
+        );
       default:
         return (
 <HomePage
@@ -85,6 +103,9 @@ case 'sudoku':
             onNavigateToTetris={() => navigateTo('tetris')}
             onNavigateToJellyVolleyball={() => navigateTo('jellyvolleyball')}
             onNavigateToSnake={() => navigateTo('snake')}
+            onNavigateToMemoryMatch={() => navigateTo('memoryMatch')}
+            onNavigateToDrawingChallenge={() => navigateTo('drawingChallenge')}
+            onNavigateToPopBalloons={() => navigateTo('popBalloons')}
           />
         );
     }
