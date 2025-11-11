@@ -19,9 +19,9 @@ export const useColorMixer = () => {
     setGameState(prev => ({
       ...prev,
       currentMix: {
-        r: Math.min(255, prev.currentMix.r + (color.r || 0)),
-        g: Math.min(255, prev.currentMix.g + (color.g || 0)),
-        b: Math.min(255, prev.currentMix.b + (color.b || 0))
+        r: Math.max(0, Math.min(255, prev.currentMix.r + (color.r || 0))),
+        g: Math.max(0, Math.min(255, prev.currentMix.g + (color.g || 0))),
+        b: Math.max(0, Math.min(255, prev.currentMix.b + (color.b || 0)))
       }
     }));
   }, []);
