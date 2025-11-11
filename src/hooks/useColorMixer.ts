@@ -9,7 +9,7 @@ import { playSound } from '../utils/gameUtils';
 
 export const useColorMixer = () => {
   const [gameState, setGameState] = useState<ColorMixerState>({
-    currentMix: { r: 255, g: 255, b: 255 },
+    currentMix: { r: 0, g: 0, b: 0 }, // Start from black so adding colors is visible
     challenge: challenges[0],
     score: 0,
     completedChallenges: 0
@@ -40,7 +40,7 @@ export const useColorMixer = () => {
       playSound('match');
       const nextIndex = (gameState.completedChallenges + 1) % challenges.length;
       setGameState(prev => ({
-        currentMix: { r: 255, g: 255, b: 255 },
+        currentMix: { r: 0, g: 0, b: 0 }, // Reset to black
         challenge: challenges[nextIndex],
         score: prev.score + 100,
         completedChallenges: prev.completedChallenges + 1
@@ -53,7 +53,7 @@ export const useColorMixer = () => {
   const reset = useCallback(() => {
     setGameState(prev => ({
       ...prev,
-      currentMix: { r: 255, g: 255, b: 255 }
+      currentMix: { r: 0, g: 0, b: 0 } // Reset to black
     }));
   }, []);
 

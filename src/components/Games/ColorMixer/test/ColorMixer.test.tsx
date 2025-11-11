@@ -10,7 +10,7 @@ describe('useColorMixer Hook', () => {
   test('initializes with correct default state', () => {
     const { result } = renderHook(() => useColorMixer());
 
-    expect(result.current.gameState.currentMix).toEqual({ r: 255, g: 255, b: 255 });
+    expect(result.current.gameState.currentMix).toEqual({ r: 0, g: 0, b: 0 }); // Starts from black
     expect(result.current.gameState.score).toBe(0);
     expect(result.current.gameState.completedChallenges).toBe(0);
     expect(result.current.gameState.challenge).toBeTruthy();
@@ -23,56 +23,68 @@ describe('useColorMixer Hook', () => {
       result.current.addColor({ r: 50 });
     });
 
-    expect(result.current.gameState.currentMix.r).toBe(255); // Already at max, stays at 255
-    expect(result.current.gameState.currentMix.g).toBe(255);
-    expect(result.current.gameState.currentMix.b).toBe(255);
+    expect(result.current.gameState.currentMix.r).toBe(50); // 0 + 50
+    expect(result.current.gameState.currentMix.g).toBe(0);
+    expect(result.current.gameState.currentMix.b).toBe(0);
 
-    // Reset first to test properly
+    // Add more to test cumulative effect
     act(() => {
-      result.current.reset();
-      result.current.addColor({ r: -50 });
+      result.current.addColor({ r: 30, g: 100 });
     });
 
-    expect(result.current.gameState.currentMix.r).toBe(205); // 255 - 50
+    expect(result.current.gameState.currentMix.r).toBe(80); // 50 + 30
+    expect(result.current.gameState.currentMix.g).toBe(100); // 0 + 100
   });
 
   test('addColor clamps upper values at 255', () => {
     const { result } = renderHook(() => useColorMixer());
 
-    // Adding more red when already at 255 should keep it at 255
+    // Add a lot of red to hit the upper limit
     act(() => {
-      result.current.addColor({ r: 50 });
+      result.current.addColor({ r: 300 });
     });
     expect(result.current.gameState.currentMix.r).toBe(255);
 
     // Test that it clamps at the upper bound
     act(() => {
       result.current.reset();
-      result.current.addColor({ b: -100 });
+      result.current.addColor({ b: 100 });
       result.current.addColor({ b: 200 });
     });
-    expect(result.current.gameState.currentMix.b).toBe(255); // 255 - 100 + 200 = 355, clamped to 255
+    expect(result.current.gameState.currentMix.b).toBe(255); // 0 + 100 + 200 = 300, clamped to 255
+  });
+
+  test('addColor clamps lower values at 0', () => {
+    const { result } = renderHook(() => useColorMixer());
+
+    // Try to subtract from black
+    act(() => {
+      result.current.addColor({ r: -50 });
+    });
+    expect(result.current.gameState.currentMix.r).toBe(0); // Can't go below 0
+
+    // Add some color then subtract more than we have
+    act(() => {
+      result.current.addColor({ g: 50 });
+      result.current.addColor({ g: -100 });
+    });
+    expect(result.current.gameState.currentMix.g).toBe(0); // 50 - 100 = -50, clamped to 0
   });
 
   test('checkMatch correctly identifies close color matches', () => {
     const { result } = renderHook(() => useColorMixer());
 
-    // Get the target color and calculate difference
+    // Get the target color
     const targetColor = result.current.gameState.challenge?.target;
 
     if (targetColor) {
-      // Reset to white first
+      // Set colors to match the target
       act(() => {
-        result.current.reset();
-      });
-
-      // Calculate how much we need to add/subtract to get close to target
-      const rDiff = targetColor.r - 255;
-      const gDiff = targetColor.g - 255;
-      const bDiff = targetColor.b - 255;
-
-      act(() => {
-        result.current.addColor({ r: rDiff, g: gDiff, b: bDiff });
+        result.current.addColor({
+          r: targetColor.r,
+          g: targetColor.g,
+          b: targetColor.b
+        });
       });
 
       const initialScore = result.current.gameState.score;
@@ -82,28 +94,28 @@ describe('useColorMixer Hook', () => {
         result.current.checkMatch();
       });
 
-      // Should increase score and completed challenges if match is close enough
+      // Should increase score and completed challenges
       expect(result.current.gameState.score).toBeGreaterThanOrEqual(initialScore);
       expect(result.current.gameState.completedChallenges).toBeGreaterThanOrEqual(initialCompleted);
     }
   });
 
-  test('reset clears the current color mix to white', () => {
+  test('reset clears the current color mix to black', () => {
     const { result } = renderHook(() => useColorMixer());
 
-    // Make some changes first
+    // Add some colors
     act(() => {
-      result.current.addColor({ r: -100, g: -100, b: -100 });
+      result.current.addColor({ r: 100, g: 100, b: 100 });
     });
 
-    expect(result.current.gameState.currentMix.r).toBe(155);
+    expect(result.current.gameState.currentMix.r).toBe(100);
 
     // Reset the mix
     act(() => {
       result.current.reset();
     });
 
-    expect(result.current.gameState.currentMix).toEqual({ r: 255, g: 255, b: 255 });
+    expect(result.current.gameState.currentMix).toEqual({ r: 0, g: 0, b: 0 }); // Back to black
   });
 
   test('challenge has required properties', () => {

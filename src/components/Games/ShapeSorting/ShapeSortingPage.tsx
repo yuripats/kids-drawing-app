@@ -108,35 +108,38 @@ const ShapeSortingPage: React.FC<ShapeSortingPageProps> = ({ onNavigateHome }) =
         </div>
       )}
 
-      {/* Stats */}
-      <div className="kid-card max-w-4xl mx-auto mb-4 p-4">
-        <div className="grid grid-cols-3 gap-4">
-          <div className="text-center">
-            <p className="text-xs md:text-sm text-slate-600 font-semibold">Score</p>
-            <p className="text-2xl md:text-3xl font-bold text-orange-600">{score}</p>
+      {/* Compact Header with Stats and Target */}
+      <div className="kid-card max-w-4xl mx-auto mb-3 p-3 md:p-4">
+        <div className="flex items-center justify-between gap-4">
+          {/* Stats - Compact */}
+          <div className="flex gap-3 md:gap-4 text-xs md:text-sm">
+            <div className="text-center">
+              <p className="text-slate-600 font-semibold">Score</p>
+              <p className="text-lg md:text-xl font-bold text-orange-600">{score}</p>
+            </div>
+            <div className="text-center">
+              <p className="text-slate-600 font-semibold">Round</p>
+              <p className="text-lg md:text-xl font-bold text-purple-600">{round}</p>
+            </div>
+            <div className="text-center">
+              <p className="text-slate-600 font-semibold">Sorted</p>
+              <p className="text-lg md:text-xl font-bold text-green-600">{correctSorts}</p>
+            </div>
           </div>
+
+          {/* Target Shape - Inline */}
           <div className="text-center">
-            <p className="text-xs md:text-sm text-slate-600 font-semibold">Round</p>
-            <p className="text-2xl md:text-3xl font-bold text-purple-600">{round}</p>
-          </div>
-          <div className="text-center">
-            <p className="text-xs md:text-sm text-slate-600 font-semibold">Sorted</p>
-            <p className="text-2xl md:text-3xl font-bold text-green-600">{correctSorts}</p>
+            <p className="text-sm md:text-base font-bold text-slate-800 mb-1">
+              Find {getShapeName(targetShape)}s
+            </p>
+            <div className="text-5xl md:text-6xl">{getShapeDisplay(targetShape)}</div>
           </div>
         </div>
       </div>
 
-      {/* Target Shape */}
-      <div className="kid-card max-w-2xl mx-auto mb-4 p-4 md:p-6 text-center">
-        <h2 className="text-xl md:text-2xl font-bold text-slate-800 mb-2 md:mb-4">
-          Find all the {getShapeName(targetShape)}s!
-        </h2>
-        <div className="text-7xl md:text-9xl">{getShapeDisplay(targetShape)}</div>
-      </div>
-
-      {/* Shapes Grid */}
-      <div className="kid-card max-w-6xl mx-auto mb-4 p-4 md:p-6">
-        <div className={`grid ${getGridColumns(settings.fieldSize)} gap-2 md:gap-4`}>
+      {/* Shapes Grid - Compact */}
+      <div className="kid-card max-w-6xl mx-auto mb-3 p-2 md:p-4">
+        <div className={`grid ${getGridColumns(settings.fieldSize)} gap-1.5 md:gap-3`}>
           {currentShapes.map(shape => (
             <button
               key={shape.id}
@@ -148,14 +151,10 @@ const ShapeSortingPage: React.FC<ShapeSortingPageProps> = ({ onNavigateHome }) =
             </button>
           ))}
         </div>
-      </div>
-
-      {/* Progress Indicator */}
-      <div className="kid-card max-w-2xl mx-auto mb-4 p-3 md:p-4">
-        <p className="text-sm md:text-base text-center text-slate-700">
+        {/* Progress Indicator - Inline */}
+        <p className="text-xs md:text-sm text-center text-slate-700 mt-2">
           <span className="font-bold text-orange-600">{currentShapes.filter(s => s.type === targetShape).length}</span>
-          {' '}more {getShapeName(targetShape)}
-          {currentShapes.filter(s => s.type === targetShape).length !== 1 ? 's' : ''} to find!
+          {' '}more to find!
         </p>
       </div>
 
