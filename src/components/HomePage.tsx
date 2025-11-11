@@ -43,12 +43,12 @@ function HomePage({ onNavigateToDrawing, onNavigateToStencil, onNavigateToColorB
             Welcome to Your Creative Space!
           </h2>
           <p className="text-lg text-gray-600 mb-6">
-            A magical drawing app where you can create amazing artwork 
+            A magical drawing app where you can create amazing artwork
             with your fingers, explore AI-powered stencils, and save your masterpieces!
           </p>
-          
+
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button 
+            <button
               className="kid-button text-xl"
               onTouchStart={() => setIsExcited(true)}
               onClick={() => {
@@ -58,8 +58,8 @@ function HomePage({ onNavigateToDrawing, onNavigateToStencil, onNavigateToColorB
             >
               🖌️ Free Drawing!
             </button>
-            
-            <button 
+
+            <button
               className="kid-button bg-purple-500 hover:bg-purple-600 active:bg-purple-700 text-xl"
               onClick={() => {
                 setIsExcited(true);
@@ -69,54 +69,73 @@ function HomePage({ onNavigateToDrawing, onNavigateToStencil, onNavigateToColorB
             >
               🎭 Color Stencils!
             </button>
-            
-          <button 
-            className="kid-button bg-secondary-500 hover:bg-secondary-600 active:bg-secondary-700 text-xl"
-            onClick={() => setIsExcited(!isExcited)}
-            onTouchStart={() => setIsExcited(true)}
-          >
-            {isExcited ? 'So Excited!' : 'Tell Me More!'}
-          </button>
 
-<button
-            className="kid-button bg-green-500 hover:bg-green-600 active:bg-green-700 text-xl"
-            onClick={() => onNavigateToColorBlocks()}
-            onTouchStart={() => setIsExcited(true)}
-          >
-            🎨 Color Blocks
-          </button>
+            <button
+              className="kid-button bg-secondary-500 hover:bg-secondary-600 active:bg-secondary-700 text-xl"
+              onClick={() => setIsExcited(!isExcited)}
+              onTouchStart={() => setIsExcited(true)}
+            >
+              {isExcited ? 'So Excited!' : 'Tell Me More!'}
+            </button>
+          </div>
+        </div>
 
-          <button 
-            className="kid-button bg-blue-500 hover:bg-blue-600 active:bg-blue-700 text-xl"
-            onClick={() => onNavigateToSudoku()}
-            onTouchStart={() => setIsExcited(true)}
-          >
-            🧩 Sudoku
-          </button>
+        {/* Games Section */}
+        <div className="kid-card max-w-6xl mx-auto mb-8">
+          <h2 className="text-2xl md:text-3xl font-bold text-gray-800 mb-4 text-center">
+            🎮 Fun Games to Play!
+          </h2>
 
-          <button
-            className="kid-button bg-orange-500 hover:bg-orange-600 active:bg-orange-700 text-xl"
-            onClick={() => onNavigateToTetris()}
-            onTouchStart={() => setIsExcited(true)}
-          >
-            🧱 Tetris
-          </button>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {/* Color Blocks Game */}
+            <button
+              className="kid-card bg-green-500 hover:bg-green-600 active:bg-green-700 transition-colors duration-200 p-6 text-center cursor-pointer border-2 border-transparent hover:border-green-700"
+              onClick={() => onNavigateToColorBlocks()}
+              onTouchStart={() => setIsExcited(true)}
+            >
+              <div className="text-5xl mb-2">🎨</div>
+              <div className="text-white font-bold text-lg">Color Blocks</div>
+            </button>
 
-          <button
-            className="kid-button bg-teal-500 hover:bg-teal-600 active:bg-teal-700 text-xl"
-            onClick={() => onNavigateToJellyVolleyball()}
-            onTouchStart={() => setIsExcited(true)}
-          >
-            🏐 Jelly Volleyball
-          </button>
+            {/* Sudoku */}
+            <button
+              className="kid-card bg-blue-500 hover:bg-blue-600 active:bg-blue-700 transition-colors duration-200 p-6 text-center cursor-pointer border-2 border-transparent hover:border-blue-700"
+              onClick={() => onNavigateToSudoku()}
+              onTouchStart={() => setIsExcited(true)}
+            >
+              <div className="text-5xl mb-2">🧩</div>
+              <div className="text-white font-bold text-lg">Sudoku</div>
+            </button>
 
-          <button
-            className="kid-button bg-lime-500 hover:bg-lime-600 active:bg-lime-700 text-xl"
-            onClick={() => onNavigateToSnake()}
-            onTouchStart={() => setIsExcited(true)}
-          >
-            🐍 Snake Game
-          </button>
+            {/* Tetris */}
+            <button
+              className="kid-card bg-orange-500 hover:bg-orange-600 active:bg-orange-700 transition-colors duration-200 p-6 text-center cursor-pointer border-2 border-transparent hover:border-orange-700"
+              onClick={() => onNavigateToTetris()}
+              onTouchStart={() => setIsExcited(true)}
+            >
+              <div className="text-5xl mb-2">🧱</div>
+              <div className="text-white font-bold text-lg">Tetris</div>
+            </button>
+
+            {/* Jelly Volleyball */}
+            <button
+              className="kid-card bg-teal-500 hover:bg-teal-600 active:bg-teal-700 transition-colors duration-200 p-6 text-center cursor-pointer border-2 border-transparent hover:border-teal-700"
+              onClick={() => onNavigateToJellyVolleyball()}
+              onTouchStart={() => setIsExcited(true)}
+            >
+              <div className="text-5xl mb-2">🏐</div>
+              <div className="text-white font-bold text-lg">Jelly Volleyball</div>
+            </button>
+
+            {/* Snake Game */}
+            <button
+              className="kid-card bg-lime-500 hover:bg-lime-600 active:bg-lime-700 transition-colors duration-200 p-6 text-center cursor-pointer border-2 border-transparent hover:border-lime-700"
+              onClick={() => onNavigateToSnake()}
+              onTouchStart={() => setIsExcited(true)}
+            >
+              <div className="text-5xl mb-2">🐍</div>
+              <div className="text-white font-bold text-lg">Snake</div>
+            </button>
           </div>
         </div>
 
