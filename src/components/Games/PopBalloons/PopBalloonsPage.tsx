@@ -39,9 +39,9 @@ const PopBalloonsPage: React.FC<PopBalloonsPageProps> = ({ onNavigateHome }) => 
   const getStatusMessage = (): string => {
     switch (gameStatus) {
       case 'ready':
-        return '🎯 Tap any balloon to start!';
+        return '🎯 Ready to pop some balloons?';
       case 'playing':
-        return combo > 1 ? `🔥 ${combo}x Combo!` : '👆 Tap the balloons!';
+        return combo > 1 ? `🔥 ${combo}x Combo!` : '👆 Pop the balloons quickly!';
       case 'gameOver':
         return timeRemaining === 0 ? '⏰ Time\'s up!' : '💔 No more lives!';
       default:
@@ -91,12 +91,12 @@ const PopBalloonsPage: React.FC<PopBalloonsPageProps> = ({ onNavigateHome }) => 
     </>
   );
 
-  // Auto-start game on first balloon tap
+  // Handle balloon click during gameplay
   const handleBalloonClick = (balloonId: string) => {
-    if (gameStatus === 'ready') {
-      startGame();
+    // Only allow popping balloons when game is playing
+    if (gameStatus === 'playing') {
+      handleBalloonPop(balloonId);
     }
-    handleBalloonPop(balloonId);
   };
 
   return (
@@ -156,6 +156,18 @@ const PopBalloonsPage: React.FC<PopBalloonsPageProps> = ({ onNavigateHome }) => 
           {getStatusMessage()}
         </p>
       </div>
+
+      {/* Start Game Button */}
+      {gameStatus === 'ready' && (
+        <div className="text-center mb-6">
+          <button
+            className="kid-button bg-yellow-500 hover:bg-yellow-600 text-2xl px-12 py-4"
+            onClick={startGame}
+          >
+            🎯 Start Game!
+          </button>
+        </div>
+      )}
 
       {/* Game Board */}
       <div className="mb-6">
