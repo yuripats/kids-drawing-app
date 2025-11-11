@@ -26,43 +26,43 @@ const ColorBlocksPage: React.FC<ColorBlocksPageProps> = ({ onNavigateHome }) => 
   };
 
   return (
-    <div className="p-4 min-h-screen bg-gradient-to-b from-purple-100 to-pink-100">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-4">
-        <h1 className="text-3xl font-bold text-purple-800">🎨 Color Blocks</h1>
+    <div className="min-h-screen bg-gradient-to-b from-purple-100 to-pink-100 pb-4">
+      {/* Compact Header - Mobile First */}
+      <div className="sticky top-0 z-10 bg-purple-500 shadow-md px-3 py-2 flex items-center justify-between">
+        <h1 className="text-xl font-bold text-white">🎨 Color Blocks</h1>
         <button
-          className="kid-button text-sm bg-purple-500 hover:bg-purple-600"
+          className="px-3 py-1 bg-white text-purple-700 rounded-lg font-semibold text-sm hover:bg-purple-50 active:bg-purple-100"
           onClick={onNavigateHome}
         >
           ← Home
         </button>
       </div>
 
-      {/* Score Display */}
-      <div className="kid-card bg-white mb-4">
-        <div className="flex justify-between items-center">
+      {/* Score Display - Compact */}
+      <div className="px-3 py-2 bg-white shadow-sm border-b border-gray-200">
+        <div className="flex justify-around items-center text-center">
           <div>
-            <p className="text-lg font-semibold text-purple-700">Score</p>
-            <p className="text-3xl font-bold text-purple-900">{gameState.score}</p>
+            <p className="text-xs font-semibold text-purple-700">Score</p>
+            <p className="text-xl font-bold text-purple-900">{gameState.score}</p>
           </div>
           <div>
-            <p className="text-lg font-semibold text-pink-700">High Score</p>
-            <p className="text-3xl font-bold text-pink-900">{gameState.highScore}</p>
+            <p className="text-xs font-semibold text-pink-700">High Score</p>
+            <p className="text-xl font-bold text-pink-900">{gameState.highScore}</p>
           </div>
           <div>
-            <p className="text-lg font-semibold text-indigo-700">Moves</p>
-            <p className="text-3xl font-bold text-indigo-900">{gameState.moves}</p>
+            <p className="text-xs font-semibold text-indigo-700">Moves</p>
+            <p className="text-xl font-bold text-indigo-900">{gameState.moves}</p>
           </div>
         </div>
       </div>
 
-      {/* Message Display */}
-      <div className="kid-card bg-gradient-to-r from-yellow-100 to-yellow-200 mb-4 text-center">
-        <p className="text-xl font-bold text-yellow-900">{gameState.message}</p>
+      {/* Message Display - Compact */}
+      <div className="px-3 py-2 bg-yellow-100 border-b border-yellow-200">
+        <p className="text-sm font-semibold text-yellow-900 text-center">{gameState.message}</p>
       </div>
 
-      {/* Game Board */}
-      <div className="flex justify-center mb-4">
+      {/* Game Board - Centered and Prominent */}
+      <div className="flex justify-center py-4 px-2">
         <ColorBlocksBoard
           gameState={gameState}
           onBlockClick={controls.handleBlockClick}
@@ -71,29 +71,31 @@ const ColorBlocksPage: React.FC<ColorBlocksPageProps> = ({ onNavigateHome }) => 
         />
       </div>
 
-      {/* Controls */}
-      <div className="flex justify-center gap-4 mb-4">
-        <button
-          className="kid-button bg-green-500 hover:bg-green-600 active:bg-green-700"
-          onClick={controls.resetGame}
-        >
-          🔄 New Game
-        </button>
-        <button
-          className="kid-button bg-blue-500 hover:bg-blue-600 active:bg-blue-700"
-          onClick={() => {
-            setTempConfig(config);
-            setShowSettings(!showSettings);
-          }}
-        >
-          ⚙️ Settings
-        </button>
+      {/* Compact Controls */}
+      <div className="px-3 pb-3">
+        <div className="flex gap-2 justify-center">
+          <button
+            className="flex-1 max-w-[200px] py-2 px-4 bg-green-500 hover:bg-green-600 active:bg-green-700 text-white font-bold rounded-lg shadow-md"
+            onClick={controls.resetGame}
+          >
+            🔄 New Game
+          </button>
+          <button
+            className="flex-1 max-w-[200px] py-2 px-4 bg-blue-500 hover:bg-blue-600 active:bg-blue-700 text-white font-bold rounded-lg shadow-md"
+            onClick={() => {
+              setTempConfig(config);
+              setShowSettings(!showSettings);
+            }}
+          >
+            ⚙️ Settings
+          </button>
+        </div>
       </div>
 
-      {/* Settings Panel */}
+      {/* Settings Panel - Compact */}
       {showSettings && (
-        <div className="kid-card bg-white mb-4">
-          <h2 className="text-2xl font-bold text-blue-800 mb-4">⚙️ Game Settings</h2>
+        <div className="mx-3 mb-4 bg-white rounded-lg shadow-md p-4">
+          <h2 className="text-xl font-bold text-blue-800 mb-3">⚙️ Settings</h2>
 
           <div className="space-y-4">
             {/* Grid Width */}
@@ -175,35 +177,37 @@ const ColorBlocksPage: React.FC<ColorBlocksPageProps> = ({ onNavigateHome }) => 
         </div>
       )}
 
-      {/* Instructions */}
-      <div className="kid-card bg-white">
-        <h2 className="text-2xl font-bold text-purple-800 mb-3">📖 How to Play</h2>
-        <ul className="space-y-2 text-lg text-gray-700">
-          <li className="flex items-start">
-            <span className="text-2xl mr-2">1️⃣</span>
-            <span>Click or tap on a colored block</span>
-          </li>
-          <li className="flex items-start">
-            <span className="text-2xl mr-2">2️⃣</span>
-            <span>All connected blocks of the same color will be highlighted</span>
-          </li>
-          <li className="flex items-start">
-            <span className="text-2xl mr-2">3️⃣</span>
-            <span>You need at least 2 connected blocks to remove them</span>
-          </li>
-          <li className="flex items-start">
-            <span className="text-2xl mr-2">4️⃣</span>
-            <span>Bigger groups = more points! (blocks² × 10)</span>
-          </li>
-          <li className="flex items-start">
-            <span className="text-2xl mr-2">♾️</span>
-            <span className="font-semibold">The game never ends - new blocks fill the empty spaces!</span>
-          </li>
-          <li className="flex items-start">
-            <span className="text-2xl mr-2">🎯</span>
-            <span className="font-semibold">Goal: Get the highest score possible!</span>
-          </li>
-        </ul>
+      {/* Instructions - Collapsible on Mobile */}
+      <div className="mx-3 mb-4">
+        <details className="bg-white rounded-lg shadow-md">
+          <summary className="p-3 font-bold text-purple-800 cursor-pointer hover:bg-purple-50 rounded-lg">
+            📖 How to Play
+          </summary>
+          <div className="p-3 pt-0">
+            <ul className="space-y-1 text-sm text-gray-700">
+              <li className="flex items-start">
+                <span className="text-lg mr-2">1️⃣</span>
+                <span>Tap a colored block</span>
+              </li>
+              <li className="flex items-start">
+                <span className="text-lg mr-2">2️⃣</span>
+                <span>Connected blocks highlight</span>
+              </li>
+              <li className="flex items-start">
+                <span className="text-lg mr-2">3️⃣</span>
+                <span>Need 2+ blocks to remove</span>
+              </li>
+              <li className="flex items-start">
+                <span className="text-lg mr-2">4️⃣</span>
+                <span>Bigger groups = more points!</span>
+              </li>
+              <li className="flex items-start">
+                <span className="text-lg mr-2">♾️</span>
+                <span className="font-semibold">Endless mode!</span>
+              </li>
+            </ul>
+          </div>
+        </details>
       </div>
     </div>
   );
