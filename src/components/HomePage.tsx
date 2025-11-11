@@ -13,9 +13,10 @@ interface HomePageProps {
   onNavigateToMemoryMatch: () => void;
   onNavigateToDrawingChallenge: () => void;
   onNavigateToPopBalloons: () => void;
+  onNavigateToSimonSays: () => void;
 }
 
-function HomePage({ onNavigateToDrawing, onNavigateToStencil, onNavigateToColorBlocks, onNavigateToSudoku, onNavigateToTetris, onNavigateToJellyVolleyball, onNavigateToSnake, onNavigateToMemoryMatch, onNavigateToDrawingChallenge, onNavigateToPopBalloons }: HomePageProps) {
+function HomePage({ onNavigateToDrawing, onNavigateToStencil, onNavigateToColorBlocks, onNavigateToSudoku, onNavigateToTetris, onNavigateToJellyVolleyball, onNavigateToSnake, onNavigateToMemoryMatch, onNavigateToDrawingChallenge, onNavigateToPopBalloons, onNavigateToSimonSays }: HomePageProps) {
   const [isExcited, setIsExcited] = useState(false);
   const [showStencils, setShowStencils] = useState(false);
 
@@ -168,6 +169,16 @@ function HomePage({ onNavigateToDrawing, onNavigateToStencil, onNavigateToColorB
             >
               <div className="text-5xl mb-2">🎯</div>
               <div className="text-white font-bold text-lg">Pop Balloons</div>
+            </button>
+
+            {/* Simon Says - NEW! */}
+            <button
+              className="kid-card bg-indigo-500 hover:bg-indigo-600 active:bg-indigo-700 transition-colors duration-200 p-6 text-center cursor-pointer border-2 border-transparent hover:border-indigo-700"
+              onClick={() => onNavigateToSimonSays()}
+              onTouchStart={() => setIsExcited(true)}
+            >
+              <div className="text-5xl mb-2">🎵</div>
+              <div className="text-white font-bold text-lg">Simon Says</div>
             </button>
           </div>
         </div>

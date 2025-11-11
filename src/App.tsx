@@ -10,8 +10,9 @@ import SnakePage from './components/Games/Snake/SnakePage';
 import MemoryMatchPage from './components/Games/MemoryMatch/MemoryMatchPage';
 import DrawingChallengePage from './components/Games/DrawingChallenge/DrawingChallengePage';
 import PopBalloonsPage from './components/Games/PopBalloons/PopBalloonsPage';
+import SimonSaysPage from './components/Games/SimonSays/SimonSaysPage';
 
-type AppPage = 'home' | 'draw' | 'stencil' | 'colorblocks' | 'sudoku' | 'tetris' | 'jellyvolleyball' | 'snake' | 'memoryMatch' | 'drawingChallenge' | 'popBalloons';
+type AppPage = 'home' | 'draw' | 'stencil' | 'colorblocks' | 'sudoku' | 'tetris' | 'jellyvolleyball' | 'snake' | 'memoryMatch' | 'drawingChallenge' | 'popBalloons' | 'simonSays';
 
 function App() {
   const [currentPage, setCurrentPage] = useState<AppPage>('home');
@@ -41,6 +42,7 @@ function App() {
             onNavigateToMemoryMatch={() => navigateTo('memoryMatch')}
             onNavigateToDrawingChallenge={() => navigateTo('drawingChallenge')}
             onNavigateToPopBalloons={() => navigateTo('popBalloons')}
+            onNavigateToSimonSays={() => navigateTo('simonSays')}
           />
         );
       case 'draw':
@@ -82,6 +84,10 @@ function App() {
         return (
           <PopBalloonsPage onNavigateHome={() => navigateTo('home')} />
         );
+      case 'simonSays':
+        return (
+          <SimonSaysPage onNavigateHome={() => navigateTo('home')} />
+        );
       default:
         return (
 <HomePage
@@ -95,6 +101,7 @@ function App() {
             onNavigateToMemoryMatch={() => navigateTo('memoryMatch')}
             onNavigateToDrawingChallenge={() => navigateTo('drawingChallenge')}
             onNavigateToPopBalloons={() => navigateTo('popBalloons')}
+            onNavigateToSimonSays={() => navigateTo('simonSays')}
           />
         );
     }

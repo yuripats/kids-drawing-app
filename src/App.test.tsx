@@ -27,6 +27,7 @@ describe('HomePage', () => {
     onNavigateToMemoryMatch: vi.fn(),
     onNavigateToDrawingChallenge: vi.fn(),
     onNavigateToPopBalloons: vi.fn(),
+    onNavigateToSimonSays: vi.fn(),
   }
 
   it('renders home page content', () => {
