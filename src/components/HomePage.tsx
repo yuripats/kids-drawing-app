@@ -5,14 +5,14 @@ import { Stencil } from '../types/Stencil';
 interface HomePageProps {
   onNavigateToDrawing: () => void;
   onNavigateToStencil: (stencil: Stencil) => void;
-  onNavigateToGame: () => void;
+  onNavigateToColorBlocks: () => void;
   onNavigateToSudoku: () => void;
   onNavigateToTetris: () => void;
   onNavigateToJellyVolleyball: () => void;
   onNavigateToSnake: () => void;
 }
 
-function HomePage({ onNavigateToDrawing, onNavigateToStencil, onNavigateToGame, onNavigateToSudoku, onNavigateToTetris, onNavigateToJellyVolleyball, onNavigateToSnake }: HomePageProps) {
+function HomePage({ onNavigateToDrawing, onNavigateToStencil, onNavigateToColorBlocks, onNavigateToSudoku, onNavigateToTetris, onNavigateToJellyVolleyball, onNavigateToSnake }: HomePageProps) {
   const [isExcited, setIsExcited] = useState(false);
   const [showStencils, setShowStencils] = useState(false);
 
@@ -78,12 +78,12 @@ function HomePage({ onNavigateToDrawing, onNavigateToStencil, onNavigateToGame, 
             {isExcited ? 'So Excited!' : 'Tell Me More!'}
           </button>
 
-<button 
+<button
             className="kid-button bg-green-500 hover:bg-green-600 active:bg-green-700 text-xl"
-            onClick={() => onNavigateToGame()}
+            onClick={() => onNavigateToColorBlocks()}
             onTouchStart={() => setIsExcited(true)}
           >
-            🎮 Color Blocks Game
+            🎨 Color Blocks
           </button>
 
           <button 
