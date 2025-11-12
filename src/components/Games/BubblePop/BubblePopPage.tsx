@@ -3,9 +3,17 @@
  * Relaxing bubble popping game for ages 3+
  */
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useBubblePop } from '../../../hooks/useBubblePop';
 import GameLayout from '../../shared/GameLayout';
+
+interface Particle {
+  id: string;
+  x: number;
+  y: number;
+  color: string;
+  angle: number;
+}
 
 interface BubblePopPageProps {
   onNavigateHome: () => void;
@@ -13,8 +21,86 @@ interface BubblePopPageProps {
 
 const BubblePopPage: React.FC<BubblePopPageProps> = ({ onNavigateHome }) => {
   const { gameState, popBubble, togglePause, resetGame } = useBubblePop();
+  const [particles, setParticles] = useState<Particle[]>([]);
 
   const { bubbles, score, bubblesPopped, gameStatus } = gameState;
+
+  // Create particle burst effect when bubble pops
+  const createParticles = (x: number, y: number, size: number, color: string) => {
+    const particleCount = 8;
+    const newParticles: Particle[] = [];
+
+    for (let i = 0; i < particleCount; i++) {
+      const angle = (Math.PI * 2 * i) / particleCount;
+      newParticles.push({
+        id: `particle-${Date.now()}-${i}`,
+        x: x + size / 2,
+        y: y + size / 2,
+        color,
+        angle
+      });
+    }
+
+    setParticles(prev => [...prev, ...newParticles]);
+
+    // Remove particles after animation
+    setTimeout(() => {
+      setParticles(prev => prev.filter(p => !newParticles.find(np => np.id === p.id)));
+    }, 600);
+  };
+
+  const handleBubblePop = (bubbleId: string) => {
+    const bubble = bubbles.find(b => b.id === bubbleId);
+    if (bubble && !bubble.popping) {
+      createParticles(bubble.x, bubble.y, bubble.size, bubble.color);
+      popBubble(bubbleId);
+    }
+  };
+
+  // Inject animation styles
+  useEffect(() => {
+    const styleId = 'bubble-pop-animations';
+    if (!document.getElementById(styleId)) {
+      const style = document.createElement('style');
+      style.id = styleId;
+      style.textContent = `
+        @keyframes bubble-burst {
+          0% {
+            transform: scale(1);
+            opacity: 0.8;
+          }
+          50% {
+            transform: scale(1.3);
+            opacity: 0.6;
+          }
+          100% {
+            transform: scale(0);
+            opacity: 0;
+          }
+        }
+
+        @keyframes particle-burst {
+          0% {
+            transform: translate(0, 0) scale(1);
+            opacity: 1;
+          }
+          100% {
+            transform: translate(var(--tx), var(--ty)) scale(0);
+            opacity: 0;
+          }
+        }
+
+        .bubble-popping {
+          animation: bubble-burst 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        .particle {
+          animation: particle-burst 0.6s ease-out forwards;
+        }
+      `;
+      document.head.appendChild(style);
+    }
+  }, []);
 
   const headerActions = (
     <>
@@ -69,20 +155,49 @@ const BubblePopPage: React.FC<BubblePopPageProps> = ({ onNavigateHome }) => {
         {bubbles.map(bubble => (
           <button
             key={bubble.id}
-            onClick={() => popBubble(bubble.id)}
-            className="absolute rounded-full transition-transform hover:scale-110 cursor-pointer shadow-lg"
+            onClick={() => handleBubblePop(bubble.id)}
+            className={`
+              absolute rounded-full cursor-pointer shadow-lg
+              ${bubble.popping ? 'bubble-popping' : 'transition-transform hover:scale-110 active:scale-95'}
+            `}
             style={{
               left: `${bubble.x}px`,
               bottom: `${bubble.y}px`,
               width: `${bubble.size}px`,
               height: `${bubble.size}px`,
               backgroundColor: bubble.color,
-              opacity: 0.8,
-              border: '3px solid rgba(255,255,255,0.5)'
+              opacity: bubble.popping ? 0 : 0.8,
+              border: '3px solid rgba(255,255,255,0.5)',
+              pointerEvents: bubble.popping ? 'none' : 'auto'
             }}
             aria-label="Pop bubble"
+            disabled={bubble.popping}
           />
         ))}
+
+        {/* Particle effects */}
+        {particles.map(particle => {
+          const distance = 60;
+          const tx = Math.cos(particle.angle) * distance;
+          const ty = Math.sin(particle.angle) * distance;
+
+          return (
+            <div
+              key={particle.id}
+              className="particle absolute rounded-full pointer-events-none"
+              style={{
+                left: `${particle.x}px`,
+                bottom: `${particle.y}px`,
+                width: '12px',
+                height: '12px',
+                backgroundColor: particle.color,
+                // @ts-expect-error - CSS custom properties
+                '--tx': `${tx}px`,
+                '--ty': `${ty}px`
+              }}
+            />
+          );
+        })}
 
         {bubbles.length === 0 && gameStatus === 'playing' && (
           <div className="absolute inset-0 flex items-center justify-center">

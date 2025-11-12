@@ -37,13 +37,26 @@ export const useBubblePop = () => {
   const popBubble = useCallback((bubbleId: string) => {
     setGameState(prev => {
       const bubble = prev.bubbles.find(b => b.id === bubbleId);
-      if (!bubble) return prev;
+      if (!bubble || bubble.popping) return prev;
 
       playSound('pop');
 
+      // Mark bubble as popping
+      const updatedBubbles = prev.bubbles.map(b =>
+        b.id === bubbleId ? { ...b, popping: true } : b
+      );
+
+      // Remove bubble after animation completes (500ms)
+      setTimeout(() => {
+        setGameState(current => ({
+          ...current,
+          bubbles: current.bubbles.filter(b => b.id !== bubbleId)
+        }));
+      }, 500);
+
       return {
         ...prev,
-        bubbles: prev.bubbles.filter(b => b.id !== bubbleId),
+        bubbles: updatedBubbles,
         score: prev.score + Math.floor(bubble.size / 10),
         bubblesPopped: prev.bubblesPopped + 1
       };

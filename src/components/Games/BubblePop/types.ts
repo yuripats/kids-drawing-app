@@ -11,6 +11,7 @@ export interface Bubble {
   size: number;
   color: string;
   speed: number;
+  popping?: boolean;
 }
 
 export interface BubblePopState {
