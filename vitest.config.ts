@@ -1,20 +1,14 @@
 import { defineConfig } from 'vitest/config'
 import react from '@vitejs/plugin-react'
-import { execSync } from 'child_process'
 
-// Get git commit hash at build time
-const getGitHash = () => {
-  try {
-    return execSync('git rev-parse --short HEAD').toString().trim()
-  } catch (error) {
-    return 'dev'
-  }
-}
+// Get git commit hash from environment variable (set by GitHub Actions)
+// Falls back to 'test' for test environment
+const commitHash = process.env.VITE_COMMIT_HASH || 'test'
 
 export default defineConfig({
   plugins: [react()],
   define: {
-    __COMMIT_HASH__: JSON.stringify(getGitHash())
+    __COMMIT_HASH__: JSON.stringify(commitHash)
   },
   test: {
     environment: 'jsdom',
