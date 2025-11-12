@@ -33,7 +33,9 @@ jobs:
         run: npm run test -- --run
       
       - name: Build application
-        run: npm run build
+        run: |
+          export VITE_COMMIT_HASH=${GITHUB_SHA:0:7}
+          npm run build
         
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
