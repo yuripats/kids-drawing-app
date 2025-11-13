@@ -22,9 +22,10 @@ interface HomePageProps {
   onNavigateToBreakout: () => void;
   onNavigateToPacMan: () => void;
   onNavigateToSpaceInvaders: () => void;
+  onNavigateToEndlessRunner: () => void;
 }
 
-function HomePage({ onNavigateToDrawing, onNavigateToStencil, onNavigateToColorBlocks, onNavigateToSudoku, onNavigateToTetris, onNavigateToJellyVolleyball, onNavigateToSnake, onNavigateToMemoryMatch, onNavigateToDrawingChallenge, onNavigateToPopBalloons, onNavigateToSimonSays, onNavigateToBubblePop, onNavigateToColorMixer, onNavigateToMathFacts, onNavigateToShapeSorting, onNavigateToFlappyBird, onNavigateToBreakout, onNavigateToPacMan, onNavigateToSpaceInvaders }: HomePageProps) {
+function HomePage({ onNavigateToDrawing, onNavigateToStencil, onNavigateToColorBlocks, onNavigateToSudoku, onNavigateToTetris, onNavigateToJellyVolleyball, onNavigateToSnake, onNavigateToMemoryMatch, onNavigateToDrawingChallenge, onNavigateToPopBalloons, onNavigateToSimonSays, onNavigateToBubblePop, onNavigateToColorMixer, onNavigateToMathFacts, onNavigateToShapeSorting, onNavigateToFlappyBird, onNavigateToBreakout, onNavigateToPacMan, onNavigateToSpaceInvaders, onNavigateToEndlessRunner }: HomePageProps) {
   const [isExcited, setIsExcited] = useState(false);
   const [showStencils, setShowStencils] = useState(false);
 
@@ -267,6 +268,16 @@ function HomePage({ onNavigateToDrawing, onNavigateToStencil, onNavigateToColorB
             >
               <div className="text-5xl mb-2">👾</div>
               <div className="text-white font-bold text-lg">Space Invaders</div>
+            </button>
+
+            {/* Endless Runner - NEW ARCADE GAME! */}
+            <button
+              className="kid-card bg-gradient-to-br from-blue-400 to-green-400 hover:from-blue-500 hover:to-green-500 active:from-blue-600 active:to-green-600 transition-colors duration-200 p-6 text-center cursor-pointer border-2 border-transparent hover:border-green-600"
+              onClick={() => onNavigateToEndlessRunner()}
+              onTouchStart={() => setIsExcited(true)}
+            >
+              <div className="text-5xl mb-2">🏃</div>
+              <div className="text-white font-bold text-lg">Endless Runner</div>
             </button>
           </div>
         </div>

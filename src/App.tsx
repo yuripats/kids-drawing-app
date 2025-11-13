@@ -19,8 +19,9 @@ import FlappyBirdPage from './components/Games/FlappyBird/FlappyBirdPage';
 import BreakoutPage from './components/Games/Breakout/BreakoutPage';
 import PacManPage from './components/Games/PacMan/PacManPage';
 import SpaceInvadersPage from './components/Games/SpaceInvaders/SpaceInvadersPage';
+import EndlessRunnerPage from './components/Games/EndlessRunner/EndlessRunnerPage';
 
-type AppPage = 'home' | 'draw' | 'stencil' | 'colorblocks' | 'sudoku' | 'tetris' | 'jellyvolleyball' | 'snake' | 'memoryMatch' | 'drawingChallenge' | 'popBalloons' | 'simonSays' | 'bubblePop' | 'colorMixer' | 'mathFacts' | 'shapeSorting' | 'flappyBird' | 'breakout' | 'pacman' | 'spaceInvaders';
+type AppPage = 'home' | 'draw' | 'stencil' | 'colorblocks' | 'sudoku' | 'tetris' | 'jellyvolleyball' | 'snake' | 'memoryMatch' | 'drawingChallenge' | 'popBalloons' | 'simonSays' | 'bubblePop' | 'colorMixer' | 'mathFacts' | 'shapeSorting' | 'flappyBird' | 'breakout' | 'pacman' | 'spaceInvaders' | 'endlessRunner';
 
 function App() {
   const [currentPage, setCurrentPage] = useState<AppPage>('home');
@@ -59,6 +60,7 @@ function App() {
             onNavigateToBreakout={() => navigateTo('breakout')}
             onNavigateToPacMan={() => navigateTo('pacman')}
             onNavigateToSpaceInvaders={() => navigateTo('spaceInvaders')}
+            onNavigateToEndlessRunner={() => navigateTo('endlessRunner')}
           />
         );
       case 'draw':
@@ -136,6 +138,10 @@ function App() {
         return (
           <SpaceInvadersPage onNavigateHome={() => navigateTo('home')} />
         );
+      case 'endlessRunner':
+        return (
+          <EndlessRunnerPage onNavigateHome={() => navigateTo('home')} />
+        );
       default:
         return (
 <HomePage
@@ -158,6 +164,7 @@ function App() {
             onNavigateToBreakout={() => navigateTo('breakout')}
             onNavigateToPacMan={() => navigateTo('pacman')}
             onNavigateToSpaceInvaders={() => navigateTo('spaceInvaders')}
+            onNavigateToEndlessRunner={() => navigateTo('endlessRunner')}
           />
         );
     }
