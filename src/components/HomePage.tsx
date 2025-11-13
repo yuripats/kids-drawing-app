@@ -23,9 +23,10 @@ interface HomePageProps {
   onNavigateToPacMan: () => void;
   onNavigateToSpaceInvaders: () => void;
   onNavigateToEndlessRunner: () => void;
+  onNavigateToPong: () => void;
 }
 
-function HomePage({ onNavigateToDrawing, onNavigateToStencil, onNavigateToColorBlocks, onNavigateToSudoku, onNavigateToTetris, onNavigateToJellyVolleyball, onNavigateToSnake, onNavigateToMemoryMatch, onNavigateToDrawingChallenge, onNavigateToPopBalloons, onNavigateToSimonSays, onNavigateToBubblePop, onNavigateToColorMixer, onNavigateToMathFacts, onNavigateToShapeSorting, onNavigateToFlappyBird, onNavigateToBreakout, onNavigateToPacMan, onNavigateToSpaceInvaders, onNavigateToEndlessRunner }: HomePageProps) {
+function HomePage({ onNavigateToDrawing, onNavigateToStencil, onNavigateToColorBlocks, onNavigateToSudoku, onNavigateToTetris, onNavigateToJellyVolleyball, onNavigateToSnake, onNavigateToMemoryMatch, onNavigateToDrawingChallenge, onNavigateToPopBalloons, onNavigateToSimonSays, onNavigateToBubblePop, onNavigateToColorMixer, onNavigateToMathFacts, onNavigateToShapeSorting, onNavigateToFlappyBird, onNavigateToBreakout, onNavigateToPacMan, onNavigateToSpaceInvaders, onNavigateToEndlessRunner, onNavigateToPong }: HomePageProps) {
   const [isExcited, setIsExcited] = useState(false);
   const [showStencils, setShowStencils] = useState(false);
 
@@ -278,6 +279,16 @@ function HomePage({ onNavigateToDrawing, onNavigateToStencil, onNavigateToColorB
             >
               <div className="text-5xl mb-2">🏃</div>
               <div className="text-white font-bold text-lg">Endless Runner</div>
+            </button>
+
+            {/* Pong - NEW ARCADE GAME! */}
+            <button
+              className="kid-card bg-gradient-to-br from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 active:from-indigo-800 active:to-purple-800 transition-colors duration-200 p-6 text-center cursor-pointer border-2 border-transparent hover:border-purple-700"
+              onClick={() => onNavigateToPong()}
+              onTouchStart={() => setIsExcited(true)}
+            >
+              <div className="text-5xl mb-2">🏓</div>
+              <div className="text-white font-bold text-lg">Pong</div>
             </button>
           </div>
         </div>

@@ -20,8 +20,9 @@ import BreakoutPage from './components/Games/Breakout/BreakoutPage';
 import PacManPage from './components/Games/PacMan/PacManPage';
 import SpaceInvadersPage from './components/Games/SpaceInvaders/SpaceInvadersPage';
 import EndlessRunnerPage from './components/Games/EndlessRunner/EndlessRunnerPage';
+import PongPage from './components/Games/Pong/PongPage';
 
-type AppPage = 'home' | 'draw' | 'stencil' | 'colorblocks' | 'sudoku' | 'tetris' | 'jellyvolleyball' | 'snake' | 'memoryMatch' | 'drawingChallenge' | 'popBalloons' | 'simonSays' | 'bubblePop' | 'colorMixer' | 'mathFacts' | 'shapeSorting' | 'flappyBird' | 'breakout' | 'pacman' | 'spaceInvaders' | 'endlessRunner';
+type AppPage = 'home' | 'draw' | 'stencil' | 'colorblocks' | 'sudoku' | 'tetris' | 'jellyvolleyball' | 'snake' | 'memoryMatch' | 'drawingChallenge' | 'popBalloons' | 'simonSays' | 'bubblePop' | 'colorMixer' | 'mathFacts' | 'shapeSorting' | 'flappyBird' | 'breakout' | 'pacman' | 'spaceInvaders' | 'endlessRunner' | 'pong';
 
 function App() {
   const [currentPage, setCurrentPage] = useState<AppPage>('home');
@@ -60,7 +61,8 @@ function App() {
             onNavigateToBreakout={() => navigateTo('breakout')}
             onNavigateToPacMan={() => navigateTo('pacman')}
             onNavigateToSpaceInvaders={() => navigateTo('spaceInvaders')}
-            onNavigateToEndlessRunner={() => navigateTo('endlessRunner')}
+            onNavigateToEndlessRunner(() => navigateTo('endlessRunner')}
+            onNavigateToPong={() => navigateTo('pong')}
           />
         );
       case 'draw':
@@ -142,6 +144,10 @@ function App() {
         return (
           <EndlessRunnerPage onNavigateHome={() => navigateTo('home')} />
         );
+      case 'pong':
+        return (
+          <PongPage onNavigateHome={() => navigateTo('home')} />
+        );
       default:
         return (
 <HomePage
@@ -162,9 +168,10 @@ function App() {
             onNavigateToShapeSorting={() => navigateTo('shapeSorting')}
             onNavigateToFlappyBird={() => navigateTo('flappyBird')}
             onNavigateToBreakout={() => navigateTo('breakout')}
-            onNavigateToPacMan={() => navigateTo('pacman')}
+            onNavigateToPacMan(() => navigateTo('pacman')}
             onNavigateToSpaceInvaders={() => navigateTo('spaceInvaders')}
             onNavigateToEndlessRunner={() => navigateTo('endlessRunner')}
+            onNavigateToPong={() => navigateTo('pong')}
           />
         );
     }

@@ -37,6 +37,7 @@ describe('HomePage', () => {
     onNavigateToPacMan: vi.fn(),
     onNavigateToSpaceInvaders: vi.fn(),
     onNavigateToEndlessRunner: vi.fn(),
+    onNavigateToPong: vi.fn(),
   }
 
   it('renders home page content', () => {
