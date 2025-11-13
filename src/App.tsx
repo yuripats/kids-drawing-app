@@ -61,7 +61,7 @@ function App() {
             onNavigateToBreakout={() => navigateTo('breakout')}
             onNavigateToPacMan={() => navigateTo('pacman')}
             onNavigateToSpaceInvaders={() => navigateTo('spaceInvaders')}
-            onNavigateToEndlessRunner(() => navigateTo('endlessRunner')}
+            onNavigateToEndlessRunner={() => navigateTo('endlessRunner')}
             onNavigateToPong={() => navigateTo('pong')}
           />
         );
@@ -168,7 +168,7 @@ function App() {
             onNavigateToShapeSorting={() => navigateTo('shapeSorting')}
             onNavigateToFlappyBird={() => navigateTo('flappyBird')}
             onNavigateToBreakout={() => navigateTo('breakout')}
-            onNavigateToPacMan(() => navigateTo('pacman')}
+            onNavigateToPacMan={() => navigateTo('pacman')}
             onNavigateToSpaceInvaders={() => navigateTo('spaceInvaders')}
             onNavigateToEndlessRunner={() => navigateTo('endlessRunner')}
             onNavigateToPong={() => navigateTo('pong')}
