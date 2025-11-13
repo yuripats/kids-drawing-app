@@ -16,8 +16,9 @@ import ColorMixerPage from './components/Games/ColorMixer/ColorMixerPage';
 import MathFactsPage from './components/Games/MathFacts/MathFactsPage';
 import ShapeSortingPage from './components/Games/ShapeSorting/ShapeSortingPage';
 import FlappyBirdPage from './components/Games/FlappyBird/FlappyBirdPage';
+import BreakoutPage from './components/Games/Breakout/BreakoutPage';
 
-type AppPage = 'home' | 'draw' | 'stencil' | 'colorblocks' | 'sudoku' | 'tetris' | 'jellyvolleyball' | 'snake' | 'memoryMatch' | 'drawingChallenge' | 'popBalloons' | 'simonSays' | 'bubblePop' | 'colorMixer' | 'mathFacts' | 'shapeSorting' | 'flappyBird';
+type AppPage = 'home' | 'draw' | 'stencil' | 'colorblocks' | 'sudoku' | 'tetris' | 'jellyvolleyball' | 'snake' | 'memoryMatch' | 'drawingChallenge' | 'popBalloons' | 'simonSays' | 'bubblePop' | 'colorMixer' | 'mathFacts' | 'shapeSorting' | 'flappyBird' | 'breakout';
 
 function App() {
   const [currentPage, setCurrentPage] = useState<AppPage>('home');
@@ -53,6 +54,7 @@ function App() {
             onNavigateToMathFacts={() => navigateTo('mathFacts')}
             onNavigateToShapeSorting={() => navigateTo('shapeSorting')}
             onNavigateToFlappyBird={() => navigateTo('flappyBird')}
+            onNavigateToBreakout={() => navigateTo('breakout')}
           />
         );
       case 'draw':
@@ -118,6 +120,10 @@ function App() {
         return (
           <FlappyBirdPage onNavigateHome={() => navigateTo('home')} />
         );
+      case 'breakout':
+        return (
+          <BreakoutPage onNavigateHome={() => navigateTo('home')} />
+        );
       default:
         return (
 <HomePage
@@ -137,6 +143,7 @@ function App() {
             onNavigateToMathFacts={() => navigateTo('mathFacts')}
             onNavigateToShapeSorting={() => navigateTo('shapeSorting')}
             onNavigateToFlappyBird={() => navigateTo('flappyBird')}
+            onNavigateToBreakout={() => navigateTo('breakout')}
           />
         );
     }

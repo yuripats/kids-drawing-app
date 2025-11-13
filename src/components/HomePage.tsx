@@ -19,9 +19,10 @@ interface HomePageProps {
   onNavigateToMathFacts: () => void;
   onNavigateToShapeSorting: () => void;
   onNavigateToFlappyBird: () => void;
+  onNavigateToBreakout: () => void;
 }
 
-function HomePage({ onNavigateToDrawing, onNavigateToStencil, onNavigateToColorBlocks, onNavigateToSudoku, onNavigateToTetris, onNavigateToJellyVolleyball, onNavigateToSnake, onNavigateToMemoryMatch, onNavigateToDrawingChallenge, onNavigateToPopBalloons, onNavigateToSimonSays, onNavigateToBubblePop, onNavigateToColorMixer, onNavigateToMathFacts, onNavigateToShapeSorting, onNavigateToFlappyBird }: HomePageProps) {
+function HomePage({ onNavigateToDrawing, onNavigateToStencil, onNavigateToColorBlocks, onNavigateToSudoku, onNavigateToTetris, onNavigateToJellyVolleyball, onNavigateToSnake, onNavigateToMemoryMatch, onNavigateToDrawingChallenge, onNavigateToPopBalloons, onNavigateToSimonSays, onNavigateToBubblePop, onNavigateToColorMixer, onNavigateToMathFacts, onNavigateToShapeSorting, onNavigateToFlappyBird, onNavigateToBreakout }: HomePageProps) {
   const [isExcited, setIsExcited] = useState(false);
   const [showStencils, setShowStencils] = useState(false);
 
@@ -234,6 +235,16 @@ function HomePage({ onNavigateToDrawing, onNavigateToStencil, onNavigateToColorB
             >
               <div className="text-5xl mb-2">🐦</div>
               <div className="text-white font-bold text-lg">Flappy Bird</div>
+            </button>
+
+            {/* Breakout - NEW ARCADE GAME! */}
+            <button
+              className="kid-card bg-gradient-to-br from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 active:from-purple-700 active:to-indigo-800 transition-colors duration-200 p-6 text-center cursor-pointer border-2 border-transparent hover:border-indigo-800"
+              onClick={() => onNavigateToBreakout()}
+              onTouchStart={() => setIsExcited(true)}
+            >
+              <div className="text-5xl mb-2">🧱</div>
+              <div className="text-white font-bold text-lg">Breakout</div>
             </button>
           </div>
         </div>

@@ -33,6 +33,7 @@ describe('HomePage', () => {
     onNavigateToMathFacts: vi.fn(),
     onNavigateToShapeSorting: vi.fn(),
     onNavigateToFlappyBird: vi.fn(),
+    onNavigateToBreakout: vi.fn(),
   }
 
   it('renders home page content', () => {
