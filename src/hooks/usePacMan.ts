@@ -5,7 +5,6 @@ import { CLASSIC_MAZE, initializeMaze, isValidMove } from '../components/Games/P
 import { getNextGhostDirection } from '../components/Games/PacMan/ghostAI';
 
 export const usePacMan = (): [PacManState, GameControls] => {
-  const [gameState, setGameState] = useState<PacManState>(initializeGame());
   const pacmanIntervalRef = useRef<NodeJS.Timeout>();
   const ghostIntervalRef = useRef<NodeJS.Timeout>();
   const powerUpIntervalRef = useRef<NodeJS.Timeout>();
@@ -14,14 +13,14 @@ export const usePacMan = (): [PacManState, GameControls] => {
     return parseInt(localStorage.getItem('highScore_pacman') || '0', 10);
   }
 
-  function saveHighScore(score: number) {
-    const current = getHighScore();
+  const saveHighScore = useCallback((score: number) => {
+    const current = parseInt(localStorage.getItem('highScore_pacman') || '0', 10);
     if (score > current) {
       localStorage.setItem('highScore_pacman', score.toString());
     }
-  }
+  }, []);
 
-  function initializeGame(): PacManState {
+  const initializeGame = useCallback((): PacManState => {
     const { dots, powerPellets } = initializeMaze();
 
     const ghosts: Ghost[] = [
@@ -97,7 +96,9 @@ export const usePacMan = (): [PacManState, GameControls] => {
       powerUpTimer: 0,
       frightenedTimer: 0,
     };
-  }
+  }, []);
+
+  const [gameState, setGameState] = useState<PacManState>(() => initializeGame());
 
   // Move Pac-Man
   const movePacMan = useCallback(() => {

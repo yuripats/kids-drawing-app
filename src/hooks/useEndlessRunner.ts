@@ -3,7 +3,6 @@ import { EndlessRunnerState, GameControls, Obstacle, Cloud } from '../components
 import { GAME_CONSTANTS, OBSTACLE_COLORS } from '../components/Games/EndlessRunner/constants';
 
 export const useEndlessRunner = (): [EndlessRunnerState, GameControls] => {
-  const [gameState, setGameState] = useState<EndlessRunnerState>(initializeGame());
   const animationFrameRef = useRef<number>();
   const nextObstacleDistanceRef = useRef<number>(GAME_CONSTANTS.OBSTACLE_MIN_GAP);
 
@@ -11,35 +10,12 @@ export const useEndlessRunner = (): [EndlessRunnerState, GameControls] => {
     return parseInt(localStorage.getItem('highScore_endlessRunner') || '0', 10);
   }
 
-  function saveHighScore(score: number) {
-    const current = getHighScore();
+  const saveHighScore = useCallback((score: number) => {
+    const current = parseInt(localStorage.getItem('highScore_endlessRunner') || '0', 10);
     if (score > current) {
       localStorage.setItem('highScore_endlessRunner', score.toString());
     }
-  }
-
-  function initializeGame(): EndlessRunnerState {
-    return {
-      player: {
-        x: GAME_CONSTANTS.PLAYER_X,
-        y: GAME_CONSTANTS.GROUND_Y - GAME_CONSTANTS.PLAYER_HEIGHT,
-        width: GAME_CONSTANTS.PLAYER_WIDTH,
-        height: GAME_CONSTANTS.PLAYER_HEIGHT,
-        velocityY: 0,
-        isJumping: false,
-        isDucking: false,
-        color: GAME_CONSTANTS.PLAYER_COLOR,
-      },
-      obstacles: [],
-      clouds: createClouds(),
-      score: 0,
-      highScore: getHighScore(),
-      distance: 0,
-      gameStatus: 'ready',
-      speed: GAME_CONSTANTS.INITIAL_SPEED,
-      groundY: GAME_CONSTANTS.GROUND_Y,
-    };
-  }
+  }, []);
 
   function createClouds(): Cloud[] {
     const clouds: Cloud[] = [];
@@ -88,6 +64,31 @@ export const useEndlessRunner = (): [EndlessRunnerState, GameControls] => {
       color: OBSTACLE_COLORS[type],
     };
   }
+
+  const initializeGame = useCallback((): EndlessRunnerState => {
+    return {
+      player: {
+        x: GAME_CONSTANTS.PLAYER_X,
+        y: GAME_CONSTANTS.GROUND_Y - GAME_CONSTANTS.PLAYER_HEIGHT,
+        width: GAME_CONSTANTS.PLAYER_WIDTH,
+        height: GAME_CONSTANTS.PLAYER_HEIGHT,
+        velocityY: 0,
+        isJumping: false,
+        isDucking: false,
+        color: GAME_CONSTANTS.PLAYER_COLOR,
+      },
+      obstacles: [],
+      clouds: createClouds(),
+      score: 0,
+      highScore: getHighScore(),
+      distance: 0,
+      gameStatus: 'ready',
+      speed: GAME_CONSTANTS.INITIAL_SPEED,
+      groundY: GAME_CONSTANTS.GROUND_Y,
+    };
+  }, []);
+
+  const [gameState, setGameState] = useState<EndlessRunnerState>(() => initializeGame());
 
   // Check collision
   const checkCollision = useCallback((player: EndlessRunnerState['player'], obstacle: Obstacle): boolean => {

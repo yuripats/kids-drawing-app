@@ -4,7 +4,6 @@ import { GAME_CONSTANTS, BRICK_COLORS, POINTS } from '../components/Games/Breako
 import { LEVELS } from '../components/Games/Breakout/levels';
 
 export const useBreakout = (): [BreakoutState, GameControls] => {
-  const [gameState, setGameState] = useState<BreakoutState>(initializeGame());
   const animationFrameRef = useRef<number>();
   const mouseXRef = useRef<number>(GAME_CONSTANTS.CANVAS_WIDTH / 2);
 
@@ -12,36 +11,12 @@ export const useBreakout = (): [BreakoutState, GameControls] => {
     return parseInt(localStorage.getItem('highScore_breakout') || '0', 10);
   }
 
-  function saveHighScore(score: number) {
-    const current = getHighScore();
+  const saveHighScore = useCallback((score: number) => {
+    const current = parseInt(localStorage.getItem('highScore_breakout') || '0', 10);
     if (score > current) {
       localStorage.setItem('highScore_breakout', score.toString());
     }
-  }
-
-  function initializeGame(): BreakoutState {
-    return {
-      paddle: {
-        x: GAME_CONSTANTS.CANVAS_WIDTH / 2 - GAME_CONSTANTS.PADDLE_WIDTH / 2,
-        y: GAME_CONSTANTS.PADDLE_Y,
-        width: GAME_CONSTANTS.PADDLE_WIDTH,
-        height: GAME_CONSTANTS.PADDLE_HEIGHT,
-        speed: GAME_CONSTANTS.PADDLE_SPEED,
-        color: GAME_CONSTANTS.PADDLE_COLOR,
-        originalWidth: GAME_CONSTANTS.PADDLE_WIDTH,
-      },
-      balls: [createBall()],
-      bricks: generateBricks(0),
-      powerUps: [],
-      score: 0,
-      highScore: getHighScore(),
-      lives: GAME_CONSTANTS.INITIAL_LIVES,
-      level: 1,
-      gameStatus: 'ready',
-      combo: 0,
-      activePowerUps: [],
-    };
-  }
+  }, []);
 
   function createBall(stuck = true): Ball {
     return {
@@ -57,7 +32,7 @@ export const useBreakout = (): [BreakoutState, GameControls] => {
     };
   }
 
-  function generateBricks(level: number): Brick[][] {
+  const generateBricks = useCallback((level: number): Brick[][] => {
     const levelData = LEVELS[level % LEVELS.length];
     const bricks: Brick[][] = [];
 
@@ -91,7 +66,33 @@ export const useBreakout = (): [BreakoutState, GameControls] => {
     }
 
     return bricks;
-  }
+  }, []);
+
+  const initializeGame = useCallback((): BreakoutState => {
+    return {
+      paddle: {
+        x: GAME_CONSTANTS.CANVAS_WIDTH / 2 - GAME_CONSTANTS.PADDLE_WIDTH / 2,
+        y: GAME_CONSTANTS.PADDLE_Y,
+        width: GAME_CONSTANTS.PADDLE_WIDTH,
+        height: GAME_CONSTANTS.PADDLE_HEIGHT,
+        speed: GAME_CONSTANTS.PADDLE_SPEED,
+        color: GAME_CONSTANTS.PADDLE_COLOR,
+        originalWidth: GAME_CONSTANTS.PADDLE_WIDTH,
+      },
+      balls: [createBall()],
+      bricks: generateBricks(0),
+      powerUps: [],
+      score: 0,
+      highScore: getHighScore(),
+      lives: GAME_CONSTANTS.INITIAL_LIVES,
+      level: 1,
+      gameStatus: 'ready',
+      combo: 0,
+      activePowerUps: [],
+    };
+  }, [generateBricks]);
+
+  const [gameState, setGameState] = useState<BreakoutState>(() => initializeGame());
 
   function getMaxHitsForType(type: BrickType): number {
     switch (type) {

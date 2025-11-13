@@ -3,7 +3,6 @@ import { SpaceInvadersState, GameControls, Alien, Bullet, Barrier } from '../com
 import { GAME_CONSTANTS, ALIEN_COLORS } from '../components/Games/SpaceInvaders/constants';
 
 export const useSpaceInvaders = (): [SpaceInvadersState, GameControls] => {
-  const [gameState, setGameState] = useState<SpaceInvadersState>(initializeGame());
   const animationFrameRef = useRef<number>();
   const alienMoveIntervalRef = useRef<number>();
   const playerVelocityRef = useRef<number>(0);
@@ -13,14 +12,14 @@ export const useSpaceInvaders = (): [SpaceInvadersState, GameControls] => {
     return parseInt(localStorage.getItem('highScore_spaceInvaders') || '0', 10);
   }
 
-  function saveHighScore(score: number) {
-    const current = getHighScore();
+  const saveHighScore = useCallback((score: number) => {
+    const current = parseInt(localStorage.getItem('highScore_spaceInvaders') || '0', 10);
     if (score > current) {
       localStorage.setItem('highScore_spaceInvaders', score.toString());
     }
-  }
+  }, []);
 
-  function initializeGame(): SpaceInvadersState {
+  const initializeGame = useCallback((): SpaceInvadersState => {
     return {
       player: {
         x: GAME_CONSTANTS.CANVAS_WIDTH / 2 - GAME_CONSTANTS.PLAYER_WIDTH / 2,
@@ -42,7 +41,9 @@ export const useSpaceInvaders = (): [SpaceInvadersState, GameControls] => {
       alienMoveDownNext: false,
       lastAlienShot: 0,
     };
-  }
+  }, []);
+
+  const [gameState, setGameState] = useState<SpaceInvadersState>(() => initializeGame());
 
   function createAliens(_level: number): Alien[] {
     const aliens: Alien[] = [];

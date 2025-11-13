@@ -3,20 +3,6 @@ import { FlappyBirdState, GameControls, Pipe } from '../components/Games/FlappyB
 import { GAME_CONSTANTS } from '../components/Games/FlappyBird/constants';
 
 export const useFlappyBird = (): [FlappyBirdState, GameControls] => {
-  const [gameState, setGameState] = useState<FlappyBirdState>({
-    bird: {
-      y: GAME_CONSTANTS.BIRD_START_Y,
-      velocity: 0,
-      rotation: 0,
-      radius: GAME_CONSTANTS.BIRD_RADIUS,
-    },
-    pipes: [],
-    score: 0,
-    highScore: getHighScore(),
-    gameStatus: 'ready',
-    distanceTraveled: 0,
-  });
-
   const animationFrameRef = useRef<number>();
   const lastPipeXRef = useRef<number>(GAME_CONSTANTS.SPAWN_DISTANCE);
 
@@ -26,12 +12,30 @@ export const useFlappyBird = (): [FlappyBirdState, GameControls] => {
   }
 
   // Save high score to localStorage
-  function saveHighScore(score: number) {
-    const current = getHighScore();
+  const saveHighScore = useCallback((score: number) => {
+    const current = parseInt(localStorage.getItem('highScore_flappyBird') || '0', 10);
     if (score > current) {
       localStorage.setItem('highScore_flappyBird', score.toString());
     }
-  }
+  }, []);
+
+  const initializeGame = useCallback((): FlappyBirdState => {
+    return {
+      bird: {
+        y: GAME_CONSTANTS.BIRD_START_Y,
+        velocity: 0,
+        rotation: 0,
+        radius: GAME_CONSTANTS.BIRD_RADIUS,
+      },
+      pipes: [],
+      score: 0,
+      highScore: getHighScore(),
+      gameStatus: 'ready',
+      distanceTraveled: 0,
+    };
+  }, []);
+
+  const [gameState, setGameState] = useState<FlappyBirdState>(() => initializeGame());
 
   // Generate new pipe
   const generatePipe = useCallback((x: number): Pipe => {
@@ -188,20 +192,8 @@ export const useFlappyBird = (): [FlappyBirdState, GameControls] => {
   // Reset game
   const resetGame = useCallback(() => {
     lastPipeXRef.current = GAME_CONSTANTS.SPAWN_DISTANCE;
-    setGameState({
-      bird: {
-        y: GAME_CONSTANTS.BIRD_START_Y,
-        velocity: 0,
-        rotation: 0,
-        radius: GAME_CONSTANTS.BIRD_RADIUS,
-      },
-      pipes: [],
-      score: 0,
-      highScore: getHighScore(),
-      gameStatus: 'ready',
-      distanceTraveled: 0,
-    });
-  }, []);
+    setGameState(initializeGame());
+  }, [initializeGame]);
 
   // Pause game
   const pauseGame = useCallback(() => {
