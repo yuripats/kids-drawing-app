@@ -416,7 +416,7 @@ export const useBreakout = (): [BreakoutState, GameControls] => {
     });
 
     animationFrameRef.current = requestAnimationFrame(gameLoop);
-  }, [checkPaddleCollision, checkBrickCollision, spawnPowerUp, applyPowerUp]);
+  }, [checkPaddleCollision, checkBrickCollision, spawnPowerUp, applyPowerUp, saveHighScore]);
 
   // Controls
   const startGame = useCallback(() => {
@@ -461,7 +461,7 @@ export const useBreakout = (): [BreakoutState, GameControls] => {
 
   const resetGame = useCallback(() => {
     setGameState(initializeGame());
-  }, []);
+  }, [initializeGame]);
 
   const nextLevel = useCallback(() => {
     setGameState(prev => {
@@ -481,7 +481,7 @@ export const useBreakout = (): [BreakoutState, GameControls] => {
         gameStatus: 'ready',
       };
     });
-  }, []);
+  }, [generateBricks]);
 
   // Effect: Run game loop
   useEffect(() => {

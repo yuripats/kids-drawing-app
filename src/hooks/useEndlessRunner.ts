@@ -181,7 +181,7 @@ export const useEndlessRunner = (): [EndlessRunnerState, GameControls] => {
     });
 
     animationFrameRef.current = requestAnimationFrame(gameLoop);
-  }, [checkCollision]);
+  }, [checkCollision, saveHighScore]);
 
   // Controls
   const startGame = useCallback(() => {
@@ -201,7 +201,7 @@ export const useEndlessRunner = (): [EndlessRunnerState, GameControls] => {
   const resetGame = useCallback(() => {
     setGameState(initializeGame());
     nextObstacleDistanceRef.current = GAME_CONSTANTS.OBSTACLE_MIN_GAP;
-  }, []);
+  }, [initializeGame]);
 
   const jump = useCallback(() => {
     setGameState(prev => {

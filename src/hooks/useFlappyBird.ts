@@ -158,7 +158,7 @@ export const useFlappyBird = (): [FlappyBirdState, GameControls] => {
     });
 
     animationFrameRef.current = requestAnimationFrame(gameLoop);
-  }, [generatePipe, checkCollision]);
+  }, [generatePipe, checkCollision, saveHighScore]);
 
   // Start game
   const startGame = useCallback(() => {

@@ -230,7 +230,7 @@ export const useSpaceInvaders = (): [SpaceInvadersState, GameControls] => {
     });
 
     animationFrameRef.current = requestAnimationFrame(gameLoop);
-  }, [checkBarrierCollision]);
+  }, [checkBarrierCollision, saveHighScore]);
 
   // Alien movement (separate interval)
   const moveAliens = useCallback(() => {
@@ -288,7 +288,7 @@ export const useSpaceInvaders = (): [SpaceInvadersState, GameControls] => {
   const resetGame = useCallback(() => {
     setGameState(initializeGame());
     playerVelocityRef.current = 0;
-  }, []);
+  }, [initializeGame]);
 
   const nextLevel = useCallback(() => {
     setGameState(prev => {

@@ -257,7 +257,7 @@ export const usePacMan = (): [PacManState, GameControls] => {
         frightenedTimer: newFrightenedTimer,
       };
     });
-  }, []);
+  }, [saveHighScore]);
 
   // Move ghosts
   const moveGhosts = useCallback(() => {
@@ -359,7 +359,7 @@ export const usePacMan = (): [PacManState, GameControls] => {
 
   const resetGame = useCallback(() => {
     setGameState(initializeGame());
-  }, []);
+  }, [initializeGame]);
 
   const nextLevel = useCallback(() => {
     setGameState(prev => {
