@@ -20,9 +20,10 @@ interface HomePageProps {
   onNavigateToShapeSorting: () => void;
   onNavigateToFlappyBird: () => void;
   onNavigateToBreakout: () => void;
+  onNavigateToPacMan: () => void;
 }
 
-function HomePage({ onNavigateToDrawing, onNavigateToStencil, onNavigateToColorBlocks, onNavigateToSudoku, onNavigateToTetris, onNavigateToJellyVolleyball, onNavigateToSnake, onNavigateToMemoryMatch, onNavigateToDrawingChallenge, onNavigateToPopBalloons, onNavigateToSimonSays, onNavigateToBubblePop, onNavigateToColorMixer, onNavigateToMathFacts, onNavigateToShapeSorting, onNavigateToFlappyBird, onNavigateToBreakout }: HomePageProps) {
+function HomePage({ onNavigateToDrawing, onNavigateToStencil, onNavigateToColorBlocks, onNavigateToSudoku, onNavigateToTetris, onNavigateToJellyVolleyball, onNavigateToSnake, onNavigateToMemoryMatch, onNavigateToDrawingChallenge, onNavigateToPopBalloons, onNavigateToSimonSays, onNavigateToBubblePop, onNavigateToColorMixer, onNavigateToMathFacts, onNavigateToShapeSorting, onNavigateToFlappyBird, onNavigateToBreakout, onNavigateToPacMan }: HomePageProps) {
   const [isExcited, setIsExcited] = useState(false);
   const [showStencils, setShowStencils] = useState(false);
 
@@ -245,6 +246,16 @@ function HomePage({ onNavigateToDrawing, onNavigateToStencil, onNavigateToColorB
             >
               <div className="text-5xl mb-2">🧱</div>
               <div className="text-white font-bold text-lg">Breakout</div>
+            </button>
+
+            {/* Pac-Man - NEW ARCADE GAME! */}
+            <button
+              className="kid-card bg-gradient-to-br from-yellow-500 to-black hover:from-yellow-600 hover:to-gray-900 active:from-yellow-700 active:to-gray-800 transition-colors duration-200 p-6 text-center cursor-pointer border-2 border-transparent hover:border-black"
+              onClick={() => onNavigateToPacMan()}
+              onTouchStart={() => setIsExcited(true)}
+            >
+              <div className="text-5xl mb-2">🟡</div>
+              <div className="text-white font-bold text-lg">Pac-Man</div>
             </button>
           </div>
         </div>

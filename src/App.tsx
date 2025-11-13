@@ -17,8 +17,9 @@ import MathFactsPage from './components/Games/MathFacts/MathFactsPage';
 import ShapeSortingPage from './components/Games/ShapeSorting/ShapeSortingPage';
 import FlappyBirdPage from './components/Games/FlappyBird/FlappyBirdPage';
 import BreakoutPage from './components/Games/Breakout/BreakoutPage';
+import PacManPage from './components/Games/PacMan/PacManPage';
 
-type AppPage = 'home' | 'draw' | 'stencil' | 'colorblocks' | 'sudoku' | 'tetris' | 'jellyvolleyball' | 'snake' | 'memoryMatch' | 'drawingChallenge' | 'popBalloons' | 'simonSays' | 'bubblePop' | 'colorMixer' | 'mathFacts' | 'shapeSorting' | 'flappyBird' | 'breakout';
+type AppPage = 'home' | 'draw' | 'stencil' | 'colorblocks' | 'sudoku' | 'tetris' | 'jellyvolleyball' | 'snake' | 'memoryMatch' | 'drawingChallenge' | 'popBalloons' | 'simonSays' | 'bubblePop' | 'colorMixer' | 'mathFacts' | 'shapeSorting' | 'flappyBird' | 'breakout' | 'pacman';
 
 function App() {
   const [currentPage, setCurrentPage] = useState<AppPage>('home');
@@ -55,6 +56,7 @@ function App() {
             onNavigateToShapeSorting={() => navigateTo('shapeSorting')}
             onNavigateToFlappyBird={() => navigateTo('flappyBird')}
             onNavigateToBreakout={() => navigateTo('breakout')}
+            onNavigateToPacMan={() => navigateTo('pacman')}
           />
         );
       case 'draw':
@@ -124,6 +126,10 @@ function App() {
         return (
           <BreakoutPage onNavigateHome={() => navigateTo('home')} />
         );
+      case 'pacman':
+        return (
+          <PacManPage onNavigateHome={() => navigateTo('home')} />
+        );
       default:
         return (
 <HomePage
@@ -144,6 +150,7 @@ function App() {
             onNavigateToShapeSorting={() => navigateTo('shapeSorting')}
             onNavigateToFlappyBird={() => navigateTo('flappyBird')}
             onNavigateToBreakout={() => navigateTo('breakout')}
+            onNavigateToPacMan={() => navigateTo('pacman')}
           />
         );
     }
