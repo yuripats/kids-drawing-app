@@ -18,9 +18,10 @@ interface HomePageProps {
   onNavigateToColorMixer: () => void;
   onNavigateToMathFacts: () => void;
   onNavigateToShapeSorting: () => void;
+  onNavigateToFlappyBird: () => void;
 }
 
-function HomePage({ onNavigateToDrawing, onNavigateToStencil, onNavigateToColorBlocks, onNavigateToSudoku, onNavigateToTetris, onNavigateToJellyVolleyball, onNavigateToSnake, onNavigateToMemoryMatch, onNavigateToDrawingChallenge, onNavigateToPopBalloons, onNavigateToSimonSays, onNavigateToBubblePop, onNavigateToColorMixer, onNavigateToMathFacts, onNavigateToShapeSorting }: HomePageProps) {
+function HomePage({ onNavigateToDrawing, onNavigateToStencil, onNavigateToColorBlocks, onNavigateToSudoku, onNavigateToTetris, onNavigateToJellyVolleyball, onNavigateToSnake, onNavigateToMemoryMatch, onNavigateToDrawingChallenge, onNavigateToPopBalloons, onNavigateToSimonSays, onNavigateToBubblePop, onNavigateToColorMixer, onNavigateToMathFacts, onNavigateToShapeSorting, onNavigateToFlappyBird }: HomePageProps) {
   const [isExcited, setIsExcited] = useState(false);
   const [showStencils, setShowStencils] = useState(false);
 
@@ -223,6 +224,16 @@ function HomePage({ onNavigateToDrawing, onNavigateToStencil, onNavigateToColorB
             >
               <div className="text-5xl mb-2">🎪</div>
               <div className="text-white font-bold text-lg">Shape Sorting</div>
+            </button>
+
+            {/* Flappy Bird - NEW ARCADE GAME! */}
+            <button
+              className="kid-card bg-gradient-to-br from-yellow-400 to-yellow-600 hover:from-yellow-500 hover:to-yellow-700 active:from-yellow-600 active:to-yellow-800 transition-colors duration-200 p-6 text-center cursor-pointer border-2 border-transparent hover:border-yellow-800"
+              onClick={() => onNavigateToFlappyBird()}
+              onTouchStart={() => setIsExcited(true)}
+            >
+              <div className="text-5xl mb-2">🐦</div>
+              <div className="text-white font-bold text-lg">Flappy Bird</div>
             </button>
           </div>
         </div>
