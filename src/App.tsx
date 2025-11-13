@@ -15,8 +15,14 @@ import BubblePopPage from './components/Games/BubblePop/BubblePopPage';
 import ColorMixerPage from './components/Games/ColorMixer/ColorMixerPage';
 import MathFactsPage from './components/Games/MathFacts/MathFactsPage';
 import ShapeSortingPage from './components/Games/ShapeSorting/ShapeSortingPage';
+import FlappyBirdPage from './components/Games/FlappyBird/FlappyBirdPage';
+import BreakoutPage from './components/Games/Breakout/BreakoutPage';
+import PacManPage from './components/Games/PacMan/PacManPage';
+import SpaceInvadersPage from './components/Games/SpaceInvaders/SpaceInvadersPage';
+import EndlessRunnerPage from './components/Games/EndlessRunner/EndlessRunnerPage';
+import PongPage from './components/Games/Pong/PongPage';
 
-type AppPage = 'home' | 'draw' | 'stencil' | 'colorblocks' | 'sudoku' | 'tetris' | 'jellyvolleyball' | 'snake' | 'memoryMatch' | 'drawingChallenge' | 'popBalloons' | 'simonSays' | 'bubblePop' | 'colorMixer' | 'mathFacts' | 'shapeSorting';
+type AppPage = 'home' | 'draw' | 'stencil' | 'colorblocks' | 'sudoku' | 'tetris' | 'jellyvolleyball' | 'snake' | 'memoryMatch' | 'drawingChallenge' | 'popBalloons' | 'simonSays' | 'bubblePop' | 'colorMixer' | 'mathFacts' | 'shapeSorting' | 'flappyBird' | 'breakout' | 'pacman' | 'spaceInvaders' | 'endlessRunner' | 'pong';
 
 function App() {
   const [currentPage, setCurrentPage] = useState<AppPage>('home');
@@ -51,6 +57,12 @@ function App() {
             onNavigateToColorMixer={() => navigateTo('colorMixer')}
             onNavigateToMathFacts={() => navigateTo('mathFacts')}
             onNavigateToShapeSorting={() => navigateTo('shapeSorting')}
+            onNavigateToFlappyBird={() => navigateTo('flappyBird')}
+            onNavigateToBreakout={() => navigateTo('breakout')}
+            onNavigateToPacMan={() => navigateTo('pacman')}
+            onNavigateToSpaceInvaders={() => navigateTo('spaceInvaders')}
+            onNavigateToEndlessRunner={() => navigateTo('endlessRunner')}
+            onNavigateToPong={() => navigateTo('pong')}
           />
         );
       case 'draw':
@@ -112,6 +124,30 @@ function App() {
         return (
           <ShapeSortingPage onNavigateHome={() => navigateTo('home')} />
         );
+      case 'flappyBird':
+        return (
+          <FlappyBirdPage onNavigateHome={() => navigateTo('home')} />
+        );
+      case 'breakout':
+        return (
+          <BreakoutPage onNavigateHome={() => navigateTo('home')} />
+        );
+      case 'pacman':
+        return (
+          <PacManPage onNavigateHome={() => navigateTo('home')} />
+        );
+      case 'spaceInvaders':
+        return (
+          <SpaceInvadersPage onNavigateHome={() => navigateTo('home')} />
+        );
+      case 'endlessRunner':
+        return (
+          <EndlessRunnerPage onNavigateHome={() => navigateTo('home')} />
+        );
+      case 'pong':
+        return (
+          <PongPage onNavigateHome={() => navigateTo('home')} />
+        );
       default:
         return (
 <HomePage
@@ -130,6 +166,12 @@ function App() {
             onNavigateToColorMixer={() => navigateTo('colorMixer')}
             onNavigateToMathFacts={() => navigateTo('mathFacts')}
             onNavigateToShapeSorting={() => navigateTo('shapeSorting')}
+            onNavigateToFlappyBird={() => navigateTo('flappyBird')}
+            onNavigateToBreakout={() => navigateTo('breakout')}
+            onNavigateToPacMan={() => navigateTo('pacman')}
+            onNavigateToSpaceInvaders={() => navigateTo('spaceInvaders')}
+            onNavigateToEndlessRunner={() => navigateTo('endlessRunner')}
+            onNavigateToPong={() => navigateTo('pong')}
           />
         );
     }

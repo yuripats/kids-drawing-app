@@ -18,9 +18,15 @@ interface HomePageProps {
   onNavigateToColorMixer: () => void;
   onNavigateToMathFacts: () => void;
   onNavigateToShapeSorting: () => void;
+  onNavigateToFlappyBird: () => void;
+  onNavigateToBreakout: () => void;
+  onNavigateToPacMan: () => void;
+  onNavigateToSpaceInvaders: () => void;
+  onNavigateToEndlessRunner: () => void;
+  onNavigateToPong: () => void;
 }
 
-function HomePage({ onNavigateToDrawing, onNavigateToStencil, onNavigateToColorBlocks, onNavigateToSudoku, onNavigateToTetris, onNavigateToJellyVolleyball, onNavigateToSnake, onNavigateToMemoryMatch, onNavigateToDrawingChallenge, onNavigateToPopBalloons, onNavigateToSimonSays, onNavigateToBubblePop, onNavigateToColorMixer, onNavigateToMathFacts, onNavigateToShapeSorting }: HomePageProps) {
+function HomePage({ onNavigateToDrawing, onNavigateToStencil, onNavigateToColorBlocks, onNavigateToSudoku, onNavigateToTetris, onNavigateToJellyVolleyball, onNavigateToSnake, onNavigateToMemoryMatch, onNavigateToDrawingChallenge, onNavigateToPopBalloons, onNavigateToSimonSays, onNavigateToBubblePop, onNavigateToColorMixer, onNavigateToMathFacts, onNavigateToShapeSorting, onNavigateToFlappyBird, onNavigateToBreakout, onNavigateToPacMan, onNavigateToSpaceInvaders, onNavigateToEndlessRunner, onNavigateToPong }: HomePageProps) {
   const [isExcited, setIsExcited] = useState(false);
   const [showStencils, setShowStencils] = useState(false);
 
@@ -223,6 +229,66 @@ function HomePage({ onNavigateToDrawing, onNavigateToStencil, onNavigateToColorB
             >
               <div className="text-5xl mb-2">🎪</div>
               <div className="text-white font-bold text-lg">Shape Sorting</div>
+            </button>
+
+            {/* Flappy Bird - NEW ARCADE GAME! */}
+            <button
+              className="kid-card bg-gradient-to-br from-yellow-400 to-yellow-600 hover:from-yellow-500 hover:to-yellow-700 active:from-yellow-600 active:to-yellow-800 transition-colors duration-200 p-6 text-center cursor-pointer border-2 border-transparent hover:border-yellow-800"
+              onClick={() => onNavigateToFlappyBird()}
+              onTouchStart={() => setIsExcited(true)}
+            >
+              <div className="text-5xl mb-2">🐦</div>
+              <div className="text-white font-bold text-lg">Flappy Bird</div>
+            </button>
+
+            {/* Breakout - NEW ARCADE GAME! */}
+            <button
+              className="kid-card bg-gradient-to-br from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 active:from-purple-700 active:to-indigo-800 transition-colors duration-200 p-6 text-center cursor-pointer border-2 border-transparent hover:border-indigo-800"
+              onClick={() => onNavigateToBreakout()}
+              onTouchStart={() => setIsExcited(true)}
+            >
+              <div className="text-5xl mb-2">🧱</div>
+              <div className="text-white font-bold text-lg">Breakout</div>
+            </button>
+
+            {/* Pac-Man - NEW ARCADE GAME! */}
+            <button
+              className="kid-card bg-gradient-to-br from-yellow-500 to-black hover:from-yellow-600 hover:to-gray-900 active:from-yellow-700 active:to-gray-800 transition-colors duration-200 p-6 text-center cursor-pointer border-2 border-transparent hover:border-black"
+              onClick={() => onNavigateToPacMan()}
+              onTouchStart={() => setIsExcited(true)}
+            >
+              <div className="text-5xl mb-2">🟡</div>
+              <div className="text-white font-bold text-lg">Pac-Man</div>
+            </button>
+
+            {/* Space Invaders - NEW ARCADE GAME! */}
+            <button
+              className="kid-card bg-gradient-to-br from-purple-600 to-green-500 hover:from-purple-700 hover:to-green-600 active:from-purple-800 active:to-green-700 transition-colors duration-200 p-6 text-center cursor-pointer border-2 border-transparent hover:border-green-700"
+              onClick={() => onNavigateToSpaceInvaders()}
+              onTouchStart={() => setIsExcited(true)}
+            >
+              <div className="text-5xl mb-2">👾</div>
+              <div className="text-white font-bold text-lg">Space Invaders</div>
+            </button>
+
+            {/* Endless Runner - NEW ARCADE GAME! */}
+            <button
+              className="kid-card bg-gradient-to-br from-blue-400 to-green-400 hover:from-blue-500 hover:to-green-500 active:from-blue-600 active:to-green-600 transition-colors duration-200 p-6 text-center cursor-pointer border-2 border-transparent hover:border-green-600"
+              onClick={() => onNavigateToEndlessRunner()}
+              onTouchStart={() => setIsExcited(true)}
+            >
+              <div className="text-5xl mb-2">🏃</div>
+              <div className="text-white font-bold text-lg">Endless Runner</div>
+            </button>
+
+            {/* Pong - NEW ARCADE GAME! */}
+            <button
+              className="kid-card bg-gradient-to-br from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 active:from-indigo-800 active:to-purple-800 transition-colors duration-200 p-6 text-center cursor-pointer border-2 border-transparent hover:border-purple-700"
+              onClick={() => onNavigateToPong()}
+              onTouchStart={() => setIsExcited(true)}
+            >
+              <div className="text-5xl mb-2">🏓</div>
+              <div className="text-white font-bold text-lg">Pong</div>
             </button>
           </div>
         </div>

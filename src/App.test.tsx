@@ -32,6 +32,12 @@ describe('HomePage', () => {
     onNavigateToColorMixer: vi.fn(),
     onNavigateToMathFacts: vi.fn(),
     onNavigateToShapeSorting: vi.fn(),
+    onNavigateToFlappyBird: vi.fn(),
+    onNavigateToBreakout: vi.fn(),
+    onNavigateToPacMan: vi.fn(),
+    onNavigateToSpaceInvaders: vi.fn(),
+    onNavigateToEndlessRunner: vi.fn(),
+    onNavigateToPong: vi.fn(),
   }
 
   it('renders home page content', () => {

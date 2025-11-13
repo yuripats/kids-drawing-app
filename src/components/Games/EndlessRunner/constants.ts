@@ -1,0 +1,49 @@
+export const GAME_CONSTANTS = {
+  // Canvas - Mobile-first
+  CANVAS_WIDTH: 400,
+  CANVAS_HEIGHT: 300,
+
+  // Player
+  PLAYER_WIDTH: 30,
+  PLAYER_HEIGHT: 40,
+  PLAYER_DUCK_HEIGHT: 25,
+  PLAYER_X: 50,
+  PLAYER_COLOR: '#4CAF50',
+
+  // Physics
+  GRAVITY: 0.8,
+  JUMP_FORCE: -15,
+  GROUND_Y: 240,
+
+  // Speed
+  INITIAL_SPEED: 5,
+  MAX_SPEED: 12,
+  SPEED_INCREMENT: 0.002,
+
+  // Obstacles
+  OBSTACLE_MIN_GAP: 400,
+  OBSTACLE_MAX_GAP: 600,
+  CACTUS_WIDTH: 20,
+  CACTUS_HEIGHT: 40,
+  ROCK_WIDTH: 25,
+  ROCK_HEIGHT: 25,
+  BIRD_WIDTH: 35,
+  BIRD_HEIGHT: 25,
+  BIRD_Y_POSITIONS: [180, 200, 220], // Different flying heights
+
+  // Scoring
+  POINTS_PER_DISTANCE: 1,
+  POINTS_PER_OBSTACLE: 10,
+
+  // Clouds
+  CLOUD_COUNT: 5,
+  CLOUD_MIN_WIDTH: 40,
+  CLOUD_MAX_WIDTH: 80,
+  CLOUD_SPEED_MULTIPLIER: 0.3,
+} as const;
+
+export const OBSTACLE_COLORS = {
+  cactus: '#2E7D32',
+  rock: '#5D4037',
+  bird: '#FF6B6B',
+} as const;
