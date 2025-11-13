@@ -18,8 +18,9 @@ import ShapeSortingPage from './components/Games/ShapeSorting/ShapeSortingPage';
 import FlappyBirdPage from './components/Games/FlappyBird/FlappyBirdPage';
 import BreakoutPage from './components/Games/Breakout/BreakoutPage';
 import PacManPage from './components/Games/PacMan/PacManPage';
+import SpaceInvadersPage from './components/Games/SpaceInvaders/SpaceInvadersPage';
 
-type AppPage = 'home' | 'draw' | 'stencil' | 'colorblocks' | 'sudoku' | 'tetris' | 'jellyvolleyball' | 'snake' | 'memoryMatch' | 'drawingChallenge' | 'popBalloons' | 'simonSays' | 'bubblePop' | 'colorMixer' | 'mathFacts' | 'shapeSorting' | 'flappyBird' | 'breakout' | 'pacman';
+type AppPage = 'home' | 'draw' | 'stencil' | 'colorblocks' | 'sudoku' | 'tetris' | 'jellyvolleyball' | 'snake' | 'memoryMatch' | 'drawingChallenge' | 'popBalloons' | 'simonSays' | 'bubblePop' | 'colorMixer' | 'mathFacts' | 'shapeSorting' | 'flappyBird' | 'breakout' | 'pacman' | 'spaceInvaders';
 
 function App() {
   const [currentPage, setCurrentPage] = useState<AppPage>('home');
@@ -57,6 +58,7 @@ function App() {
             onNavigateToFlappyBird={() => navigateTo('flappyBird')}
             onNavigateToBreakout={() => navigateTo('breakout')}
             onNavigateToPacMan={() => navigateTo('pacman')}
+            onNavigateToSpaceInvaders={() => navigateTo('spaceInvaders')}
           />
         );
       case 'draw':
@@ -130,6 +132,10 @@ function App() {
         return (
           <PacManPage onNavigateHome={() => navigateTo('home')} />
         );
+      case 'spaceInvaders':
+        return (
+          <SpaceInvadersPage onNavigateHome={() => navigateTo('home')} />
+        );
       default:
         return (
 <HomePage
@@ -151,6 +157,7 @@ function App() {
             onNavigateToFlappyBird={() => navigateTo('flappyBird')}
             onNavigateToBreakout={() => navigateTo('breakout')}
             onNavigateToPacMan={() => navigateTo('pacman')}
+            onNavigateToSpaceInvaders={() => navigateTo('spaceInvaders')}
           />
         );
     }

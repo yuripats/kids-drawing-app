@@ -21,9 +21,10 @@ interface HomePageProps {
   onNavigateToFlappyBird: () => void;
   onNavigateToBreakout: () => void;
   onNavigateToPacMan: () => void;
+  onNavigateToSpaceInvaders: () => void;
 }
 
-function HomePage({ onNavigateToDrawing, onNavigateToStencil, onNavigateToColorBlocks, onNavigateToSudoku, onNavigateToTetris, onNavigateToJellyVolleyball, onNavigateToSnake, onNavigateToMemoryMatch, onNavigateToDrawingChallenge, onNavigateToPopBalloons, onNavigateToSimonSays, onNavigateToBubblePop, onNavigateToColorMixer, onNavigateToMathFacts, onNavigateToShapeSorting, onNavigateToFlappyBird, onNavigateToBreakout, onNavigateToPacMan }: HomePageProps) {
+function HomePage({ onNavigateToDrawing, onNavigateToStencil, onNavigateToColorBlocks, onNavigateToSudoku, onNavigateToTetris, onNavigateToJellyVolleyball, onNavigateToSnake, onNavigateToMemoryMatch, onNavigateToDrawingChallenge, onNavigateToPopBalloons, onNavigateToSimonSays, onNavigateToBubblePop, onNavigateToColorMixer, onNavigateToMathFacts, onNavigateToShapeSorting, onNavigateToFlappyBird, onNavigateToBreakout, onNavigateToPacMan, onNavigateToSpaceInvaders }: HomePageProps) {
   const [isExcited, setIsExcited] = useState(false);
   const [showStencils, setShowStencils] = useState(false);
 
@@ -256,6 +257,16 @@ function HomePage({ onNavigateToDrawing, onNavigateToStencil, onNavigateToColorB
             >
               <div className="text-5xl mb-2">🟡</div>
               <div className="text-white font-bold text-lg">Pac-Man</div>
+            </button>
+
+            {/* Space Invaders - NEW ARCADE GAME! */}
+            <button
+              className="kid-card bg-gradient-to-br from-purple-600 to-green-500 hover:from-purple-700 hover:to-green-600 active:from-purple-800 active:to-green-700 transition-colors duration-200 p-6 text-center cursor-pointer border-2 border-transparent hover:border-green-700"
+              onClick={() => onNavigateToSpaceInvaders()}
+              onTouchStart={() => setIsExcited(true)}
+            >
+              <div className="text-5xl mb-2">👾</div>
+              <div className="text-white font-bold text-lg">Space Invaders</div>
             </button>
           </div>
         </div>
