@@ -54,7 +54,7 @@ export const useEndlessRunner = (): [EndlessRunnerState, GameControls] => {
     return clouds;
   }
 
-  function createObstacle(x: number, speed: number): Obstacle {
+  function createObstacle(x: number, _speed: number): Obstacle {
     const types: ('cactus' | 'rock' | 'bird')[] = ['cactus', 'rock', 'bird'];
     const type = types[Math.floor(Math.random() * types.length)];
 
@@ -109,7 +109,7 @@ export const useEndlessRunner = (): [EndlessRunnerState, GameControls] => {
         return prev;
       }
 
-      let newState = { ...prev };
+      const newState = { ...prev };
 
       // Update speed
       newState.speed = Math.min(

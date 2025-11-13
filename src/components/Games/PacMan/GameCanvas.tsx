@@ -8,7 +8,7 @@ interface GameCanvasProps {
   onDirectionChange: (direction: Direction) => void;
 }
 
-export const GameCanvas: React.FC<GameCanvasProps> = ({ gameState, onDirectionChange }) => {
+export const GameCanvas: React.FC<GameCanvasProps> = ({ gameState, onDirectionChange: _onDirectionChange }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   // Render game

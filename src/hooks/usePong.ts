@@ -110,7 +110,7 @@ export const usePong = (): [PongState, GameControls] => {
         return prev;
       }
 
-      let newState = { ...prev };
+      const newState = { ...prev };
 
       // Update player paddle
       if (playerVelocityRef.current !== 0) {

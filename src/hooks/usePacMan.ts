@@ -104,8 +104,8 @@ export const usePacMan = (): [PacManState, GameControls] => {
     setGameState(prev => {
       if (prev.gameStatus !== 'playing') return prev;
 
-      let { pacman, dots, powerPellets, score, ghosts } = prev;
-      let newPacman = { ...pacman };
+      const { pacman, dots, powerPellets, score, ghosts } = prev;
+      const newPacman = { ...pacman };
 
       // Try to change direction if nextDirection is set
       if (newPacman.nextDirection) {

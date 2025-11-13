@@ -1,4 +1,4 @@
-import { Ghost, PacMan, Direction, GhostMode, Position } from './types';
+import { Ghost, PacMan, Direction, Position } from './types';
 import { DIRECTION_VECTORS, OPPOSITE_DIRECTION } from './constants';
 import { isValidMove } from './mazes';
 
@@ -35,14 +35,15 @@ function getGhostTarget(
     case 'aggressive': // Blinky - chase Pac-Man directly
       return { row: pacman.row, col: pacman.col };
 
-    case 'ambush': // Pinky - target 4 tiles ahead of Pac-Man
+    case 'ambush': { // Pinky - target 4 tiles ahead of Pac-Man
       const vector = DIRECTION_VECTORS[pacman.direction];
       return {
         row: Math.max(0, Math.min(maze.length - 1, pacman.row + vector.dr * 4)),
         col: Math.max(0, Math.min(maze[0].length - 1, pacman.col + vector.dc * 4)),
       };
+    }
 
-    case 'flanker': // Inky - complex targeting using Blinky's position
+    case 'flanker': { // Inky - complex targeting using Blinky's position
       const blinky = ghosts.find(g => g.name === 'blinky');
       if (!blinky) return { row: pacman.row, col: pacman.col };
 
@@ -56,8 +57,9 @@ function getGhostTarget(
         row: pivot.row + (pivot.row - blinky.row),
         col: pivot.col + (pivot.col - blinky.col),
       };
+    }
 
-    case 'random': // Clyde - chase when far, scatter when close
+    case 'random': { // Clyde - chase when far, scatter when close
       const distance = Math.abs(ghost.row - pacman.row) + Math.abs(ghost.col - pacman.col);
       if (distance > 8) {
         return { row: pacman.row, col: pacman.col };
@@ -65,6 +67,7 @@ function getGhostTarget(
         // Scatter to corner
         return { row: maze.length - 2, col: 0 };
       }
+    }
 
     default:
       return { row: pacman.row, col: pacman.col };

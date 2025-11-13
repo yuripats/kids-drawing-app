@@ -8,7 +8,7 @@ interface GameCanvasProps {
   onShoot: () => void;
 }
 
-export const GameCanvas: React.FC<GameCanvasProps> = ({ gameState, onMovePlayer, onShoot }) => {
+export const GameCanvas: React.FC<GameCanvasProps> = ({ gameState, onMovePlayer, onShoot: _onShoot }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   // Handle mouse/touch movement

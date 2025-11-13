@@ -44,7 +44,7 @@ export const useSpaceInvaders = (): [SpaceInvadersState, GameControls] => {
     };
   }
 
-  function createAliens(level: number): Alien[] {
+  function createAliens(_level: number): Alien[] {
     const aliens: Alien[] = [];
     const startX = (GAME_CONSTANTS.CANVAS_WIDTH - (GAME_CONSTANTS.ALIEN_COLS * (GAME_CONSTANTS.ALIEN_WIDTH + GAME_CONSTANTS.ALIEN_SPACING_X))) / 2;
 
@@ -129,7 +129,7 @@ export const useSpaceInvaders = (): [SpaceInvadersState, GameControls] => {
         return prev;
       }
 
-      let newState = { ...prev };
+      const newState = { ...prev };
 
       // Update player position based on velocity
       if (playerVelocityRef.current !== 0) {
@@ -239,7 +239,7 @@ export const useSpaceInvaders = (): [SpaceInvadersState, GameControls] => {
         return prev;
       }
 
-      let newState = { ...prev };
+      const newState = { ...prev };
       const aliveAliens = newState.aliens.filter(a => a.alive);
 
       if (newState.alienMoveDownNext) {

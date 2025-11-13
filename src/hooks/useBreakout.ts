@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { BreakoutState, GameControls, Brick, Ball, PowerUp, BrickType, PowerUpType, ActivePowerUp } from '../components/Games/Breakout/types';
+import { BreakoutState, GameControls, Brick, Ball, PowerUp, BrickType, PowerUpType } from '../components/Games/Breakout/types';
 import { GAME_CONSTANTS, BRICK_COLORS, POINTS } from '../components/Games/Breakout/constants';
 import { LEVELS } from '../components/Games/Breakout/levels';
 
@@ -209,7 +209,7 @@ export const useBreakout = (): [BreakoutState, GameControls] => {
           activePowerUps: newActivePowerUps,
         };
 
-      case 'multiball':
+      case 'multiball': {
         // Spawn 2 additional balls
         const newBalls = [
           ...gameState.balls,
@@ -220,6 +220,7 @@ export const useBreakout = (): [BreakoutState, GameControls] => {
           ...gameState,
           balls: newBalls,
         };
+      }
 
       case 'slowBall':
         newActivePowerUps.push({
@@ -257,7 +258,7 @@ export const useBreakout = (): [BreakoutState, GameControls] => {
       let newState = { ...prev };
 
       // Update balls
-      let newBalls = newState.balls.map(ball => {
+      const newBalls = newState.balls.map(ball => {
         if (ball.stuck) {
           // Keep ball attached to paddle
           return {
