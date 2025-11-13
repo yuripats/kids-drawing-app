@@ -259,8 +259,8 @@ export const useSpaceInvaders = (): [SpaceInvadersState, GameControls] => {
         }));
 
         // Check if any alien hit the edge
-        const leftmost = aliveAliens.reduce((min, alien) => Math.min(min, alien.x), GAME_CONSTANTS.CANVAS_WIDTH);
-        const rightmost = aliveAliens.reduce((max, alien) => Math.max(max, alien.x + alien.width), 0);
+        const leftmost = aliveAliens.reduce<number>((min, alien) => Math.min(min, alien.x), GAME_CONSTANTS.CANVAS_WIDTH);
+        const rightmost = aliveAliens.reduce<number>((max, alien) => Math.max(max, alien.x + alien.width), 0);
 
         if (leftmost <= 0 || rightmost >= GAME_CONSTANTS.CANVAS_WIDTH) {
           newState.alienMoveDownNext = true;
