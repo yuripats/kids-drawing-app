@@ -18,8 +18,8 @@ export default function SudokuBoard({
     : null;
 
   return (
-    <div className="p-2">
-      <div className="grid grid-cols-9 gap-0.5 bg-gray-300 p-1 rounded-lg">
+    <div className="w-full max-w-md mx-auto p-2">
+      <div className="w-full aspect-square grid grid-cols-9 gap-0.5 bg-gray-300 p-1 rounded-lg">
         {board.map((cell, idx) => {
           const r = Math.floor(idx / 9);
           const c = idx % 9;
