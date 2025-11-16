@@ -174,20 +174,33 @@ export const useFlappyBird = (): [FlappyBirdState, GameControls] => {
 
   // Flap
   const flap = useCallback(() => {
-    if (gameState.gameStatus === 'ready') {
-      startGame();
-    }
+    setGameState((prev) => {
+      // If game is ready, start it
+      if (prev.gameStatus === 'ready') {
+        return {
+          ...prev,
+          gameStatus: 'playing',
+          bird: {
+            ...prev.bird,
+            velocity: GAME_CONSTANTS.FLAP_STRENGTH,
+          },
+        };
+      }
 
-    if (gameState.gameStatus === 'playing') {
-      setGameState((prev) => ({
-        ...prev,
-        bird: {
-          ...prev.bird,
-          velocity: GAME_CONSTANTS.FLAP_STRENGTH,
-        },
-      }));
-    }
-  }, [gameState.gameStatus, startGame]);
+      // If game is playing, make the bird flap
+      if (prev.gameStatus === 'playing') {
+        return {
+          ...prev,
+          bird: {
+            ...prev.bird,
+            velocity: GAME_CONSTANTS.FLAP_STRENGTH,
+          },
+        };
+      }
+
+      return prev;
+    });
+  }, []);
 
   // Reset game
   const resetGame = useCallback(() => {
@@ -223,14 +236,14 @@ export const useFlappyBird = (): [FlappyBirdState, GameControls] => {
         e.preventDefault();
         flap();
       }
-      if (e.code === 'KeyR' && gameState.gameStatus === 'gameOver') {
+      if (e.code === 'KeyR') {
         resetGame();
       }
     };
 
     window.addEventListener('keydown', handleKeyPress);
     return () => window.removeEventListener('keydown', handleKeyPress);
-  }, [flap, resetGame, gameState.gameStatus]);
+  }, [flap, resetGame]);
 
   const controls: GameControls = {
     startGame,
