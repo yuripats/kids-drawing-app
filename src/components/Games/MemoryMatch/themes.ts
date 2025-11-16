@@ -37,7 +37,7 @@ export const difficultySettings: Record<Difficulty, DifficultySettings> = {
   },
   hard: {
     pairs: 12,
-    gridCols: 6,
+    gridCols: 4,
     name: '⚡ Hard (12 pairs)'
   }
 };

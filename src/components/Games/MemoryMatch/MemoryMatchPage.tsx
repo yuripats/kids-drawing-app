@@ -210,7 +210,7 @@ const MemoryMatchPage: React.FC<MemoryMatchPageProps> = ({ onNavigateHome }) => 
             <ul className="list-disc list-inside space-y-1">
               <li><strong>Easy:</strong> 6 pairs (4x3 grid)</li>
               <li><strong>Medium:</strong> 8 pairs (4x4 grid)</li>
-              <li><strong>Hard:</strong> 12 pairs (6x4 grid)</li>
+              <li><strong>Hard:</strong> 12 pairs (4x6 grid)</li>
             </ul>
             <p className="mt-2 text-sm italic">
               Choose your favorite theme and challenge level before starting!
