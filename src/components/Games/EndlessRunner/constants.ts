@@ -11,8 +11,8 @@ export const GAME_CONSTANTS = {
   PLAYER_COLOR: '#4CAF50',
 
   // Physics
-  GRAVITY: 0.8,
-  JUMP_FORCE: -16,
+  GRAVITY: 0.6,
+  JUMP_FORCE: -18,
   GROUND_Y: 320,
 
   // Speed
