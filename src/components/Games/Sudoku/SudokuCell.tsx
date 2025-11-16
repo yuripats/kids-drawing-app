@@ -15,7 +15,7 @@ export default function SudokuCell({
   highlighted: boolean;
   onSelect: () => void;
 }) {
-  const base = 'w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 flex items-center justify-center select-none';
+  const base = 'w-full aspect-square flex items-center justify-center select-none text-base sm:text-lg md:text-xl';
   const givenCls = cell.given ? 'font-bold text-gray-900' : 'text-primary-700';
   const selectedCls = selected ? 'ring-2 ring-primary-400' : '';
   const highlightedCls = highlighted && !selected ? 'bg-primary-100 ring-1 ring-primary-200' : '';
