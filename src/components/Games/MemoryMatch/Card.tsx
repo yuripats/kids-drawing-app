@@ -19,7 +19,7 @@ const Card: React.FC<CardProps> = ({ card, onClick }) => {
       className={`
         memory-card
         relative w-full aspect-square
-        rounded-xl border-4
+        rounded-lg md:rounded-xl border-2 md:border-4
         transition-all duration-300 ease-in-out
         ${isMatched
           ? 'border-green-400 bg-green-100 opacity-70'
@@ -28,7 +28,7 @@ const Card: React.FC<CardProps> = ({ card, onClick }) => {
             : 'border-slate-300 bg-gradient-to-br from-purple-400 to-pink-400 hover:scale-105 active:scale-95'
         }
         ${!isFlipped && !isMatched ? 'cursor-pointer' : 'cursor-default'}
-        shadow-lg
+        shadow-md md:shadow-lg
         ${isFlipped || isMatched ? 'transform-none' : ''}
       `}
       onClick={onClick}
@@ -37,18 +37,18 @@ const Card: React.FC<CardProps> = ({ card, onClick }) => {
     >
       <div className="absolute inset-0 flex items-center justify-center">
         {isFlipped || isMatched ? (
-          // Front face (showing emoji)
-          <span className="text-4xl md:text-6xl select-none animate-bounce-once">
+          // Front face (showing emoji) - responsive sizing for mobile
+          <span className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl select-none animate-bounce-once">
             {value}
           </span>
         ) : (
           // Back face (pattern)
           <div className="w-full h-full flex items-center justify-center">
-            <div className="grid grid-cols-3 gap-1 opacity-40">
+            <div className="grid grid-cols-3 gap-0.5 sm:gap-1 opacity-40">
               {[...Array(9)].map((_, i) => (
                 <div
                   key={i}
-                  className="w-2 h-2 md:w-3 md:h-3 rounded-full bg-white"
+                  className="w-1.5 h-1.5 sm:w-2 sm:h-2 md:w-3 md:h-3 rounded-full bg-white"
                 />
               ))}
             </div>
@@ -58,8 +58,8 @@ const Card: React.FC<CardProps> = ({ card, onClick }) => {
 
       {/* Matched checkmark */}
       {isMatched && (
-        <div className="absolute top-1 right-1 bg-green-500 rounded-full w-6 h-6 flex items-center justify-center">
-          <span className="text-white text-sm">✓</span>
+        <div className="absolute top-0.5 right-0.5 sm:top-1 sm:right-1 bg-green-500 rounded-full w-4 h-4 sm:w-6 sm:h-6 flex items-center justify-center">
+          <span className="text-white text-xs sm:text-sm">✓</span>
         </div>
       )}
     </button>
