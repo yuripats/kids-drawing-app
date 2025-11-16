@@ -11,8 +11,8 @@ export const GAME_CONSTANTS = {
   PLAYER_COLOR: '#4CAF50',
 
   // Physics
-  GRAVITY: 0.6,
-  JUMP_FORCE: -18,
+  GRAVITY: 0.35,
+  JUMP_FORCE: -14,
   GROUND_Y: 320,
 
   // Speed
@@ -24,9 +24,9 @@ export const GAME_CONSTANTS = {
   OBSTACLE_MIN_GAP: 300,
   OBSTACLE_MAX_GAP: 500,
   CACTUS_WIDTH: 30,
-  CACTUS_HEIGHT: 60,
+  CACTUS_HEIGHT: 45,
   ROCK_WIDTH: 35,
-  ROCK_HEIGHT: 35,
+  ROCK_HEIGHT: 30,
   BIRD_WIDTH: 45,
   BIRD_HEIGHT: 35,
   BIRD_Y_POSITIONS: [220, 250, 280], // Different flying heights
