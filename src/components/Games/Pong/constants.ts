@@ -1,0 +1,38 @@
+export const GAME_CONSTANTS = {
+  // Canvas - Mobile-first
+  CANVAS_WIDTH: 400,
+  CANVAS_HEIGHT: 500,
+
+  // Paddles
+  PADDLE_WIDTH: 12,
+  PADDLE_HEIGHT: 80,
+  PADDLE_SPEED: 6,
+  PADDLE_OFFSET: 20, // Distance from edge
+  PLAYER_COLOR: '#4CAF50',
+  AI_COLOR: '#FF6B6B',
+
+  // Ball
+  BALL_RADIUS: 8,
+  BALL_INITIAL_SPEED: 5,
+  BALL_MAX_SPEED: 12,
+  BALL_SPEED_INCREMENT: 0.2,
+  BALL_COLOR: '#FFD700',
+
+  // AI
+  AI_REACTION_DELAY: 15, // Frames to delay AI response
+  AI_ERROR_MARGIN_EASY: 40, // Pixels of error in AI targeting
+  AI_ERROR_MARGIN_MEDIUM: 20,
+  AI_ERROR_MARGIN_HARD: 5,
+  AI_SPEED_MULTIPLIER_EASY: 0.6,
+  AI_SPEED_MULTIPLIER_MEDIUM: 0.8,
+  AI_SPEED_MULTIPLIER_HARD: 1.0,
+
+  // Game
+  WIN_SCORE: 11,
+  SERVE_DELAY: 1000, // ms before serving ball
+
+  // Visual
+  NET_WIDTH: 4,
+  NET_SEGMENT_HEIGHT: 15,
+  NET_GAP: 10,
+} as const;
