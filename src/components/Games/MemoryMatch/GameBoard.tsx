@@ -6,7 +6,6 @@
 import React from 'react';
 import Card from './Card';
 import type { MemoryMatchState } from './types';
-import { difficultySettings } from './themes';
 
 interface GameBoardProps {
   gameState: MemoryMatchState;
@@ -14,20 +13,16 @@ interface GameBoardProps {
 }
 
 const GameBoard: React.FC<GameBoardProps> = ({ gameState, onCardClick }) => {
-  const { cards, difficulty } = gameState;
-  const { gridCols } = difficultySettings[difficulty];
+  const { cards } = gameState;
 
   // Viewport-aware styling for mobile optimization
+  // 4-column grid layout works well for all difficulties (easy 4x3, medium 4x4, hard 4x6)
   // On mobile, use full width and smaller gaps for better space utilization
   // On desktop, constrain width for better aesthetics
-  const gridClasses = gridCols === 4
-    ? 'grid-cols-4 gap-2 md:gap-4'
-    : 'grid-cols-6 gap-1.5 md:gap-3';
-
   return (
     <div
       className={`
-        grid ${gridClasses}
+        grid grid-cols-4 gap-2 md:gap-4
         w-full max-w-full md:max-w-3xl lg:max-w-4xl mx-auto
         px-1 md:px-0
       `}
