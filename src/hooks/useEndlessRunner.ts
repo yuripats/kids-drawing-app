@@ -68,8 +68,8 @@ export const useEndlessRunner = (): [EndlessRunnerState, GameControls] => {
   const initializeGame = useCallback((): EndlessRunnerState => {
     // Create initial obstacles
     const initialObstacles: Obstacle[] = [
-      createObstacle(GAME_CONSTANTS.CANVAS_WIDTH, GAME_CONSTANTS.INITIAL_SPEED),
-      createObstacle(GAME_CONSTANTS.CANVAS_WIDTH + 250, GAME_CONSTANTS.INITIAL_SPEED),
+      createObstacle(GAME_CONSTANTS.CANVAS_WIDTH + 100, GAME_CONSTANTS.INITIAL_SPEED),
+      createObstacle(GAME_CONSTANTS.CANVAS_WIDTH + 450, GAME_CONSTANTS.INITIAL_SPEED),
     ];
 
     return {
