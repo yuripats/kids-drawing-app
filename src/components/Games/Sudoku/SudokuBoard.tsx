@@ -34,7 +34,7 @@ export default function SudokuBoard({
           return (
             <div
               key={idx}
-              className={`bg-white ${isBoxBorderRight ? 'border-r-4 border-gray-300' : ''} ${isBoxBorderBottom ? 'border-b-4 border-gray-300' : ''}`}
+              className={`w-full h-full ${isBoxBorderRight ? 'border-r-4 border-gray-300' : ''} ${isBoxBorderBottom ? 'border-b-4 border-gray-300' : ''}`}
             >
               <SudokuCell
                 cell={cell}
