@@ -67,9 +67,9 @@ export default function SudokuPage({ onNavigateHome }: { onNavigateHome: () => v
           onNewGame={() => game.newGame(difficulty)}
         />
 
-        <div className="flex flex-col items-center gap-4">
-          <SudokuBoard 
-            board={game.board} 
+        <div className="flex flex-col items-center gap-4 w-full">
+          <SudokuBoard
+            board={game.board}
             selection={game.selection}
             settings={game.settings}
             onSelect={game.selectCell}
