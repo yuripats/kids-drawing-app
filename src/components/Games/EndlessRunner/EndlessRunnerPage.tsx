@@ -169,30 +169,12 @@ export const EndlessRunnerPage: React.FC<EndlessRunnerPageProps> = ({ onNavigate
             </div>
 
             {/* Instructions */}
-            <div className="kid-card bg-blue-50 p-4 max-w-md">
-              <h3 className="font-bold text-gray-800 mb-2">How to Play:</h3>
-              <ul className="text-sm text-gray-700 space-y-1">
-                <li>• Desktop: Press SPACE or ↑ to jump</li>
-                <li>• Desktop: Hold ↓ to duck/slide</li>
-                <li>• Mobile: Tap JUMP button to jump</li>
-                <li>• Mobile: Hold DUCK button to slide</li>
-                <li>• Avoid all obstacles to keep running</li>
-                <li>• The game gets faster as you progress!</li>
-              </ul>
-
-              <h3 className="font-bold text-gray-800 mt-4 mb-2">Obstacles:</h3>
-              <ul className="text-sm text-gray-700 space-y-1">
-                <li>• 🌵 Cactus - Jump over it</li>
-                <li>• 🪨 Rock - Jump over it</li>
-                <li>• 🐦 Bird - Duck under it or jump over it</li>
-              </ul>
-
-              <h3 className="font-bold text-gray-800 mt-4 mb-2">Tips:</h3>
-              <ul className="text-sm text-gray-700 space-y-1">
-                <li>• Birds fly at different heights</li>
-                <li>• Speed increases automatically</li>
-                <li>• Distance and obstacles give points</li>
-                <li>• Stay focused as speed increases!</li>
+            <div className="kid-card bg-blue-50 p-3 max-w-md">
+              <h3 className="font-bold text-gray-800 mb-1 text-sm">Controls:</h3>
+              <ul className="text-xs text-gray-700 space-y-0.5">
+                <li>• SPACE/↑ to jump, ↓ to duck</li>
+                <li>• Avoid 🌵 cactus, 🪨 rocks, 🐦 birds</li>
+                <li>• Speed increases - stay focused!</li>
               </ul>
             </div>
           </div>

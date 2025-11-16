@@ -66,6 +66,12 @@ export const useEndlessRunner = (): [EndlessRunnerState, GameControls] => {
   }
 
   const initializeGame = useCallback((): EndlessRunnerState => {
+    // Create initial obstacles
+    const initialObstacles: Obstacle[] = [
+      createObstacle(GAME_CONSTANTS.CANVAS_WIDTH, GAME_CONSTANTS.INITIAL_SPEED),
+      createObstacle(GAME_CONSTANTS.CANVAS_WIDTH + 250, GAME_CONSTANTS.INITIAL_SPEED),
+    ];
+
     return {
       player: {
         x: GAME_CONSTANTS.PLAYER_X,
@@ -77,7 +83,7 @@ export const useEndlessRunner = (): [EndlessRunnerState, GameControls] => {
         isDucking: false,
         color: GAME_CONSTANTS.PLAYER_COLOR,
       },
-      obstacles: [],
+      obstacles: initialObstacles,
       clouds: createClouds(),
       score: 0,
       highScore: getHighScore(),
