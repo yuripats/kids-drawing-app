@@ -14,7 +14,7 @@ interface DotGridProps {
 }
 
 const DotGrid: React.FC<DotGridProps> = ({ gameState, onDotClick }) => {
-  const { grid, path, currentDot, showNumbers, gridSize } = gameState;
+  const { grid, path, currentDot, gridSize, nextNumber } = gameState;
 
   // Calculate SVG line paths
   const renderPaths = () => {
@@ -88,17 +88,17 @@ const DotGrid: React.FC<DotGridProps> = ({ gameState, onDotClick }) => {
           row.map((dot, colIndex) => {
             const isCurrent =
               currentDot !== null && isSamePosition(dot.position, currentDot);
+            const isNextInSequence = dot.number === nextNumber;
 
             return (
               <Dot
                 key={`${rowIndex}-${colIndex}`}
                 position={dot.position}
                 visited={dot.visited}
-                isStart={dot.isStart}
-                isEnd={dot.isEnd}
                 isCurrent={isCurrent}
                 number={dot.number}
-                showNumbers={showNumbers}
+                isEmpty={dot.isEmpty}
+                isNextInSequence={isNextInSequence}
                 onClick={onDotClick}
               />
             );

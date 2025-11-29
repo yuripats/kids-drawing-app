@@ -16,27 +16,24 @@ import {
   isSamePosition,
   areAdjacent,
   findDot,
-  generateHamiltonianPath,
+  generateNumberedDotsPuzzle,
 } from '../components/Games/DotPath/utils';
 
 const DIFFICULTY_SETTINGS: Record<Difficulty, DifficultySettings> = {
   easy: {
     name: 'Easy',
-    gridSize: 4,
-    showNumbers: true,
-    defineEnd: true,
+    gridSize: 5,
+    dotCount: 6,
   },
   medium: {
     name: 'Medium',
-    gridSize: 5,
-    showNumbers: false,
-    defineEnd: true,
+    gridSize: 6,
+    dotCount: 10,
   },
   hard: {
     name: 'Hard',
-    gridSize: 6,
-    showNumbers: false,
-    defineEnd: false,
+    gridSize: 7,
+    dotCount: 15,
   },
 };
 
@@ -71,14 +68,17 @@ export const useDotPath = (initialDifficulty: Difficulty = 'easy') => {
   const initializeGame = useCallback(
     (difficulty: Difficulty): GameState => {
       const settings = DIFFICULTY_SETTINGS[difficulty];
-      const { gridSize, showNumbers, defineEnd } = settings;
+      const { gridSize, dotCount } = settings;
 
-      // Generate solution path
-      const solutionPath = generateHamiltonianPath(gridSize);
-      const startPoint = solutionPath[0];
-      const endPoint = defineEnd
-        ? solutionPath[solutionPath.length - 1]
-        : { row: -1, col: -1 }; // No specific end point
+      // Generate numbered dot positions
+      const dotPositions = generateNumberedDotsPuzzle(gridSize, dotCount);
+
+      // Create a map of positions to numbers for quick lookup
+      const positionToNumber = new Map<string, number>();
+      dotPositions.forEach((pos, index) => {
+        const key = `${pos.row},${pos.col}`;
+        positionToNumber.set(key, index + 1); // Numbers are 1-indexed
+      });
 
       // Create grid
       const grid: DotState[][] = [];
@@ -86,21 +86,26 @@ export const useDotPath = (initialDifficulty: Difficulty = 'easy') => {
         grid[row] = [];
         for (let col = 0; col < gridSize; col++) {
           const position = { row, col };
-          const isStart = isSamePosition(position, startPoint);
-          const isEnd = defineEnd && isSamePosition(position, endPoint);
+          const key = `${row},${col}`;
+          const number = positionToNumber.get(key);
 
-          // Find number in solution path
-          const number = showNumbers
-            ? solutionPath.findIndex(p => isSamePosition(p, position)) + 1
-            : undefined;
-
-          grid[row][col] = {
-            position,
-            visited: false,
-            isStart,
-            isEnd,
-            number,
-          };
+          if (number !== undefined) {
+            // This cell has a numbered dot
+            grid[row][col] = {
+              position,
+              visited: false,
+              number,
+              isEmpty: false,
+            };
+          } else {
+            // This cell is empty (no dot)
+            grid[row][col] = {
+              position,
+              visited: false,
+              number: 0, // 0 means no number
+              isEmpty: true,
+            };
+          }
         }
       }
 
@@ -114,9 +119,8 @@ export const useDotPath = (initialDifficulty: Difficulty = 'easy') => {
         timer: 0,
         bestTimes: loadBestTimes(),
         gameStatus: 'ready',
-        showNumbers,
-        startPoint,
-        endPoint,
+        totalDots: dotCount,
+        nextNumber: 1, // Start with connecting to dot #1
       };
     },
     []
@@ -160,14 +164,22 @@ export const useDotPath = (initialDifficulty: Difficulty = 'easy') => {
         const dot = findDot(prev.grid, position);
         if (!dot) return prev;
 
+        // Can't click empty cells
+        if (dot.isEmpty) return prev;
+
         // Already visited
         if (dot.visited) return prev;
 
-        // First move - must start at start point for easy/medium
+        // Must click dots in sequential order
+        if (dot.number !== prev.nextNumber) {
+          // Wrong number - must click the next number in sequence
+          return prev;
+        }
+
+        // First move - starting with dot #1
         if (prev.path.length === 0) {
-          const settings = DIFFICULTY_SETTINGS[prev.difficulty];
-          if (settings.defineEnd && !dot.isStart) {
-            // Must start at the start point
+          if (dot.number !== 1) {
+            // Must start with dot #1
             return prev;
           }
 
@@ -187,20 +199,13 @@ export const useDotPath = (initialDifficulty: Difficulty = 'easy') => {
             currentDot: position,
             gameStatus: 'playing',
             moves: 1,
+            nextNumber: 2, // Next dot to click is #2
           };
         }
 
         // Subsequent moves - must be adjacent to current dot
         if (prev.currentDot && !areAdjacent(prev.currentDot, position)) {
           return prev; // Not adjacent
-        }
-
-        // For numbered mode (easy), must follow sequence
-        if (prev.showNumbers && dot.number) {
-          const expectedNumber = prev.path.length + 1;
-          if (dot.number !== expectedNumber) {
-            return prev; // Wrong number
-          }
         }
 
         // Valid move
@@ -212,8 +217,7 @@ export const useDotPath = (initialDifficulty: Difficulty = 'easy') => {
         );
 
         // Check if game is won
-        const totalDots = prev.gridSize * prev.gridSize;
-        const isComplete = newPath.length === totalDots;
+        const isComplete = newPath.length === prev.totalDots;
 
         let newGameStatus: GameStatus = prev.gameStatus;
         let newBestTimes = prev.bestTimes;
@@ -242,6 +246,7 @@ export const useDotPath = (initialDifficulty: Difficulty = 'easy') => {
           moves: prev.moves + 1,
           gameStatus: newGameStatus,
           bestTimes: newBestTimes,
+          nextNumber: prev.nextNumber + 1,
         };
       });
     },
@@ -270,6 +275,7 @@ export const useDotPath = (initialDifficulty: Difficulty = 'easy') => {
         path: newPath,
         currentDot: newPath.length > 0 ? newPath[newPath.length - 1] : null,
         gameStatus: newPath.length > 0 ? 'playing' : 'ready',
+        nextNumber: newPath.length + 1, // Decrement next number to connect
       };
     });
   }, []);

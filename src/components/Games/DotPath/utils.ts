@@ -71,72 +71,73 @@ export const isInPath = (path: DotPosition[], position: DotPosition): boolean =>
 };
 
 /**
- * Generate a random Hamiltonian path for the puzzle
- * Returns array of positions in order
+ * Generate numbered dots puzzle
+ * Returns array of positions with their sequence numbers
  */
-export const generateHamiltonianPath = (gridSize: number): DotPosition[] => {
-  const path: DotPosition[] = [];
-  const visited = new Set<string>();
-
+export const generateNumberedDotsPuzzle = (
+  gridSize: number,
+  dotCount: number
+): DotPosition[] => {
+  const positions: DotPosition[] = [];
+  const occupied = new Set<string>();
   const posKey = (pos: DotPosition) => `${pos.row},${pos.col}`;
 
-  // Start from random position
-  const startRow = Math.floor(Math.random() * gridSize);
-  const startCol = Math.floor(Math.random() * gridSize);
-  const start: DotPosition = { row: startRow, col: startCol };
+  // Helper to check if position is valid and not too close to existing dots
+  const isValidPosition = (pos: DotPosition, minDistance: number = 1): boolean => {
+    if (occupied.has(posKey(pos))) return false;
 
-  path.push(start);
-  visited.add(posKey(start));
-
-  // Use backtracking to find a Hamiltonian path
-  const backtrack = (current: DotPosition): boolean => {
-    if (path.length === gridSize * gridSize) {
-      return true; // Found complete path
-    }
-
-    // Get adjacent unvisited positions
-    const adjacent = getAdjacentPositions(current, gridSize)
-      .filter(pos => !visited.has(posKey(pos)))
-      .sort(() => Math.random() - 0.5); // Randomize order
-
-    for (const next of adjacent) {
-      path.push(next);
-      visited.add(posKey(next));
-
-      if (backtrack(next)) {
-        return true;
+    // For easy puzzles, allow closer dots. For harder, require more spacing
+    if (minDistance > 1) {
+      for (const existingPos of positions) {
+        const distance = Math.abs(existingPos.row - pos.row) + Math.abs(existingPos.col - pos.col);
+        if (distance < minDistance) return false;
       }
-
-      // Backtrack
-      path.pop();
-      visited.delete(posKey(next));
     }
 
-    return false;
+    return true;
   };
 
-  // Try to find a path, if fails, use simple snake pattern
-  if (!backtrack(start)) {
-    // Fallback: snake pattern
-    path.length = 0;
-    visited.clear();
+  // Place first dot randomly
+  const firstRow = Math.floor(Math.random() * gridSize);
+  const firstCol = Math.floor(Math.random() * gridSize);
+  const firstPos = { row: firstRow, col: firstCol };
+  positions.push(firstPos);
+  occupied.add(posKey(firstPos));
 
-    for (let row = 0; row < gridSize; row++) {
-      if (row % 2 === 0) {
-        // Go left to right
-        for (let col = 0; col < gridSize; col++) {
-          path.push({ row, col });
-        }
-      } else {
-        // Go right to left
-        for (let col = gridSize - 1; col >= 0; col--) {
-          path.push({ row, col });
+  // Place remaining dots
+  let attempts = 0;
+  const maxAttempts = 1000;
+
+  while (positions.length < dotCount && attempts < maxAttempts) {
+    attempts++;
+
+    // Random position
+    const row = Math.floor(Math.random() * gridSize);
+    const col = Math.floor(Math.random() * gridSize);
+    const pos = { row, col };
+
+    // Check if valid (not too close to other dots for harder difficulties)
+    const minDistance = dotCount > 8 ? 1 : 0; // Require spacing for harder puzzles
+    if (isValidPosition(pos, minDistance)) {
+      positions.push(pos);
+      occupied.add(posKey(pos));
+    }
+  }
+
+  // If we couldn't place all dots, fill remaining with any valid positions
+  if (positions.length < dotCount) {
+    for (let row = 0; row < gridSize && positions.length < dotCount; row++) {
+      for (let col = 0; col < gridSize && positions.length < dotCount; col++) {
+        const pos = { row, col };
+        if (!occupied.has(posKey(pos))) {
+          positions.push(pos);
+          occupied.add(posKey(pos));
         }
       }
     }
   }
 
-  return path;
+  return positions.slice(0, dotCount);
 };
 
 /**

@@ -14,9 +14,8 @@ export interface DotPosition {
 export interface DotState {
   position: DotPosition;
   visited: boolean;
-  isStart: boolean;
-  isEnd: boolean;
-  number?: number; // for numbered mode (easy)
+  number: number; // 1, 2, 3, etc. - the sequence number
+  isEmpty?: boolean; // true if this cell is just empty space (no dot)
 }
 
 export interface GameState {
@@ -29,14 +28,12 @@ export interface GameState {
   timer: number;
   bestTimes: Record<Difficulty, number>;
   gameStatus: GameStatus;
-  showNumbers: boolean; // true for easy mode
-  startPoint: DotPosition;
-  endPoint: DotPosition;
+  totalDots: number; // total numbered dots to connect
+  nextNumber: number; // next number in sequence to connect
 }
 
 export interface DifficultySettings {
   name: string;
   gridSize: number;
-  showNumbers: boolean;
-  defineEnd: boolean; // whether end point is predefined
+  dotCount: number; // how many numbered dots to place
 }

@@ -25,16 +25,15 @@ const DotPathPage: React.FC<DotPathPageProps> = ({ onNavigateHome }) => {
 
   const {
     path,
-    gridSize,
     difficulty,
     moves,
     timer,
     bestTimes,
     gameStatus,
-    showNumbers,
+    totalDots,
+    nextNumber,
   } = gameState;
 
-  const totalDots = gridSize * gridSize;
   const progress = (path.length / totalDots) * 100;
 
   // Celebrate on win with confetti
@@ -54,11 +53,9 @@ const DotPathPage: React.FC<DotPathPageProps> = ({ onNavigateHome }) => {
   const getStatusMessage = (): string => {
     switch (gameStatus) {
       case 'ready':
-        return showNumbers
-          ? '▶ Start at dot 1!'
-          : '▶ Tap the green dot to start!';
+        return `🎯 Tap dot #1 to start!`;
       case 'playing':
-        return `Connect all ${totalDots} dots!`;
+        return `Next: Connect to dot #${nextNumber}`;
       case 'completed':
         return '🎉 Perfect! You did it!';
       default:
