@@ -15,8 +15,9 @@ import BubblePopPage from './components/Games/BubblePop/BubblePopPage';
 import ColorMixerPage from './components/Games/ColorMixer/ColorMixerPage';
 import MathFactsPage from './components/Games/MathFacts/MathFactsPage';
 import ShapeSortingPage from './components/Games/ShapeSorting/ShapeSortingPage';
+import DotPathPage from './components/Games/DotPath/DotPathPage';
 
-type AppPage = 'home' | 'draw' | 'stencil' | 'colorblocks' | 'sudoku' | 'tetris' | 'jellyvolleyball' | 'snake' | 'memoryMatch' | 'drawingChallenge' | 'popBalloons' | 'simonSays' | 'bubblePop' | 'colorMixer' | 'mathFacts' | 'shapeSorting';
+type AppPage = 'home' | 'draw' | 'stencil' | 'colorblocks' | 'sudoku' | 'tetris' | 'jellyvolleyball' | 'snake' | 'memoryMatch' | 'drawingChallenge' | 'popBalloons' | 'simonSays' | 'bubblePop' | 'colorMixer' | 'mathFacts' | 'shapeSorting' | 'dotPath';
 
 function App() {
   const [currentPage, setCurrentPage] = useState<AppPage>('home');
@@ -51,6 +52,7 @@ function App() {
             onNavigateToColorMixer={() => navigateTo('colorMixer')}
             onNavigateToMathFacts={() => navigateTo('mathFacts')}
             onNavigateToShapeSorting={() => navigateTo('shapeSorting')}
+            onNavigateToDotPath={() => navigateTo('dotPath')}
           />
         );
       case 'draw':
@@ -112,6 +114,10 @@ function App() {
         return (
           <ShapeSortingPage onNavigateHome={() => navigateTo('home')} />
         );
+      case 'dotPath':
+        return (
+          <DotPathPage onNavigateHome={() => navigateTo('home')} />
+        );
       default:
         return (
 <HomePage
@@ -130,6 +136,7 @@ function App() {
             onNavigateToColorMixer={() => navigateTo('colorMixer')}
             onNavigateToMathFacts={() => navigateTo('mathFacts')}
             onNavigateToShapeSorting={() => navigateTo('shapeSorting')}
+            onNavigateToDotPath={() => navigateTo('dotPath')}
           />
         );
     }

@@ -32,6 +32,7 @@ describe('HomePage', () => {
     onNavigateToColorMixer: vi.fn(),
     onNavigateToMathFacts: vi.fn(),
     onNavigateToShapeSorting: vi.fn(),
+    onNavigateToDotPath: vi.fn(),
   }
 
   it('renders home page content', () => {
