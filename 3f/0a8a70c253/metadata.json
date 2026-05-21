@@ -3,7 +3,7 @@
   "checkpoint_id": "3f0a8a70c253",
   "strategy": "manual-commit",
   "branch": "claude/resurrect-20260521",
-  "checkpoints_count": 6,
+  "checkpoints_count": 8,
   "files_touched": [
     "src/components/Canvas/DrawingCanvasWithTools.tsx",
     "src/hooks/useDrawings.test.ts",
@@ -15,6 +15,10 @@
       "transcript": "/3f/0a8a70c253/0/full.jsonl",
       "content_hash": "/3f/0a8a70c253/0/content_hash.txt",
       "prompt": "/3f/0a8a70c253/0/prompt.txt"
+    },
+    {
+      "metadata": "/3f/0a8a70c253/1/metadata.json",
+      "prompt": ""
     }
   ],
   "token_usage": {
