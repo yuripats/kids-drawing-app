@@ -5,6 +5,7 @@
  */
 
 import React from 'react';
+import { useSoundSetting } from '../../hooks/useSoundSetting';
 
 interface GameLayoutProps {
   title: string;
@@ -23,6 +24,8 @@ const GameLayout: React.FC<GameLayoutProps> = ({
   headerActions,
   bgColorClass = 'bg-gradient-to-b from-blue-100 to-blue-200'
 }) => {
+  const { soundEnabled, toggleSound } = useSoundSetting();
+
   return (
     <div className={`min-h-screen ${bgColorClass} p-2 md:p-4`}>
       {/* Header - Mobile First */}
@@ -36,6 +39,14 @@ const GameLayout: React.FC<GameLayoutProps> = ({
         {/* Actions and Home Button - Compact on mobile */}
         <div className="flex gap-1 md:gap-2 flex-wrap items-center justify-end">
           {headerActions}
+
+          <button
+            className="kid-button text-xs md:text-sm px-2 md:px-4 py-1 md:py-2"
+            onClick={toggleSound}
+            aria-label={soundEnabled ? 'Mute sounds' : 'Unmute sounds'}
+          >
+            {soundEnabled ? '🔊' : '🔇'}
+          </button>
 
           <button
             className="kid-button text-xs md:text-sm bg-slate-500 hover:bg-slate-600 px-2 md:px-4 py-1 md:py-2"

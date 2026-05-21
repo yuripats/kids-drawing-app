@@ -5,7 +5,7 @@
 
 import * as storage from './storage';
 
-export type SoundEffect = 'pop' | 'match' | 'mismatch' | 'win' | 'lose' | 'collect' | 'click';
+export type SoundEffect = 'pop' | 'match' | 'mismatch' | 'win' | 'lose' | 'collect' | 'click' | 'clear';
 
 // High Score Management
 export const saveHighScore = (gameKey: string, score: number): void => {
@@ -56,8 +56,14 @@ export const unlockAudio = (): void => {
   audioUnlocked = true;
 };
 
+const SOUND_SETTING_KEY = 'settings:soundEnabled';
+
+export const getSoundEnabled = (): boolean => storage.get<boolean>(SOUND_SETTING_KEY, true);
+export const setSoundEnabled = (enabled: boolean): void => storage.set(SOUND_SETTING_KEY, enabled);
+
 export const playSound = (soundType: SoundEffect, volume: number = 0.3): void => {
   if (!audioContext || !audioUnlocked) return;
+  if (!getSoundEnabled()) return;
 
   try {
     const oscillator = audioContext.createOscillator();
@@ -132,6 +138,16 @@ export const playSound = (soundType: SoundEffect, volume: number = 0.3): void =>
         gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.05);
         oscillator.start(now);
         oscillator.stop(now + 0.05);
+        break;
+
+      case 'clear':
+        // Sweeping whoosh: high-to-low frequency, short duration
+        oscillator.frequency.setValueAtTime(1200, now);
+        oscillator.frequency.exponentialRampToValueAtTime(400, now + 0.15);
+        gainNode.gain.setValueAtTime(volume, now);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
+        oscillator.start(now);
+        oscillator.stop(now + 0.15);
         break;
 
       default:

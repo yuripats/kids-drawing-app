@@ -14,6 +14,7 @@ import {
   calculateScore,
   saveHighScore
 } from '../components/Games/ColorBlocksGame/gameUtils';
+import { playSound } from '../utils/gameUtils';
 
 export const useColorBlocksGame = (config: GameConfig = {}) => {
   const [gameState, setGameState] = useState<GameState>(() => initializeGame(config));
@@ -67,6 +68,9 @@ export const useColorBlocksGame = (config: GameConfig = {}) => {
       const pointsEarned = calculateScore(connected.length);
       const newScore = prev.score + pointsEarned;
       const newMoves = prev.moves + 1;
+
+      // Sound feedback for clearing blocks
+      playSound('clear');
 
       // Update high score
       saveHighScore(newScore);
