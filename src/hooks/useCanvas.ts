@@ -35,6 +35,78 @@ export const useCanvas = ({ width, height, onDrawingChange, stencil, initialData
     currentLineWidth: 4
   });
 
+  // Undo/redo history — stores compressed JPEG snapshots of canvas state
+  const MAX_HISTORY = 20;
+  const historyRef = useRef<string[]>([]);   // past states (oldest-first)
+  const futureRef = useRef<string[]>([]);    // redo states (oldest-first)
+  const pendingSnapshotRef = useRef<string | null>(null); // pre-stroke snapshot
+  const prevStencilRef = useRef<Stencil | null | undefined>(undefined);
+  const [canUndo, setCanUndo] = useState(false);
+  const [canRedo, setCanRedo] = useState(false);
+
+  // ── History helpers ────────────────────────────────────────────────────────
+
+  /** Capture current canvas pixels as a compressed JPEG data-URL. */
+  const captureSnapshot = useCallback((): string | null => {
+    const canvas = canvasRef.current;
+    if (!canvas) return null;
+    return canvas.toDataURL('image/jpeg', 0.7);
+  }, []);
+
+  /** Draw a previously captured snapshot back onto the canvas. */
+  const applySnapshot = useCallback((dataURL: string) => {
+    const canvas = canvasRef.current;
+    const ctx = contextRef.current;
+    if (!canvas || !ctx) return;
+    const img = new Image();
+    img.onload = () => {
+      ctx.drawImage(img, 0, 0, width, height);
+      if (onDrawingChange) {
+        onDrawingChange(canvas.toDataURL('image/png'));
+      }
+    };
+    img.src = dataURL;
+  }, [width, height, onDrawingChange]);
+
+  /** Push `snapshot` onto the history stack (evict oldest if > MAX_HISTORY).
+   *  Also clears the redo future — any new action invalidates forward history. */
+  const pushHistory = useCallback((snapshot: string) => {
+    const next = [...historyRef.current, snapshot];
+    historyRef.current = next.length > MAX_HISTORY ? next.slice(-MAX_HISTORY) : next;
+    futureRef.current = [];
+    setCanUndo(true);
+    setCanRedo(false);
+  }, []);
+
+  /** Undo the last drawing action (stroke, fill, clear, or stencil apply). */
+  const undo = useCallback(() => {
+    if (historyRef.current.length === 0) return;
+    const current = captureSnapshot();
+    if (current) {
+      futureRef.current = [...futureRef.current, current];
+    }
+    const prev = historyRef.current[historyRef.current.length - 1];
+    historyRef.current = historyRef.current.slice(0, -1);
+    applySnapshot(prev);
+    setCanUndo(historyRef.current.length > 0);
+    setCanRedo(true);
+  }, [captureSnapshot, applySnapshot]);
+
+  /** Redo a previously undone action. */
+  const redo = useCallback(() => {
+    if (futureRef.current.length === 0) return;
+    const current = captureSnapshot();
+    if (current) {
+      const next = [...historyRef.current, current];
+      historyRef.current = next.length > MAX_HISTORY ? next.slice(-MAX_HISTORY) : next;
+    }
+    const nextState = futureRef.current[futureRef.current.length - 1];
+    futureRef.current = futureRef.current.slice(0, -1);
+    applySnapshot(nextState);
+    setCanUndo(true);
+    setCanRedo(futureRef.current.length > 0);
+  }, [captureSnapshot, applySnapshot]);
+
   // Draw stencil SVG path on canvas and mask (with duplicate prevention)
   const drawStencil = useCallback((context: CanvasRenderingContext2D, stencil: Stencil) => {
     // Prevent multiple simultaneous stencil drawings
@@ -174,6 +246,20 @@ export const useCanvas = ({ width, height, onDrawingChange, stencil, initialData
       return false;
     }
   }, [stencil]);
+
+  // Track stencil changes for undo: runs BEFORE the init effect (same dep change)
+  // so the snapshot captures the canvas BEFORE the init effect clears it.
+  useEffect(() => {
+    const prevStencil = prevStencilRef.current;
+    prevStencilRef.current = stencil ?? null;
+
+    if (prevStencil !== undefined && stencil && stencil !== prevStencil) {
+      // A new stencil was applied after initial mount — push pre-stencil state
+      const snap = captureSnapshot();
+      if (snap) pushHistory(snap);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [stencil]); // intentionally narrow — only track stencil identity changes
 
   // Initialize canvas context
   useEffect(() => {
@@ -342,6 +428,10 @@ export const useCanvas = ({ width, height, onDrawingChange, stencil, initialData
     const context = contextRef.current;
     if (!canvas || !context) return;
 
+    // Push pre-fill state to history so fill can be undone
+    const snap = captureSnapshot();
+    if (snap) pushHistory(snap);
+
     // Convert display coordinates to internal canvas pixel coordinates
     const devicePixelRatio = window.devicePixelRatio || 1;
     const pixelX = Math.floor(startX * devicePixelRatio);
@@ -411,7 +501,7 @@ export const useCanvas = ({ width, height, onDrawingChange, stencil, initialData
     if (onDrawingChange) {
       onDrawingChange(canvas.toDataURL('image/png'));
     }
-  }, [onDrawingChange]);
+  }, [onDrawingChange, captureSnapshot, pushHistory]);
 
   // Helper function to convert hex color to RGB
   const hexToRgb = (hex: string): { r: number; g: number; b: number } | null => {
@@ -437,11 +527,14 @@ export const useCanvas = ({ width, height, onDrawingChange, stencil, initialData
       if (stencil && isPointOnStencil(point.x, point.y)) {
         return; // Don't start drawing on stencil
       }
-      
+
+      // Capture pre-stroke state for undo BEFORE any pixels are drawn
+      pendingSnapshotRef.current = captureSnapshot();
+
       stateRef.current.isDrawing = true;
       stateRef.current.currentPath = [point];
     }
-  }, [getPointFromEvent, currentTool, floodFill, stencil, isPointOnStencil]);
+  }, [getPointFromEvent, currentTool, floodFill, stencil, isPointOnStencil, captureSnapshot]);
 
   // Continue drawing
   const draw = useCallback((event: React.TouchEvent | React.MouseEvent) => {
@@ -483,23 +576,33 @@ export const useCanvas = ({ width, height, onDrawingChange, stencil, initialData
         lineWidth: state.currentLineWidth,
         timestamp: Date.now()
       };
-      
+
       state.paths.push(completedPath);
       state.currentPath = [];
-      
+
+      // Push pre-stroke snapshot to history (captured in startDrawing)
+      if (pendingSnapshotRef.current) {
+        pushHistory(pendingSnapshotRef.current);
+        pendingSnapshotRef.current = null;
+      }
+
       // Trigger drawing change callback
       const canvas = canvasRef.current;
       if (canvas && onDrawingChange) {
         onDrawingChange(canvas.toDataURL('image/png'));
       }
     }
-  }, [onDrawingChange, currentTool]);
+  }, [onDrawingChange, currentTool, pushHistory]);
 
   // Clear the entire canvas (but preserve stencil)
   const clearCanvas = useCallback(() => {
     const context = contextRef.current;
     const canvas = canvasRef.current;
     if (!context || !canvas) return;
+
+    // Push pre-clear state to history so clear can be undone
+    const snap = captureSnapshot();
+    if (snap) pushHistory(snap);
 
     // Clear all user paths
     stateRef.current.paths = [];
@@ -518,7 +621,7 @@ export const useCanvas = ({ width, height, onDrawingChange, stencil, initialData
     if (onDrawingChange) {
       onDrawingChange(canvas.toDataURL('image/png'));
     }
-  }, [onDrawingChange, stencil, drawStencil]);
+  }, [onDrawingChange, stencil, drawStencil, captureSnapshot, pushHistory]);
 
   // Change drawing color
   const setColor = useCallback((color: string) => {
@@ -565,6 +668,10 @@ export const useCanvas = ({ width, height, onDrawingChange, stencil, initialData
     redrawCanvas,
     currentColor,
     currentLineWidth,
-    currentTool
+    currentTool,
+    undo,
+    redo,
+    canUndo,
+    canRedo,
   };
 };

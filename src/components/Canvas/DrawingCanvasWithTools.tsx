@@ -26,7 +26,11 @@ const DrawingCanvasWithTools = ({
     clearCanvas,
     currentColor,
     currentLineWidth,
-    currentTool
+    currentTool,
+    undo,
+    redo,
+    canUndo,
+    canRedo,
   } = useCanvas({ width, height, onDrawingChange, stencil, initialDataURL });
 
   const handleColorChange = useCallback((color: string) => {
@@ -94,6 +98,10 @@ const DrawingCanvasWithTools = ({
           onBrushSizeChange={handleBrushSizeChange}
           onToolChange={handleToolChange}
           onClearCanvas={handleClearCanvas}
+          onUndo={undo}
+          onRedo={redo}
+          canUndo={canUndo}
+          canRedo={canRedo}
         />
 
         {/* Canvas Area - takes remaining space */}
@@ -133,6 +141,10 @@ const DrawingCanvasWithTools = ({
         onBrushSizeChange={handleBrushSizeChange}
         onToolChange={handleToolChange}
         onClearCanvas={handleClearCanvas}
+          onUndo={undo}
+          onRedo={redo}
+          canUndo={canUndo}
+          canRedo={canRedo}
       />
 
       {/* Canvas */}
