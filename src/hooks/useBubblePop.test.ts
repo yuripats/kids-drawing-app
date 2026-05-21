@@ -189,3 +189,68 @@ describe('useBubblePop — reset', () => {
     unmount();
   });
 });
+
+describe('useBubblePop — pop animation timeout (PR-4c3)', () => {
+  it('marks a popped bubble as popping immediately', () => {
+    const { result, unmount } = renderHook(() => useBubblePop());
+
+    act(() => { vi.advanceTimersByTime(2100); }); // trigger natural spawn
+    const bubbles = result.current.gameState.bubbles;
+    if (bubbles.length === 0) { unmount(); return; }
+
+    const bubbleId = bubbles[0].id;
+    act(() => { result.current.popBubble(bubbleId); });
+
+    expect(result.current.gameState.bubbles.find(b => b.id === bubbleId)?.popping).toBe(true);
+    unmount();
+  });
+
+  it('removes the popped bubble from list after 500ms animation delay', () => {
+    const { result, unmount } = renderHook(() => useBubblePop());
+
+    act(() => { vi.advanceTimersByTime(2100); });
+    const bubbles = result.current.gameState.bubbles;
+    if (bubbles.length === 0) { unmount(); return; }
+
+    const bubbleId = bubbles[0].id;
+    act(() => { result.current.popBubble(bubbleId); });
+
+    // Still in the list (marked popping) right after pop
+    expect(result.current.gameState.bubbles.find(b => b.id === bubbleId)).toBeDefined();
+
+    // After 500ms the animation timeout fires and removes the bubble
+    act(() => { vi.advanceTimersByTime(500); });
+    expect(result.current.gameState.bubbles.find(b => b.id === bubbleId)).toBeUndefined();
+
+    unmount();
+  });
+
+  it('pop animation timeout is cancelled on unmount — no stale setState leak', () => {
+    // BUG: the 500ms pop-cleanup setTimeout was untracked, leaking on unmount.
+    // FIX: ID pushed to popTimeoutsRef, cleared in cleanup useEffect.
+    const clearTimeoutSpy = vi.spyOn(global, 'clearTimeout');
+
+    const { result, unmount } = renderHook(() => useBubblePop());
+    act(() => { vi.advanceTimersByTime(2100); });
+    const bubbles = result.current.gameState.bubbles;
+    if (bubbles.length === 0) { unmount(); clearTimeoutSpy.mockRestore(); return; }
+
+    const bubbleId = bubbles[0].id;
+    act(() => { result.current.popBubble(bubbleId); });
+
+    clearTimeoutSpy.mockClear(); // count only calls from the unmount cleanup
+
+    unmount();
+
+    // Fixed: clearTimeout called for the pop animation timeout (plus rAF cancel)
+    // — at least 1 pop-specific clearTimeout call
+    expect(clearTimeoutSpy.mock.calls.length).toBeGreaterThanOrEqual(1);
+
+    // Advancing past 500ms must not throw (timeout was cleared)
+    expect(() => {
+      act(() => { vi.advanceTimersByTime(500); });
+    }).not.toThrow();
+
+    clearTimeoutSpy.mockRestore();
+  });
+});

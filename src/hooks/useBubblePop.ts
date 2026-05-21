@@ -19,6 +19,8 @@ export const useBubblePop = () => {
 
   const animationFrameRef = useRef<number>();
   const lastBubbleTimeRef = useRef<number>(Date.now());
+  // Tracks pending pop-animation timeouts so they can be cleared on unmount
+  const popTimeoutsRef = useRef<NodeJS.Timeout[]>([]);
 
   // Generate random bubble
   const createBubble = useCallback((): Bubble => {
@@ -46,13 +48,14 @@ export const useBubblePop = () => {
         b.id === bubbleId ? { ...b, popping: true } : b
       );
 
-      // Remove bubble after animation completes (500ms)
-      setTimeout(() => {
+      // Remove bubble after animation completes (500ms); tracked for cleanup
+      const popId = setTimeout(() => {
         setGameState(current => ({
           ...current,
           bubbles: current.bubbles.filter(b => b.id !== bubbleId)
         }));
       }, 500);
+      popTimeoutsRef.current.push(popId);
 
       return {
         ...prev,
@@ -103,6 +106,14 @@ export const useBubblePop = () => {
   // functional update instead of the closure to avoid loop restarts on every spawn.
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [gameState.gameStatus, createBubble]);
+
+  // Clear all pending pop-animation timeouts on unmount
+  useEffect(() => {
+    return () => {
+      popTimeoutsRef.current.forEach(clearTimeout);
+      popTimeoutsRef.current = [];
+    };
+  }, []);
 
   const togglePause = useCallback(() => {
     setGameState(prev => ({

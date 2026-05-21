@@ -25,7 +25,10 @@ export const useSimonSays = () => {
   });
 
   const audioContextRef = useRef<AudioContext | null>(null);
-  const showTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  // Array tracks ALL pending timeout IDs across all 3 nesting levels so every
+  // one can be cleared on reset or unmount (the single-ref approach only tracked
+  // the last outer timeout and leaked the inner ones).
+  const showTimeoutsRef = useRef<NodeJS.Timeout[]>([]);
 
   // Initialize audio context
   useEffect(() => {
@@ -61,30 +64,38 @@ export const useSimonSays = () => {
 
   // Show sequence to player
   const showSequence = useCallback((sequence: number[]) => {
+    // Cancel any in-flight timeouts from a previous showSequence call
+    showTimeoutsRef.current.forEach(clearTimeout);
+    showTimeoutsRef.current = [];
+
     setGameState(prev => ({ ...prev, gameStatus: 'showing', showingIndex: -1 }));
 
     const delay = SPEED_DELAYS[gameState.speed];
 
     sequence.forEach((buttonIndex, idx) => {
-      const timeout = setTimeout(() => {
+      // LEVEL 1: highlight each button in turn
+      const outerId = setTimeout(() => {
         setGameState(prev => ({ ...prev, showingIndex: buttonIndex }));
         playButtonTone(buttonIndex);
 
-        setTimeout(() => {
+        // LEVEL 2: un-highlight after a short flash
+        const innerId = setTimeout(() => {
           setGameState(prev => ({ ...prev, showingIndex: -1 }));
 
+          // LEVEL 3: transition to 'playing' after the last button
           if (idx === sequence.length - 1) {
-            setTimeout(() => {
+            const finalId = setTimeout(() => {
               setGameState(prev => ({ ...prev, gameStatus: 'playing' }));
             }, 200);
+            showTimeoutsRef.current.push(finalId);
           }
         }, delay * 0.6);
+        showTimeoutsRef.current.push(innerId);
       }, idx * delay);
 
-      if (showTimeoutRef.current) {
-        clearTimeout(showTimeoutRef.current);
-      }
-      showTimeoutRef.current = timeout;
+      // Track the outer ID (do NOT clear the previous iteration's timeout —
+      // the old code had a forEach bug that cancelled every step except the last)
+      showTimeoutsRef.current.push(outerId);
     });
   }, [gameState.speed, playButtonTone]);
 
@@ -160,9 +171,8 @@ export const useSimonSays = () => {
 
   // Reset game
   const resetGame = useCallback(() => {
-    if (showTimeoutRef.current) {
-      clearTimeout(showTimeoutRef.current);
-    }
+    showTimeoutsRef.current.forEach(clearTimeout);
+    showTimeoutsRef.current = [];
 
     setGameState({
       sequence: [],
@@ -180,12 +190,11 @@ export const useSimonSays = () => {
     setGameState(prev => ({ ...prev, speed }));
   }, []);
 
-  // Cleanup
+  // Cleanup — clear every tracked timeout on unmount
   useEffect(() => {
     return () => {
-      if (showTimeoutRef.current) {
-        clearTimeout(showTimeoutRef.current);
-      }
+      showTimeoutsRef.current.forEach(clearTimeout);
+      showTimeoutsRef.current = [];
     };
   }, []);
 
