@@ -1,0 +1,77 @@
+{
+  "cli_version": "0.6.2",
+  "checkpoint_id": "e92ea42d3388",
+  "session_id": "c8482907-c92a-4ac1-ab8c-3f0d0e0a033b",
+  "strategy": "manual-commit",
+  "created_at": "2026-05-21T04:45:02.27054Z",
+  "branch": "claude/resurrect-20260521",
+  "checkpoints_count": 3,
+  "files_touched": [
+    "src/components/Games/SimonSays/SimonSaysPage.tsx",
+    "src/components/Games/Snake/SnakePage.tsx"
+  ],
+  "agent": "Claude Code",
+  "model": "claude-sonnet-4-6",
+  "turn_id": "51f8e7d6277a",
+  "token_usage": {
+    "input_tokens": 935,
+    "cache_creation_tokens": 1391404,
+    "cache_read_tokens": 27902287,
+    "output_tokens": 216749,
+    "api_call_count": 313
+  },
+  "session_metrics": {
+    "turn_count": 5
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-05-21T04:45:02.180096Z",
+    "agent_lines": 42,
+    "agent_removed": 47,
+    "human_added": 0,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 42,
+    "total_lines_changed": 89,
+    "agent_percentage": 100,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 2,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0
+    },
+    {
+      "checkpoint_number": 3,
+      "user_lines_added": 22,
+      "user_lines_removed": 1,
+      "agent_lines_added": 4217,
+      "agent_lines_removed": 50,
+      "user_added_per_file": {
+        ".claude/settings.local.json": 21,
+        ".omc/state/hud-stdin-cache.json": 1
+      },
+      "user_removed_per_file": {
+        ".omc/state/hud-stdin-cache.json": 1
+      }
+    },
+    {
+      "checkpoint_number": 4,
+      "user_lines_added": 24,
+      "user_lines_removed": 3,
+      "agent_lines_added": 4175,
+      "agent_lines_removed": 3,
+      "user_added_per_file": {
+        ".claude/settings.local.json": 21,
+        ".omc/project-memory.json": 2,
+        ".omc/state/hud-stdin-cache.json": 1
+      },
+      "user_removed_per_file": {
+        ".omc/project-memory.json": 2,
+        ".omc/state/hud-stdin-cache.json": 1
+      }
+    }
+  ]
+}

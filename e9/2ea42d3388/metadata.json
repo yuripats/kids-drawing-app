@@ -3,7 +3,7 @@
   "checkpoint_id": "e92ea42d3388",
   "strategy": "manual-commit",
   "branch": "claude/resurrect-20260521",
-  "checkpoints_count": 6,
+  "checkpoints_count": 9,
   "files_touched": [
     "src/components/Games/SimonSays/SimonSaysPage.tsx",
     "src/components/Games/Snake/SnakePage.tsx"
@@ -14,13 +14,19 @@
       "transcript": "/e9/2ea42d3388/0/full.jsonl",
       "content_hash": "/e9/2ea42d3388/0/content_hash.txt",
       "prompt": "/e9/2ea42d3388/0/prompt.txt"
+    },
+    {
+      "metadata": "/e9/2ea42d3388/1/metadata.json",
+      "transcript": "/e9/2ea42d3388/1/full.jsonl",
+      "content_hash": "/e9/2ea42d3388/1/content_hash.txt",
+      "prompt": "/e9/2ea42d3388/1/prompt.txt"
     }
   ],
   "token_usage": {
-    "input_tokens": 924,
-    "cache_creation_tokens": 6002229,
-    "cache_read_tokens": 44106497,
-    "output_tokens": 270576,
-    "api_call_count": 159
+    "input_tokens": 1859,
+    "cache_creation_tokens": 7393633,
+    "cache_read_tokens": 72008784,
+    "output_tokens": 487325,
+    "api_call_count": 472
   }
 }
