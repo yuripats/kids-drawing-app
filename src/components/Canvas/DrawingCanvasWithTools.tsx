@@ -92,7 +92,7 @@ const DrawingCanvasWithTools = ({
           onColorChange={handleColorChange}
           onBrushSizeChange={handleBrushSizeChange}
           onToolChange={handleToolChange}
-          onClearCanvas={() => {}} // Empty function since clear is handled by parent
+          onClearCanvas={handleClearCanvas}
         />
 
         {/* Canvas Area - takes remaining space */}
