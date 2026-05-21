@@ -1,0 +1,27 @@
+{
+  "cli_version": "0.6.2",
+  "checkpoint_id": "3f0a8a70c253",
+  "strategy": "manual-commit",
+  "branch": "claude/resurrect-20260521",
+  "checkpoints_count": 6,
+  "files_touched": [
+    "src/components/Canvas/DrawingCanvasWithTools.tsx",
+    "src/hooks/useDrawings.test.ts",
+    "src/hooks/useDrawings.ts"
+  ],
+  "sessions": [
+    {
+      "metadata": "/3f/0a8a70c253/0/metadata.json",
+      "transcript": "/3f/0a8a70c253/0/full.jsonl",
+      "content_hash": "/3f/0a8a70c253/0/content_hash.txt",
+      "prompt": "/3f/0a8a70c253/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 654,
+    "cache_creation_tokens": 3089438,
+    "cache_read_tokens": 24982030,
+    "output_tokens": 210464,
+    "api_call_count": 114
+  }
+}
