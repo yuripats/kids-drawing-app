@@ -73,6 +73,15 @@ const ShapeSortingPage: React.FC<ShapeSortingPageProps> = ({ onNavigateHome }) =
       onNavigateHome={onNavigateHome}
       headerActions={headerActions}
       bgColorClass="bg-gradient-to-b from-orange-100 to-red-100"
+      instructions={
+        <ul className="space-y-2 text-slate-700">
+          <li>• Look at the target shape at the top</li>
+          <li>• Click all shapes that match the target</li>
+          <li>• When you find all matching shapes, you win the round!</li>
+          <li>• Try different field sizes for more challenge!</li>
+          <li>• Perfect for learning shape names and recognition</li>
+        </ul>
+      }
     >
       {/* Settings Panel */}
       {showSettings && (
@@ -158,17 +167,6 @@ const ShapeSortingPage: React.FC<ShapeSortingPageProps> = ({ onNavigateHome }) =
         </p>
       </div>
 
-      {/* Instructions - Hidden on mobile */}
-      <div className="kid-card max-w-4xl mx-auto hidden md:block">
-        <h2 className="text-xl font-bold mb-3 text-center">How to Play</h2>
-        <ul className="space-y-2 text-slate-700">
-          <li>• Look at the target shape at the top</li>
-          <li>• Click all shapes that match the target</li>
-          <li>• When you find all matching shapes, you win the round!</li>
-          <li>• Try different field sizes for more challenge!</li>
-          <li>• Perfect for learning shape names and recognition</li>
-        </ul>
-      </div>
     </GameLayout>
   );
 };

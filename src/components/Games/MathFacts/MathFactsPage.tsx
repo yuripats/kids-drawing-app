@@ -65,6 +65,14 @@ const MathFactsPage: React.FC<MathFactsPageProps> = ({ onNavigateHome }) => {
       onNavigateHome={onNavigateHome}
       headerActions={headerActions}
       bgColorClass="bg-gradient-to-b from-yellow-100 to-green-100"
+      instructions={
+        <ul className="space-y-2 text-slate-700">
+          <li>• Solve the math problem</li>
+          <li>• Type your answer and click "Check Answer"</li>
+          <li>• Get streaks for bonus points!</li>
+          <li>• Choose difficulty: Easy (addition), Medium (+subtraction), Hard (+multiplication)</li>
+        </ul>
+      }
     >
       {/* Stats */}
       <div className="kid-card max-w-4xl mx-auto mb-4 p-4">
@@ -121,16 +129,6 @@ const MathFactsPage: React.FC<MathFactsPageProps> = ({ onNavigateHome }) => {
         </div>
       )}
 
-      {/* Instructions - Hidden on mobile */}
-      <div className="kid-card max-w-4xl mx-auto hidden md:block">
-        <h2 className="text-xl font-bold mb-3 text-center">How to Play</h2>
-        <ul className="space-y-2 text-slate-700">
-          <li>• Solve the math problem</li>
-          <li>• Type your answer and click "Check Answer"</li>
-          <li>• Get streaks for bonus points!</li>
-          <li>• Choose difficulty: Easy (addition), Medium (+subtraction), Hard (+multiplication)</li>
-        </ul>
-      </div>
     </GameLayout>
   );
 };

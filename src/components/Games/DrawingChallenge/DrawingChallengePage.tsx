@@ -128,10 +128,45 @@ const DrawingChallengePage: React.FC<DrawingChallengePageProps> = ({ onNavigateH
   return (
     <GameLayout
       title="Drawing Challenge"
-      emoji="🎨"
+      emoji="✏️"
       onNavigateHome={onNavigateHome}
       headerActions={headerActions}
       bgColorClass="bg-gradient-to-b from-purple-100 to-pink-100"
+      instructions={
+        <div className="space-y-3 text-slate-700">
+          <div>
+            <h3 className="font-semibold text-lg mb-1">🎯 Goal</h3>
+            <p>Draw the object shown in the prompt! Be as creative as you want!</p>
+          </div>
+          <div>
+            <h3 className="font-semibold text-lg mb-1">🎮 How to Play</h3>
+            <ul className="list-disc list-inside space-y-1">
+              <li>Choose a category (animals, food, nature, vehicles, or all)</li>
+              <li>Pick free mode (no timer) or timed mode (race against the clock)</li>
+              <li>Click "Start Drawing" to begin</li>
+              <li>Draw the object using the canvas tools</li>
+              <li>Click "I'm Done!" when finished</li>
+              <li>Get a new prompt and keep drawing!</li>
+            </ul>
+          </div>
+          <div>
+            <h3 className="font-semibold text-lg mb-1">✏️ Modes</h3>
+            <ul className="list-disc list-inside space-y-1">
+              <li><strong>Free Mode:</strong> Take your time and be creative with no pressure!</li>
+              <li><strong>Timed Mode:</strong> Challenge yourself to draw within a time limit!</li>
+            </ul>
+          </div>
+          <div>
+            <h3 className="font-semibold text-lg mb-1">💡 Tips</h3>
+            <ul className="list-disc list-inside space-y-1">
+              <li>There's no wrong way to draw!</li>
+              <li>Use different colors to make it fun</li>
+              <li>Keep challenging yourself with harder prompts</li>
+              <li>Complete all 120+ drawing challenges!</li>
+            </ul>
+          </div>
+        </div>
+      }
     >
       {/* Daily Challenge Banner */}
       {!showCanvas && (
@@ -298,54 +333,6 @@ const DrawingChallengePage: React.FC<DrawingChallengePageProps> = ({ onNavigateH
             >
               ⬅️ Back to Prompt
             </button>
-          </div>
-        </div>
-      )}
-
-      {/* Instructions - Hidden on mobile */}
-      {!showCanvas && (
-        <div className="kid-card max-w-4xl mx-auto mt-6 hidden md:block">
-          <h2 className="text-xl font-bold mb-3 text-center text-purple-800">
-            How to Play
-          </h2>
-
-          <div className="space-y-3 text-slate-700">
-            <div>
-              <h3 className="font-semibold text-lg mb-1">🎯 Goal</h3>
-              <p>
-                Draw the object shown in the prompt! Be as creative as you want!
-              </p>
-            </div>
-
-            <div>
-              <h3 className="font-semibold text-lg mb-1">🎮 How to Play</h3>
-              <ul className="list-disc list-inside space-y-1">
-                <li>Choose a category (animals, food, nature, vehicles, or all)</li>
-                <li>Pick free mode (no timer) or timed mode (race against the clock)</li>
-                <li>Click "Start Drawing" to begin</li>
-                <li>Draw the object using the canvas tools</li>
-                <li>Click "I'm Done!" when finished</li>
-                <li>Get a new prompt and keep drawing!</li>
-              </ul>
-            </div>
-
-            <div>
-              <h3 className="font-semibold text-lg mb-1">🎨 Modes</h3>
-              <ul className="list-disc list-inside space-y-1">
-                <li><strong>Free Mode:</strong> Take your time and be creative with no pressure!</li>
-                <li><strong>Timed Mode:</strong> Challenge yourself to draw within a time limit!</li>
-              </ul>
-            </div>
-
-            <div>
-              <h3 className="font-semibold text-lg mb-1">💡 Tips</h3>
-              <ul className="list-disc list-inside space-y-1">
-                <li>There's no wrong way to draw!</li>
-                <li>Use different colors to make it fun</li>
-                <li>Keep challenging yourself with harder prompts</li>
-                <li>Complete all {120}+ drawing challenges!</li>
-              </ul>
-            </div>
           </div>
         </div>
       )}

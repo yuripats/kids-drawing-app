@@ -29,7 +29,7 @@ const ColorBlocksPage: React.FC<ColorBlocksPageProps> = ({ onNavigateHome }) => 
   return (
     <GameLayout
       title="Color Blocks"
-      emoji="🎨"
+      emoji="🟪"
       onNavigateHome={onNavigateHome}
       bgColorClass="bg-gradient-to-b from-purple-100 to-pink-100"
     >

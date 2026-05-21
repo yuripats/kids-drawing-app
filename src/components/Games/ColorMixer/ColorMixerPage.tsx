@@ -25,6 +25,14 @@ const ColorMixerPage: React.FC<ColorMixerPageProps> = ({ onNavigateHome }) => {
       emoji="🌈"
       onNavigateHome={onNavigateHome}
       bgColorClass="bg-gradient-to-b from-pink-100 to-purple-100"
+      instructions={
+        <ul className="space-y-2 text-slate-700">
+          <li>• Mix colors to match the target color</li>
+          <li>• Click color buttons to add that color to your mix</li>
+          <li>• Use the hint to know which colors to combine</li>
+          <li>• Click "Check!" when you think it matches</li>
+        </ul>
+      }
     >
       {/* Stats */}
       <div className="kid-card max-w-4xl mx-auto mb-4 p-4">
@@ -107,16 +115,6 @@ const ColorMixerPage: React.FC<ColorMixerPageProps> = ({ onNavigateHome }) => {
         </button>
       </div>
 
-      {/* Instructions - Hidden on mobile */}
-      <div className="kid-card max-w-4xl mx-auto hidden md:block">
-        <h2 className="text-xl font-bold mb-3 text-center">How to Play</h2>
-        <ul className="space-y-2 text-slate-700">
-          <li>• Mix colors to match the target color</li>
-          <li>• Click color buttons to add that color to your mix</li>
-          <li>• Use the hint to know which colors to combine</li>
-          <li>• Click "Check!" when you think it matches</li>
-        </ul>
-      </div>
     </GameLayout>
   );
 };

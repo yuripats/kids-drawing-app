@@ -97,6 +97,41 @@ const SimonSaysPage: React.FC<SimonSaysPageProps> = ({ onNavigateHome }) => {
       onNavigateHome={onNavigateHome}
       headerActions={headerActions}
       bgColorClass="bg-gradient-to-b from-indigo-100 to-purple-100"
+      instructions={
+        <div className="space-y-3 text-slate-700">
+          <div>
+            <h3 className="font-semibold text-lg mb-1">🎯 Goal</h3>
+            <p>Repeat the pattern by pressing the buttons in the same order Simon shows you!</p>
+          </div>
+          <div>
+            <h3 className="font-semibold text-lg mb-1">🎮 How to Play</h3>
+            <ul className="list-disc list-inside space-y-1">
+              <li>Watch as Simon lights up buttons in a sequence</li>
+              <li>Listen to the musical tones for each button</li>
+              <li>Repeat the pattern by pressing the same buttons in order</li>
+              <li>Each round adds one more button to the sequence</li>
+              <li>One mistake and the game is over!</li>
+            </ul>
+          </div>
+          <div>
+            <h3 className="font-semibold text-lg mb-1">⚙️ Speed Settings</h3>
+            <ul className="list-disc list-inside space-y-1">
+              <li><strong>Slow:</strong> 800ms between buttons - great for learning</li>
+              <li><strong>Normal:</strong> 600ms - standard challenge</li>
+              <li><strong>Fast:</strong> 400ms - expert mode!</li>
+            </ul>
+          </div>
+          <div>
+            <h3 className="font-semibold text-lg mb-1">💡 Tips</h3>
+            <ul className="list-disc list-inside space-y-1">
+              <li>Pay attention to both colors and sounds</li>
+              <li>Create a rhythm or pattern to remember the sequence</li>
+              <li>Stay focused - one wrong button ends the game!</li>
+              <li>Try to beat your high score!</li>
+            </ul>
+          </div>
+        </div>
+      }
     >
       {/* Stats Panel - Compact on mobile */}
       <div className="kid-card max-w-4xl mx-auto mb-2 md:mb-4 p-2 md:p-4">
@@ -167,52 +202,6 @@ const SimonSaysPage: React.FC<SimonSaysPageProps> = ({ onNavigateHome }) => {
               </button>
             );
           })}
-        </div>
-      </div>
-
-      {/* Instructions - Hidden on mobile */}
-      <div className="kid-card max-w-4xl mx-auto hidden md:block">
-        <h2 className="text-xl font-bold mb-3 text-center text-purple-800">
-          How to Play
-        </h2>
-
-        <div className="space-y-3 text-slate-700">
-          <div>
-            <h3 className="font-semibold text-lg mb-1">🎯 Goal</h3>
-            <p>
-              Repeat the pattern by pressing the buttons in the same order Simon shows you!
-            </p>
-          </div>
-
-          <div>
-            <h3 className="font-semibold text-lg mb-1">🎮 How to Play</h3>
-            <ul className="list-disc list-inside space-y-1">
-              <li>Watch as Simon lights up buttons in a sequence</li>
-              <li>Listen to the musical tones for each button</li>
-              <li>Repeat the pattern by pressing the same buttons in order</li>
-              <li>Each round adds one more button to the sequence</li>
-              <li>One mistake and the game is over!</li>
-            </ul>
-          </div>
-
-          <div>
-            <h3 className="font-semibold text-lg mb-1">⚙️ Speed Settings</h3>
-            <ul className="list-disc list-inside space-y-1">
-              <li><strong>Slow:</strong> 800ms between buttons - great for learning</li>
-              <li><strong>Normal:</strong> 600ms - standard challenge</li>
-              <li><strong>Fast:</strong> 400ms - expert mode!</li>
-            </ul>
-          </div>
-
-          <div>
-            <h3 className="font-semibold text-lg mb-1">💡 Tips</h3>
-            <ul className="list-disc list-inside space-y-1">
-              <li>Pay attention to both colors and sounds</li>
-              <li>Create a rhythm or pattern to remember the sequence</li>
-              <li>Stay focused - one wrong button ends the game!</li>
-              <li>Try to beat your high score!</li>
-            </ul>
-          </div>
         </div>
       </div>
 

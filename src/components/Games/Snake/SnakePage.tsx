@@ -97,6 +97,53 @@ const SnakePage: React.FC<SnakePageProps> = ({ onNavigateHome }) => {
           )}
         </>
       }
+      instructions={
+        <div className="space-y-3">
+          <div>
+            <h3 className="font-semibold text-lg mb-1">🎯 Goal</h3>
+            <p className="text-slate-700">Eat the apples 🍎 to grow your snake and score points. Don't hit the walls or yourself!</p>
+          </div>
+          <div>
+            <h3 className="font-semibold text-lg mb-1">⌨️ Keyboard Controls</h3>
+            <ul className="text-slate-700 space-y-1">
+              <li><strong>Arrow Keys</strong> or <strong>WASD</strong> - Move snake</li>
+              <li><strong>Space</strong> - Pause/Resume</li>
+              <li><strong>R</strong> - Restart (when game over)</li>
+            </ul>
+          </div>
+          <div>
+            <h3 className="font-semibold text-lg mb-1">📱 Touch Controls</h3>
+            <p className="text-slate-700">Tap the arrow buttons to change direction</p>
+          </div>
+          <div>
+            <h3 className="font-semibold text-lg mb-1">📊 Scoring</h3>
+            <p className="text-slate-700">Each apple gives you <strong>+10 points</strong> and makes your snake longer!</p>
+          </div>
+          <div>
+            <h3 className="font-semibold text-lg mb-1">⚙️ Game Settings</h3>
+            <div className="text-slate-700 space-y-2">
+              <div>
+                <strong>Speed:</strong>
+                <ul className="ml-4 mt-1 space-y-1">
+                  <li>🐌 <strong>Slow</strong> - Relaxed pace (200ms)</li>
+                  <li>🏃 Medium - Moderate speed (150ms)</li>
+                  <li>⚡ <strong>Fast</strong> - Quick reflexes needed! (100ms)</li>
+                </ul>
+              </div>
+              <div>
+                <strong>Grid Size:</strong>
+                <ul className="ml-4 mt-1 space-y-1">
+                  <li>📐 <strong>Small</strong> - Cozy 15×15 grid</li>
+                  <li>📏 Medium - Standard 20×20 grid</li>
+                  <li>📊 <strong>Large</strong> - Spacious 25×25 grid</li>
+                  <li>🗺️ <strong>X-Large</strong> - Huge 30×30 grid!</li>
+                </ul>
+              </div>
+              <p className="text-sm italic">Mix and match speed and grid size for your perfect challenge!</p>
+            </div>
+          </div>
+        </div>
+      }
     >
       {/* Score Display - Compact on mobile */}
       <div className="kid-card max-w-4xl mx-auto mb-2 md:mb-4 p-2 md:p-4">
@@ -134,69 +181,6 @@ const SnakePage: React.FC<SnakePageProps> = ({ onNavigateHome }) => {
           onDirectionChange={controls.changeDirection}
           disabled={gameState.gameStatus === 'gameOver' || gameState.gameStatus === 'paused'}
         />
-      </div>
-
-      {/* Instructions - Hidden on mobile */}
-      <div className="kid-card max-w-4xl mx-auto hidden md:block">
-        <h2 className="text-xl font-bold mb-3 text-center text-emerald-800">
-          How to Play
-        </h2>
-
-        <div className="space-y-3">
-          <div>
-            <h3 className="font-semibold text-lg mb-1">🎯 Goal</h3>
-            <p className="text-slate-700">
-              Eat the apples 🍎 to grow your snake and score points. Don't hit the walls or yourself!
-            </p>
-          </div>
-
-          <div>
-            <h3 className="font-semibold text-lg mb-1">⌨️ Keyboard Controls</h3>
-            <ul className="text-slate-700 space-y-1">
-              <li><strong>Arrow Keys</strong> or <strong>WASD</strong> - Move snake</li>
-              <li><strong>Space</strong> - Pause/Resume</li>
-              <li><strong>R</strong> - Restart (when game over)</li>
-            </ul>
-          </div>
-
-          <div className="md:hidden">
-            <h3 className="font-semibold text-lg mb-1">📱 Touch Controls</h3>
-            <p className="text-slate-700">
-              Tap the arrow buttons above to change direction
-            </p>
-          </div>
-
-          <div>
-            <h3 className="font-semibold text-lg mb-1">📊 Scoring</h3>
-            <p className="text-slate-700">
-              Each apple gives you <strong>+10 points</strong> and makes your snake longer!
-            </p>
-          </div>
-
-          <div>
-            <h3 className="font-semibold text-lg mb-1">⚙️ Game Settings</h3>
-            <div className="text-slate-700 space-y-2">
-              <div>
-                <strong>Speed:</strong>
-                <ul className="ml-4 mt-1 space-y-1">
-                  <li>🐌 <strong>Slow</strong> - Relaxed pace (200ms)</li>
-                  <li>🏃 Medium - Moderate speed (150ms)</li>
-                  <li>⚡ <strong>Fast</strong> - Quick reflexes needed! (100ms)</li>
-                </ul>
-              </div>
-              <div>
-                <strong>Grid Size:</strong>
-                <ul className="ml-4 mt-1 space-y-1">
-                  <li>📐 <strong>Small</strong> - Cozy 15×15 grid</li>
-                  <li>📏 Medium - Standard 20×20 grid</li>
-                  <li>📊 <strong>Large</strong> - Spacious 25×25 grid</li>
-                  <li>🗺️ <strong>X-Large</strong> - Huge 30×30 grid!</li>
-                </ul>
-              </div>
-              <p className="text-sm italic">Mix and match speed and grid size for your perfect challenge!</p>
-            </div>
-          </div>
-        </div>
       </div>
 
       {/* Game Over Modal Overlay */}
