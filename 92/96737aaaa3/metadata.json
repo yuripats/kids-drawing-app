@@ -3,7 +3,7 @@
   "checkpoint_id": "9296737aaaa3",
   "strategy": "manual-commit",
   "branch": "claude/resurrect-20260521",
-  "checkpoints_count": 2,
+  "checkpoints_count": 7,
   "files_touched": [
     "src/components/Canvas/DrawingCanvasWithTools.tsx",
     "src/components/Tools/DrawingToolPanel.tsx",
@@ -22,13 +22,19 @@
       "transcript": "/92/96737aaaa3/1/full.jsonl",
       "content_hash": "/92/96737aaaa3/1/content_hash.txt",
       "prompt": "/92/96737aaaa3/1/prompt.txt"
+    },
+    {
+      "metadata": "/92/96737aaaa3/2/metadata.json",
+      "transcript": "/92/96737aaaa3/2/full.jsonl",
+      "content_hash": "/92/96737aaaa3/2/content_hash.txt",
+      "prompt": ""
     }
   ],
   "token_usage": {
-    "input_tokens": 1757,
-    "cache_creation_tokens": 7267091,
-    "cache_read_tokens": 66758680,
-    "output_tokens": 474069,
-    "api_call_count": 446
+    "input_tokens": 2278,
+    "cache_creation_tokens": 8192399,
+    "cache_read_tokens": 83734933,
+    "output_tokens": 672810,
+    "api_call_count": 621
   }
 }
