@@ -3,6 +3,8 @@
  * Common functions used across multiple games
  */
 
+import * as storage from './storage';
+
 export type SoundEffect = 'pop' | 'match' | 'mismatch' | 'win' | 'lose' | 'collect' | 'click';
 
 // High Score Management
@@ -10,7 +12,7 @@ export const saveHighScore = (gameKey: string, score: number): void => {
   try {
     const currentHighScore = getHighScore(gameKey);
     if (score > currentHighScore) {
-      localStorage.setItem(`highScore_${gameKey}`, score.toString());
+      storage.set(`highScore_${gameKey}`, score);
     }
   } catch (error) {
     console.error('Error saving high score:', error);
@@ -18,32 +20,20 @@ export const saveHighScore = (gameKey: string, score: number): void => {
 };
 
 export const getHighScore = (gameKey: string): number => {
-  try {
-    const score = localStorage.getItem(`highScore_${gameKey}`);
-    return score ? parseInt(score, 10) : 0;
-  } catch (error) {
-    console.error('Error getting high score:', error);
-    return 0;
-  }
+  return storage.get(`highScore_${gameKey}`, 0);
 };
 
 // Generic save/load for game state
 export const saveGameData = <T>(gameKey: string, data: T): void => {
   try {
-    localStorage.setItem(`gameData_${gameKey}`, JSON.stringify(data));
+    storage.set(`gameData_${gameKey}`, data);
   } catch (error) {
     console.error('Error saving game data:', error);
   }
 };
 
 export const loadGameData = <T>(gameKey: string, defaultValue: T): T => {
-  try {
-    const data = localStorage.getItem(`gameData_${gameKey}`);
-    return data ? JSON.parse(data) : defaultValue;
-  } catch (error) {
-    console.error('Error loading game data:', error);
-    return defaultValue;
-  }
+  return storage.get(`gameData_${gameKey}`, defaultValue);
 };
 
 // Sound Effects

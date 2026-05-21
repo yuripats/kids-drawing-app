@@ -2,11 +2,12 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { Difficulty, GameState, Settings } from '../types/sudoku';
 import { createEmptyBoard, validateConflicts } from '../utils/sudoku';
 import { loadPuzzle } from '../services/sudoku/SudokuEngine';
+import * as storage from '../utils/storage';
 
 interface Options { difficulty: Difficulty }
 
-const ACTIVE_KEY = 'kda:sudoku:active';
-const GAME_KEY = (id: string) => `kda:sudoku:game:${id}`;
+const ACTIVE_KEY = 'sudoku:active';
+const GAME_KEY = (id: string) => `sudoku:game:${id}`;
 
 export function useSudokuGame({ difficulty }: Options) {
   const [game, setGame] = useState<GameState>(() => initialGame(difficulty));
@@ -14,12 +15,12 @@ export function useSudokuGame({ difficulty }: Options) {
 
   useEffect(() => {
     // resume active game if present
-    const activeId = localStorage.getItem(ACTIVE_KEY);
+    const activeId = storage.get<string | null>(ACTIVE_KEY, null);
     if (activeId) {
-      const raw = localStorage.getItem(GAME_KEY(activeId));
-      if (raw) {
+      const savedGame = storage.get<SerializedGameState | null>(GAME_KEY(activeId), null);
+      if (savedGame) {
         try {
-          const parsed: GameState = revive(JSON.parse(raw));
+          const parsed: GameState = revive(savedGame);
           setGame(parsed);
           return;
         } catch {
@@ -43,8 +44,8 @@ export function useSudokuGame({ difficulty }: Options) {
   }, [game.status]);
 
   const persist = useCallback((g: GameState) => {
-    localStorage.setItem(ACTIVE_KEY, g.id);
-    localStorage.setItem(GAME_KEY(g.id), JSON.stringify(serialize(g)));
+    storage.set(ACTIVE_KEY, g.id);
+    storage.set(GAME_KEY(g.id), serialize(g));
   }, []);
 
   const selectCell = useCallback((row: number, col: number) => {

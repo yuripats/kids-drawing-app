@@ -14,6 +14,7 @@ import type {
   SnakeConfig,
 } from '../components/Games/Snake/types';
 import { buildSnakeConfig } from '../components/Games/Snake/types';
+import * as storage from '../utils/storage';
 
 const HIGH_SCORE_KEY = 'snakeHighScore';
 
@@ -34,18 +35,17 @@ const OPPOSITE_DIRECTIONS: Record<Direction, Direction> = {
 };
 
 /**
- * Get high score from localStorage
+ * Get high score from storage.
  */
 const getHighScore = (): number => {
-  const saved = localStorage.getItem(HIGH_SCORE_KEY);
-  return saved ? parseInt(saved, 10) : 0;
+  return storage.get(HIGH_SCORE_KEY, 0);
 };
 
 /**
- * Save high score to localStorage
+ * Save high score to storage.
  */
 const saveHighScore = (score: number): void => {
-  localStorage.setItem(HIGH_SCORE_KEY, score.toString());
+  storage.set(HIGH_SCORE_KEY, score);
 };
 
 /**

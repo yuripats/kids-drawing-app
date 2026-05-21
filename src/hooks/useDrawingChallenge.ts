@@ -31,7 +31,7 @@ export const useDrawingChallenge = (): UseDrawingChallengeReturn => {
 
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Load completed challenges from localStorage
+  // Load completed challenges from storage
   useEffect(() => {
     const savedData = loadGameData<{ completed: string[] }>(
       GAME_KEY,
@@ -40,7 +40,7 @@ export const useDrawingChallenge = (): UseDrawingChallengeReturn => {
     setCompletedChallenges(savedData.completed);
   }, []);
 
-  // Save completed challenges to localStorage
+  // Save completed challenges to storage
   useEffect(() => {
     saveGameData(GAME_KEY, { completed: completedChallenges });
   }, [completedChallenges]);

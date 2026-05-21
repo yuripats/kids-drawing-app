@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import HomePage from './components/HomePage';
+import { migrate } from './utils/storage';
 import DrawingPage from './components/DrawingPage';
 import ColorBlocksPage from './components/Games/ColorBlocksGame/ColorBlocksPage';
 import { Stencil } from './types/Stencil';
@@ -21,6 +22,11 @@ type AppPage = 'home' | 'draw' | 'stencil' | 'colorblocks' | 'sudoku' | 'tetris'
 function App() {
   const [currentPage, setCurrentPage] = useState<AppPage>('home');
   const [selectedStencil, setSelectedStencil] = useState<Stencil | null>(null);
+
+  // One-time migration of legacy un-prefixed keys to the kda: storage namespace
+  useEffect(() => {
+    migrate();
+  }, []);
 
   const navigateTo = (page: AppPage) => {
     setCurrentPage(page);
