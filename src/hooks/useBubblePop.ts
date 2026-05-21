@@ -63,32 +63,31 @@ export const useBubblePop = () => {
     });
   }, []);
 
-  // Animation loop
+  // Animation loop — stable: deps contain only gameStatus so the loop is set up
+  // once per play/pause transition and never restarted on bubble count changes.
   useEffect(() => {
     if (gameState.gameStatus !== 'playing') return;
 
     const animate = () => {
       const now = Date.now();
 
-      // Add new bubble every 2 seconds
-      if (now - lastBubbleTimeRef.current > 2000 && gameState.bubbles.length < 12) {
-        lastBubbleTimeRef.current = now;
-        setGameState(prev => ({
-          ...prev,
-          bubbles: [...prev.bubbles, createBubble()]
-        }));
-      }
+      // ONE setGameState per frame: spawn (if due) + move + filter in a single
+      // functional update so the second operation reads post-spawn state via
+      // `prev`, never a stale closure value.
+      setGameState(prev => {
+        // Check cap against prev.bubbles.length, not stale closure
+        let bubbles = prev.bubbles;
+        if (now - lastBubbleTimeRef.current > 2000 && bubbles.length < 12) {
+          lastBubbleTimeRef.current = now;
+          bubbles = [...bubbles, createBubble()];
+        }
 
-      // Update bubble positions
-      setGameState(prev => ({
-        ...prev,
-        bubbles: prev.bubbles
-          .map(bubble => ({
-            ...bubble,
-            y: bubble.y - bubble.speed
-          }))
-          .filter(bubble => bubble.y > -bubble.size)
-      }));
+        bubbles = bubbles
+          .map(bubble => ({ ...bubble, y: bubble.y - bubble.speed }))
+          .filter(bubble => bubble.y > -bubble.size);
+
+        return { ...prev, bubbles };
+      });
 
       animationFrameRef.current = requestAnimationFrame(animate);
     };
@@ -100,7 +99,10 @@ export const useBubblePop = () => {
         cancelAnimationFrame(animationFrameRef.current);
       }
     };
-  }, [gameState.gameStatus, gameState.bubbles.length, createBubble]);
+  // gameState.bubbles.length intentionally omitted — read from prev inside the
+  // functional update instead of the closure to avoid loop restarts on every spawn.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [gameState.gameStatus, createBubble]);
 
   const togglePause = useCallback(() => {
     setGameState(prev => ({
