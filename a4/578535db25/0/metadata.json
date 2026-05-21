@@ -1,0 +1,171 @@
+{
+  "cli_version": "0.6.2",
+  "checkpoint_id": "a4578535db25",
+  "session_id": "b83f2d48-bb33-4908-bf30-863719cd5c48",
+  "strategy": "manual-commit",
+  "created_at": "2026-05-21T03:21:09.340317Z",
+  "branch": "claude/resurrect-20260521",
+  "checkpoints_count": 12,
+  "files_touched": [
+    "package.json"
+  ],
+  "agent": "Claude Code",
+  "model": "",
+  "turn_id": "74141696d8f6",
+  "token_usage": {
+    "input_tokens": 588,
+    "cache_creation_tokens": 2647591,
+    "cache_read_tokens": 20820229,
+    "output_tokens": 188295,
+    "api_call_count": 103
+  },
+  "session_metrics": {
+    "turn_count": 17
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-05-21T03:21:09.301274Z",
+    "agent_lines": 3,
+    "agent_removed": 3,
+    "human_added": 1140,
+    "human_modified": 1,
+    "human_removed": 0,
+    "total_committed": 1144,
+    "total_lines_changed": 2167,
+    "agent_percentage": 0.2768804799261652,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0
+    },
+    {
+      "checkpoint_number": 2,
+      "user_lines_added": 53,
+      "user_lines_removed": 5,
+      "agent_lines_added": 3133,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        ".claude/settings.local.json": 21,
+        ".omc/state/agent-replay-b83f2d48-bb33-4908-bf30-863719cd5c48.jsonl": 3,
+        ".omc/state/hud-stdin-cache.json": 1,
+        ".omc/state/mission-state.json": 27,
+        ".omc/state/subagent-tracking.json": 1
+      },
+      "user_removed_per_file": {
+        ".omc/state/hud-stdin-cache.json": 1,
+        ".omc/state/mission-state.json": 3,
+        ".omc/state/subagent-tracking.json": 1
+      }
+    },
+    {
+      "checkpoint_number": 3,
+      "user_lines_added": 53,
+      "user_lines_removed": 5,
+      "agent_lines_added": 3500,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        ".claude/settings.local.json": 21,
+        ".omc/state/agent-replay-b83f2d48-bb33-4908-bf30-863719cd5c48.jsonl": 3,
+        ".omc/state/hud-stdin-cache.json": 1,
+        ".omc/state/mission-state.json": 27,
+        ".omc/state/subagent-tracking.json": 1
+      },
+      "user_removed_per_file": {
+        ".omc/state/hud-stdin-cache.json": 1,
+        ".omc/state/mission-state.json": 3,
+        ".omc/state/subagent-tracking.json": 1
+      }
+    },
+    {
+      "checkpoint_number": 4,
+      "user_lines_added": 53,
+      "user_lines_removed": 5,
+      "agent_lines_added": 3857,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        ".claude/settings.local.json": 21,
+        ".omc/state/agent-replay-b83f2d48-bb33-4908-bf30-863719cd5c48.jsonl": 3,
+        ".omc/state/hud-stdin-cache.json": 1,
+        ".omc/state/mission-state.json": 27,
+        ".omc/state/subagent-tracking.json": 1
+      },
+      "user_removed_per_file": {
+        ".omc/state/hud-stdin-cache.json": 1,
+        ".omc/state/mission-state.json": 3,
+        ".omc/state/subagent-tracking.json": 1
+      }
+    },
+    {
+      "checkpoint_number": 5,
+      "user_lines_added": 62,
+      "user_lines_removed": 5,
+      "agent_lines_added": 3858,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        ".claude/settings.local.json": 21,
+        ".omc/state/agent-replay-b83f2d48-bb33-4908-bf30-863719cd5c48.jsonl": 4,
+        ".omc/state/hud-stdin-cache.json": 1,
+        ".omc/state/mission-state.json": 35,
+        ".omc/state/subagent-tracking.json": 1
+      },
+      "user_removed_per_file": {
+        ".omc/state/hud-stdin-cache.json": 1,
+        ".omc/state/mission-state.json": 3,
+        ".omc/state/subagent-tracking.json": 1
+      }
+    },
+    {
+      "checkpoint_number": 6,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0
+    },
+    {
+      "checkpoint_number": 7,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0
+    },
+    {
+      "checkpoint_number": 8,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0
+    },
+    {
+      "checkpoint_number": 9,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0
+    },
+    {
+      "checkpoint_number": 10,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0
+    },
+    {
+      "checkpoint_number": 11,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0
+    },
+    {
+      "checkpoint_number": 12,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0
+    }
+  ]
+}

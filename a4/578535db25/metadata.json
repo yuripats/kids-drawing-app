@@ -1,0 +1,25 @@
+{
+  "cli_version": "0.6.2",
+  "checkpoint_id": "a4578535db25",
+  "strategy": "manual-commit",
+  "branch": "claude/resurrect-20260521",
+  "checkpoints_count": 12,
+  "files_touched": [
+    "package.json"
+  ],
+  "sessions": [
+    {
+      "metadata": "/a4/578535db25/0/metadata.json",
+      "transcript": "/a4/578535db25/0/full.jsonl",
+      "content_hash": "/a4/578535db25/0/content_hash.txt",
+      "prompt": "/a4/578535db25/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 588,
+    "cache_creation_tokens": 2647591,
+    "cache_read_tokens": 20820229,
+    "output_tokens": 188295,
+    "api_call_count": 103
+  }
+}
