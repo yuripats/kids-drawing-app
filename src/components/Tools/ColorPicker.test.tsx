@@ -103,10 +103,38 @@ describe('ColorPicker', () => {
     );
 
     const colorButtons = screen.getAllByRole('button');
-    
+
     colorButtons.forEach(button => {
       expect(button).toHaveAttribute('aria-label');
       expect(button.getAttribute('aria-label')).toMatch(/Select #[A-F0-9]{6} color/);
     });
+  });
+
+  it('Space key on a color swatch selects that color', () => {
+    render(
+      <ColorPicker
+        selectedColor="#FF6B6B"
+        onColorChange={mockOnColorChange}
+      />
+    );
+
+    const tealSwatch = screen.getByLabelText('Select #4ECDC4 color');
+    fireEvent.keyDown(tealSwatch, { key: ' ' });
+
+    expect(mockOnColorChange).toHaveBeenCalledWith('#4ECDC4');
+  });
+
+  it('Enter key on a color swatch selects that color', () => {
+    render(
+      <ColorPicker
+        selectedColor="#FF6B6B"
+        onColorChange={mockOnColorChange}
+      />
+    );
+
+    const blueSwatch = screen.getByLabelText('Select #54A0FF color');
+    fireEvent.keyDown(blueSwatch, { key: 'Enter' });
+
+    expect(mockOnColorChange).toHaveBeenCalledWith('#54A0FF');
   });
 });

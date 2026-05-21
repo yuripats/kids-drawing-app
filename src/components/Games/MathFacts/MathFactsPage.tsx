@@ -96,7 +96,11 @@ const MathFactsPage: React.FC<MathFactsPageProps> = ({ onNavigateHome }) => {
           </div>
 
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+            <label htmlFor="math-answer" className="sr-only">
+              Your answer
+            </label>
             <input
+              id="math-answer"
               type="number"
               value={userInput}
               onChange={(e) => setUserInput(e.target.value)}

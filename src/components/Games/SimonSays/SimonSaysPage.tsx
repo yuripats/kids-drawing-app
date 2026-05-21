@@ -137,33 +137,36 @@ const SimonSaysPage: React.FC<SimonSaysPageProps> = ({ onNavigateHome }) => {
       {/* Simon Buttons Grid */}
       <div className="max-w-md mx-auto mb-4 md:mb-6">
         <div className="grid grid-cols-2 gap-3 md:gap-4 p-4">
-          {buttonConfigs.map((config, index) => (
-            <button
-              key={config.color}
-              onClick={() => handleButtonPress(index)}
-              disabled={gameStatus !== 'playing'}
-              className={`
-                ${config.className}
-                ${showingIndex === index ? 'ring-8 ring-white scale-110' : ''}
-                ${gameStatus === 'playing' ? 'cursor-pointer' : 'cursor-not-allowed opacity-60'}
-                aspect-square rounded-2xl md:rounded-3xl
-                shadow-lg transition-all duration-200
-                flex items-center justify-center
-                text-white font-bold text-2xl md:text-4xl
-                touch-none select-none
-              `}
-              style={{
-                transform: showingIndex === index ? 'scale(1.1)' : 'scale(1)'
-              }}
-            >
-              <span className="drop-shadow-lg">
-                {index === 0 && '🔴'}
-                {index === 1 && '🔵'}
-                {index === 2 && '🟢'}
-                {index === 3 && '🟡'}
-              </span>
-            </button>
-          ))}
+          {buttonConfigs.map((config, index) => {
+            const glyphs = ['R', 'B', 'G', 'Y'];
+            const emojis = ['🔴', '🔵', '🟢', '🟡'];
+            return (
+              <button
+                key={config.color}
+                aria-label={config.color}
+                onClick={() => handleButtonPress(index)}
+                disabled={gameStatus !== 'playing'}
+                className={`
+                  ${config.className}
+                  ${showingIndex === index ? 'ring-8 ring-white scale-110' : ''}
+                  ${gameStatus === 'playing' ? 'cursor-pointer' : 'cursor-not-allowed opacity-60'}
+                  aspect-square rounded-2xl md:rounded-3xl
+                  shadow-lg transition-all duration-200
+                  flex items-center justify-center
+                  text-white font-bold text-2xl md:text-4xl
+                  touch-none select-none
+                `}
+                style={{
+                  transform: showingIndex === index ? 'scale(1.1)' : 'scale(1)'
+                }}
+              >
+                <span className="drop-shadow-lg flex flex-col items-center gap-0.5">
+                  <span aria-hidden="true">{emojis[index]}</span>
+                  <span className="text-sm md:text-base font-black leading-none">{glyphs[index]}</span>
+                </span>
+              </button>
+            );
+          })}
         </div>
       </div>
 

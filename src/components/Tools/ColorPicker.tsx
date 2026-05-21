@@ -24,9 +24,16 @@ const ColorPicker = ({ selectedColor, onColorChange }: ColorPickerProps) => {
   const handleColorSelect = (color: string) => {
     setIsAnimating(color);
     onColorChange(color);
-    
+
     // Reset animation after a short delay
     setTimeout(() => setIsAnimating(null), 200);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent, color: string) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      handleColorSelect(color);
+    }
   };
 
   if (isMobile) {
@@ -65,8 +72,8 @@ const ColorPicker = ({ selectedColor, onColorChange }: ColorPickerProps) => {
                   minHeight: '29px'
                 }}
                 onClick={() => handleColorSelect(color)}
+                onKeyDown={(e) => handleKeyDown(e, color)}
                 aria-label={`Select ${color} color`}
-                role="button"
               >
                 {isSelected && (
                   <span className="text-white text-xs font-bold drop-shadow-lg">
