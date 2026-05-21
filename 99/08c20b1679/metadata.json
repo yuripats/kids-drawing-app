@@ -1,0 +1,28 @@
+{
+  "cli_version": "0.6.2",
+  "checkpoint_id": "9908c20b1679",
+  "strategy": "manual-commit",
+  "branch": "claude/resurrect-20260521",
+  "checkpoints_count": 11,
+  "files_touched": [
+    "src/App.tsx",
+    "src/components/Onboarding/OnboardingOverlay.test.tsx",
+    "src/components/Onboarding/OnboardingOverlay.tsx",
+    "vitest.games.config.ts"
+  ],
+  "sessions": [
+    {
+      "metadata": "/99/08c20b1679/0/metadata.json",
+      "transcript": "/99/08c20b1679/0/full.jsonl",
+      "content_hash": "/99/08c20b1679/0/content_hash.txt",
+      "prompt": "/99/08c20b1679/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 120,
+    "cache_creation_tokens": 1967719,
+    "cache_read_tokens": 8054973,
+    "output_tokens": 26551,
+    "api_call_count": 20
+  }
+}
