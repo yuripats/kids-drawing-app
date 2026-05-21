@@ -7,9 +7,10 @@ import { useDrawings } from '../hooks/useDrawings';
 interface DrawingPageProps {
   onNavigateHome: () => void;
   stencil?: Stencil | null;
+  initialDataURL?: string;
 }
 
-const DrawingPage = ({ onNavigateHome, stencil }: DrawingPageProps) => {
+const DrawingPage = ({ onNavigateHome, stencil, initialDataURL }: DrawingPageProps) => {
   const [isMobile, setIsMobile] = useState(false);
   const [viewport, setViewport] = useState({ width: 800, height: 600 });
   const [quotaExceeded, setQuotaExceeded] = useState(false);
@@ -120,6 +121,7 @@ const DrawingPage = ({ onNavigateHome, stencil }: DrawingPageProps) => {
             onDrawingChange={handleDrawingChange}
             clearCanvasRef={clearCanvasRef}
             stencil={stencil}
+            initialDataURL={initialDataURL}
           />
         </main>
       </div>

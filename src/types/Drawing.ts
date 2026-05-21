@@ -28,4 +28,5 @@ export interface CanvasProps {
   onDrawingChange?: (dataURL: string) => void;
   clearCanvasRef?: React.MutableRefObject<(() => void) | null>;
   stencil?: Stencil | null;
+  initialDataURL?: string;
 }

@@ -8,9 +8,10 @@ interface UseCanvasProps {
   height: number;
   onDrawingChange?: (dataURL: string) => void;
   stencil?: Stencil | null;
+  initialDataURL?: string;
 }
 
-export const useCanvas = ({ width, height, onDrawingChange, stencil }: UseCanvasProps) => {
+export const useCanvas = ({ width, height, onDrawingChange, stencil, initialDataURL }: UseCanvasProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const contextRef = useRef<CanvasRenderingContext2D | null>(null);
   // Separate canvas for stencil mask (to detect protected areas)
@@ -535,6 +536,22 @@ export const useCanvas = ({ width, height, onDrawingChange, stencil }: UseCanvas
   const setTool = useCallback((tool: 'brush' | 'fill') => {
     setCurrentToolState(tool);
   }, []);
+
+  // Load an initial drawing onto the canvas (used by gallery → edit flow).
+  // Runs after the init effect (declared later = lower priority in same render).
+  useEffect(() => {
+    if (!initialDataURL) return;
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const img = new Image();
+    img.onload = () => {
+      ctx.drawImage(img, 0, 0, width, height);
+    };
+    img.src = initialDataURL;
+  }, [initialDataURL, width, height]);
 
   return {
     canvasRef,

@@ -19,6 +19,7 @@ const GAME_TILES = [
   'Color Mixer',
   'Math Facts',
   'Shape Sorting',
+  'Gallery',
 ];
 
 /**

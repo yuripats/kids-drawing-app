@@ -19,9 +19,10 @@ interface HomePageProps {
   onNavigateToColorMixer: () => void;
   onNavigateToMathFacts: () => void;
   onNavigateToShapeSorting: () => void;
+  onNavigateToGallery: () => void;
 }
 
-function HomePage({ onNavigateToDrawing, onNavigateToStencil, onNavigateToColorBlocks, onNavigateToSudoku, onNavigateToTetris, onNavigateToJellyVolleyball, onNavigateToSnake, onNavigateToMemoryMatch, onNavigateToDrawingChallenge, onNavigateToPopBalloons, onNavigateToSimonSays, onNavigateToBubblePop, onNavigateToColorMixer, onNavigateToMathFacts, onNavigateToShapeSorting }: HomePageProps) {
+function HomePage({ onNavigateToDrawing, onNavigateToStencil, onNavigateToColorBlocks, onNavigateToSudoku, onNavigateToTetris, onNavigateToJellyVolleyball, onNavigateToSnake, onNavigateToMemoryMatch, onNavigateToDrawingChallenge, onNavigateToPopBalloons, onNavigateToSimonSays, onNavigateToBubblePop, onNavigateToColorMixer, onNavigateToMathFacts, onNavigateToShapeSorting, onNavigateToGallery }: HomePageProps) {
   const [isExcited, setIsExcited] = useState(false);
   const [showStencils, setShowStencils] = useState(false);
 
@@ -232,6 +233,17 @@ function HomePage({ onNavigateToDrawing, onNavigateToStencil, onNavigateToColorB
             >
               <div className="text-5xl mb-2">🎪</div>
               <div className="text-white font-bold text-lg">Shape Sorting</div>
+            </button>
+
+            {/* Gallery */}
+            <button
+              className="kid-card bg-violet-500 hover:bg-violet-600 active:bg-violet-700 transition-colors duration-200 p-6 text-center cursor-pointer border-2 border-transparent hover:border-violet-700"
+              onClick={() => onNavigateToGallery()}
+              onTouchStart={() => setIsExcited(true)}
+              aria-label="Gallery"
+            >
+              <div className="text-5xl mb-2">🖼️</div>
+              <div className="text-white font-bold text-lg">Gallery</div>
             </button>
           </div>
         </div>

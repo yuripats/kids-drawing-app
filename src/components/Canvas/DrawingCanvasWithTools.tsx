@@ -4,16 +4,17 @@ import DrawingToolPanel from '../Tools/DrawingToolPanel';
 import { CanvasProps } from '../../types/Drawing';
 import { isMobileDevice } from '../../utils/DeviceUtils';
 
-const DrawingCanvasWithTools = ({ 
-  width = 800, 
-  height = 600, 
+const DrawingCanvasWithTools = ({
+  width = 800,
+  height = 600,
   className = '',
   onDrawingChange,
   clearCanvasRef,
-  stencil 
+  stencil,
+  initialDataURL,
 }: CanvasProps) => {
   const [isMobile] = useState(isMobileDevice());
-  
+
   const {
     canvasRef,
     startDrawing,
@@ -26,7 +27,7 @@ const DrawingCanvasWithTools = ({
     currentColor,
     currentLineWidth,
     currentTool
-  } = useCanvas({ width, height, onDrawingChange, stencil });
+  } = useCanvas({ width, height, onDrawingChange, stencil, initialDataURL });
 
   const handleColorChange = useCallback((color: string) => {
     setColor(color);

@@ -16,12 +16,15 @@ import BubblePopPage from './components/Games/BubblePop/BubblePopPage';
 import ColorMixerPage from './components/Games/ColorMixer/ColorMixerPage';
 import MathFactsPage from './components/Games/MathFacts/MathFactsPage';
 import ShapeSortingPage from './components/Games/ShapeSorting/ShapeSortingPage';
+import DrawingGallery from './components/Gallery/DrawingGallery';
+import { SavedDrawing } from './hooks/useDrawings';
 
-type AppPage = 'home' | 'draw' | 'stencil' | 'colorblocks' | 'sudoku' | 'tetris' | 'jellyvolleyball' | 'snake' | 'memoryMatch' | 'drawingChallenge' | 'popBalloons' | 'simonSays' | 'bubblePop' | 'colorMixer' | 'mathFacts' | 'shapeSorting';
+type AppPage = 'home' | 'draw' | 'stencil' | 'colorblocks' | 'sudoku' | 'tetris' | 'jellyvolleyball' | 'snake' | 'memoryMatch' | 'drawingChallenge' | 'popBalloons' | 'simonSays' | 'bubblePop' | 'colorMixer' | 'mathFacts' | 'shapeSorting' | 'gallery';
 
 function App() {
   const [currentPage, setCurrentPage] = useState<AppPage>('home');
   const [selectedStencil, setSelectedStencil] = useState<Stencil | null>(null);
+  const [drawingToLoad, setDrawingToLoad] = useState<string | null>(null);
 
   // One-time migration of legacy un-prefixed keys to the kda: storage namespace
   useEffect(() => {
@@ -29,12 +32,18 @@ function App() {
   }, []);
 
   const navigateTo = (page: AppPage) => {
+    if (page === 'home') setDrawingToLoad(null);
     setCurrentPage(page);
   };
 
   const navigateToStencil = (stencil: Stencil) => {
     setSelectedStencil(stencil);
     setCurrentPage('stencil');
+  };
+
+  const navigateToDrawFromGallery = (drawing: SavedDrawing) => {
+    setDrawingToLoad(drawing.dataURL);
+    setCurrentPage('draw');
   };
 
   const renderCurrentPage = () => {
@@ -57,10 +66,16 @@ function App() {
             onNavigateToColorMixer={() => navigateTo('colorMixer')}
             onNavigateToMathFacts={() => navigateTo('mathFacts')}
             onNavigateToShapeSorting={() => navigateTo('shapeSorting')}
+            onNavigateToGallery={() => navigateTo('gallery')}
           />
         );
       case 'draw':
-        return <DrawingPage onNavigateHome={() => navigateTo('home')} />;
+        return (
+          <DrawingPage
+            onNavigateHome={() => navigateTo('home')}
+            initialDataURL={drawingToLoad ?? undefined}
+          />
+        );
       case 'stencil':
         return (
           <DrawingPage 
@@ -118,6 +133,13 @@ function App() {
         return (
           <ShapeSortingPage onNavigateHome={() => navigateTo('home')} />
         );
+      case 'gallery':
+        return (
+          <DrawingGallery
+            onNavigateHome={() => navigateTo('home')}
+            onEditDrawing={navigateToDrawFromGallery}
+          />
+        );
       default:
         return (
 <HomePage
@@ -136,6 +158,7 @@ function App() {
             onNavigateToColorMixer={() => navigateTo('colorMixer')}
             onNavigateToMathFacts={() => navigateTo('mathFacts')}
             onNavigateToShapeSorting={() => navigateTo('shapeSorting')}
+            onNavigateToGallery={() => navigateTo('gallery')}
           />
         );
     }
