@@ -10,15 +10,38 @@ import {
 } from '../components/Games/JellyVolleyball/physics';
 import { calculateAIControls, defaultAIConfig } from '../components/Games/JellyVolleyball/ai';
 
-const DEFAULT_CONFIG: GameConfig = {
-  courtWidth: 800,
-  courtHeight: 400,
-  netHeight: 100, // 1/4 of courtHeight (400 / 4 = 100)
-  playerRadius: 35,
-  ballRadius: 32, // Big ball - almost as big as the jelly players!
-  gravity: 0.06, // Even lower gravity - ball floats much longer
-  pointsToWin: 7,
-};
+/**
+ * Convert a raw client X coordinate to an in-game X coordinate,
+ * accounting for CSS scaling of the canvas element.
+ * Exported for unit testing.
+ */
+export function computeGameX(
+  clientX: number,
+  rectLeft: number,
+  rectWidth: number,
+  canvasWidth: number
+): number {
+  return (clientX - rectLeft) * (canvasWidth / rectWidth);
+}
+
+function getDefaultConfig(): GameConfig {
+  const courtWidth = Math.min(
+    typeof window !== 'undefined' && window.innerWidth > 0
+      ? window.innerWidth - 32
+      : 800,
+    800
+  );
+  const courtHeight = courtWidth / 2;
+  return {
+    courtWidth,
+    courtHeight,
+    netHeight: courtHeight / 4,
+    playerRadius: 35,
+    ballRadius: 32,
+    gravity: 0.06,
+    pointsToWin: 7,
+  };
+}
 
 // Initialize game state
 function createInitialState(config: GameConfig): GameState {
@@ -97,7 +120,7 @@ function resetPlayers(state: GameState): void {
   state.player2.velocity.y = 0;
 }
 
-export function useJellyVolleyball(config: GameConfig = DEFAULT_CONFIG) {
+export function useJellyVolleyball(config: GameConfig = getDefaultConfig()) {
   const [gameState, setGameState] = useState<GameState>(() => createInitialState(config));
   const [isPaused, setIsPaused] = useState(false);
 
@@ -110,6 +133,9 @@ export function useJellyVolleyball(config: GameConfig = DEFAULT_CONFIG) {
   const mouseXRef = useRef<number | null>(null);
   const touchStartYRef = useRef<number | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  // Cached bounding rect — updated on touchstart and window resize to avoid
+  // calling getBoundingClientRect() on every touchmove event.
+  const rectRef = useRef<DOMRect | null>(null);
 
   // Game loop
   const gameLoop = useCallback(() => {
@@ -324,9 +350,9 @@ export function useJellyVolleyball(config: GameConfig = DEFAULT_CONFIG) {
     const handleTouchStart = (e: TouchEvent) => {
       if (!canvas || e.touches.length === 0) return;
       const touch = e.touches[0];
-      const rect = canvas.getBoundingClientRect();
-      const scaleX = gameState.court.width / rect.width;
-      mouseXRef.current = (touch.clientX - rect.left) * scaleX;
+      // Cache rect on touchstart — avoids getBoundingClientRect per touchmove.
+      rectRef.current = canvas.getBoundingClientRect();
+      mouseXRef.current = computeGameX(touch.clientX, rectRef.current.left, rectRef.current.width, canvas.width);
       touchStartYRef.current = touch.clientY;
     };
 
@@ -334,9 +360,9 @@ export function useJellyVolleyball(config: GameConfig = DEFAULT_CONFIG) {
       if (!canvas || e.touches.length === 0) return;
       e.preventDefault();
       const touch = e.touches[0];
-      const rect = canvas.getBoundingClientRect();
-      const scaleX = gameState.court.width / rect.width;
-      mouseXRef.current = (touch.clientX - rect.left) * scaleX;
+      // Use cached rect; fall back to live query only if cache is empty.
+      const rect = rectRef.current ?? canvas.getBoundingClientRect();
+      mouseXRef.current = computeGameX(touch.clientX, rect.left, rect.width, canvas.width);
 
       // Check for upward drag to jump
       if (touchStartYRef.current !== null) {
@@ -353,6 +379,11 @@ export function useJellyVolleyball(config: GameConfig = DEFAULT_CONFIG) {
       touchStartYRef.current = null;
     };
 
+    // Invalidate cached rect when the viewport resizes (canvas CSS size may change).
+    const handleResize = () => {
+      rectRef.current = canvas.getBoundingClientRect();
+    };
+
     // Add event listeners
     canvas.addEventListener('mousemove', handleMouseMove);
     canvas.addEventListener('mousedown', handleMouseDown);
@@ -360,6 +391,7 @@ export function useJellyVolleyball(config: GameConfig = DEFAULT_CONFIG) {
     canvas.addEventListener('touchstart', handleTouchStart);
     canvas.addEventListener('touchmove', handleTouchMove, { passive: false });
     canvas.addEventListener('touchend', handleTouchEnd);
+    window.addEventListener('resize', handleResize);
 
     return () => {
       canvas.removeEventListener('mousemove', handleMouseMove);
@@ -368,6 +400,7 @@ export function useJellyVolleyball(config: GameConfig = DEFAULT_CONFIG) {
       canvas.removeEventListener('touchstart', handleTouchStart);
       canvas.removeEventListener('touchmove', handleTouchMove);
       canvas.removeEventListener('touchend', handleTouchEnd);
+      window.removeEventListener('resize', handleResize);
     };
   }, [gameState.court.width]);
 

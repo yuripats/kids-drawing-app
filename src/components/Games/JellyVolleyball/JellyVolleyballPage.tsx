@@ -8,11 +8,12 @@ interface Props {
 }
 
 export default function JellyVolleyballPage({ onNavigateHome }: Props) {
-  const courtHeight = 400;
+  const courtWidth = Math.min(window.innerWidth - 32, 800);
+  const courtHeight = courtWidth / 2;
   const { gameState, isPaused, canvasRef, controls } = useJellyVolleyball({
-    courtWidth: 800,
-    courtHeight: courtHeight,
-    netHeight: courtHeight / 4, // Net is 1/4 of viewport height
+    courtWidth,
+    courtHeight,
+    netHeight: courtHeight / 4,
     playerRadius: 35,
     ballRadius: 32,
     gravity: 0.06,
