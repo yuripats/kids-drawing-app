@@ -24,14 +24,6 @@ const SnakePage: React.FC<SnakePageProps> = ({ onNavigateHome }) => {
     gameState.score === gameState.highScore && gameState.score > 0,
   );
 
-  const handleDifficultyChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    controls.setDifficulty(e.target.value as Difficulty);
-  };
-
-  const handleGridSizeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    controls.setGridSize(e.target.value as GridSize);
-  };
-
   const getStatusMessage = (): string => {
     switch (gameState.gameStatus) {
       case 'ready':
@@ -55,30 +47,35 @@ const SnakePage: React.FC<SnakePageProps> = ({ onNavigateHome }) => {
       bgColorClass="bg-gradient-to-b from-emerald-100 to-emerald-200"
       headerActions={
         <>
-          <select
-            value={gameState.difficulty}
-            onChange={handleDifficultyChange}
-            disabled={gameState.gameStatus === 'playing'}
-            className="kid-input text-xs md:text-sm px-2 md:px-3 py-1 md:py-2"
-            title="Game Speed"
-          >
-            <option value="easy">🐌 Slow</option>
-            <option value="medium">🏃 Med</option>
-            <option value="hard">⚡ Fast</option>
-          </select>
+          {/* Speed buttons */}
+          <div className="flex gap-1" title="Game Speed">
+            {([['easy', '🐌', 'Slow'], ['medium', '🏃', 'Medium'], ['hard', '⚡', 'Fast']] as const).map(([val, icon, label]) => (
+              <button
+                key={val}
+                aria-label={label}
+                onClick={() => controls.setDifficulty(val as Difficulty)}
+                disabled={gameState.gameStatus === 'playing'}
+                className={`kid-button text-base md:text-lg px-2 md:px-3 py-1 md:py-2 ${gameState.difficulty === val ? '' : 'opacity-50'}`}
+              >
+                {icon}
+              </button>
+            ))}
+          </div>
 
-          <select
-            value={gameState.gridSize}
-            onChange={handleGridSizeChange}
-            disabled={gameState.gameStatus === 'playing'}
-            className="kid-input text-xs md:text-sm px-2 md:px-3 py-1 md:py-2"
-            title="Grid Size"
-          >
-            <option value="small">📐 15×15</option>
-            <option value="medium">📏 20×20</option>
-            <option value="large">📊 25×25</option>
-            <option value="xlarge">🗺️ 30×30</option>
-          </select>
+          {/* Grid size buttons */}
+          <div className="flex gap-1" title="Grid Size">
+            {([['small', '📐', 'Small 15×15'], ['medium', '📏', 'Medium 20×20'], ['large', '📊', 'Large 25×25'], ['xlarge', '🗺️', 'X-Large 30×30']] as const).map(([val, icon, label]) => (
+              <button
+                key={val}
+                aria-label={label}
+                onClick={() => controls.setGridSize(val as GridSize)}
+                disabled={gameState.gameStatus === 'playing'}
+                className={`kid-button text-base md:text-lg px-2 md:px-3 py-1 md:py-2 ${gameState.gridSize === val ? '' : 'opacity-50'}`}
+              >
+                {icon}
+              </button>
+            ))}
+          </div>
 
           {(gameState.gameStatus === 'playing' || gameState.gameStatus === 'paused') && (
             <button

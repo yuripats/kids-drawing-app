@@ -30,10 +30,6 @@ const SimonSaysPage: React.FC<SimonSaysPageProps> = ({ onNavigateHome }) => {
     round === highScore && round > 1,
   );
 
-  const handleSpeedChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSpeed(e.target.value as Speed);
-  };
-
   const getStatusMessage = (): string => {
     switch (gameStatus) {
       case 'ready':
@@ -66,18 +62,20 @@ const SimonSaysPage: React.FC<SimonSaysPageProps> = ({ onNavigateHome }) => {
 
   const headerActions = (
     <>
-      {/* Speed Selector - Compact on mobile */}
-      <select
-        value={speed}
-        onChange={handleSpeedChange}
-        disabled={gameStatus === 'showing' || gameStatus === 'playing'}
-        className="kid-input text-xs md:text-sm px-2 md:px-3 py-1 md:py-2"
-        title="Game Speed"
-      >
-        <option value="slow">🐌 Slow</option>
-        <option value="normal">🏃 Normal</option>
-        <option value="fast">⚡ Fast</option>
-      </select>
+      {/* Speed buttons */}
+      <div className="flex gap-1" title="Game Speed">
+        {([['slow', '🐌', 'Slow'], ['normal', '🏃', 'Normal'], ['fast', '⚡', 'Fast']] as const).map(([val, icon, label]) => (
+          <button
+            key={val}
+            aria-label={label}
+            onClick={() => setSpeed(val as Speed)}
+            disabled={gameStatus === 'showing' || gameStatus === 'playing'}
+            className={`kid-button text-base md:text-lg px-2 md:px-3 py-1 md:py-2 ${speed === val ? '' : 'opacity-50'}`}
+          >
+            {icon}
+          </button>
+        ))}
+      </div>
 
       {/* Reset Button - Compact on mobile */}
       {gameStatus !== 'ready' && (
