@@ -8,7 +8,7 @@ import { usePopBalloons } from '../../../hooks/usePopBalloons';
 import GameLayout from '../../shared/GameLayout';
 import GameBoard from './GameBoard';
 import type { Difficulty, GridSize } from './types';
-import { difficultySettings, gridSizeSettings } from './constants';
+import { gridSizeSettings } from './constants';
 
 interface PopBalloonsPageProps {
   onNavigateHome: () => void;
@@ -30,12 +30,6 @@ const PopBalloonsPage: React.FC<PopBalloonsPageProps> = ({ onNavigateHome }) => 
     totalPopped,
     totalMissed
   } = gameState;
-
-  const handleDifficultyChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    if (gameStatus !== 'playing') {
-      setDifficulty(e.target.value as Difficulty);
-    }
-  };
 
   const handleGridSizeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     if (gameStatus !== 'playing') {
@@ -71,20 +65,22 @@ const PopBalloonsPage: React.FC<PopBalloonsPageProps> = ({ onNavigateHome }) => 
 
   const headerActions = (
     <>
-      {/* Difficulty Selector - Compact on mobile */}
-      <select
-        value={difficulty}
-        onChange={handleDifficultyChange}
-        disabled={gameStatus === 'playing'}
-        className="kid-input text-xs md:text-sm px-2 md:px-3 py-1 md:py-2"
-        title="Game Difficulty"
-      >
-        {Object.entries(difficultySettings).map(([key, settings]) => (
-          <option key={key} value={key}>
-            {settings.name}
-          </option>
+      {/* Difficulty Selector - Emoji buttons */}
+      <div className="flex gap-1" title="Game Difficulty">
+        {(['easy', 'medium', 'hard'] as const).map(d => (
+          <button
+            key={d}
+            aria-label={d === 'easy' ? 'Easy' : d === 'medium' ? 'Medium' : 'Hard'}
+            onClick={() => { if (gameStatus !== 'playing') setDifficulty(d as Difficulty); }}
+            disabled={gameStatus === 'playing'}
+            className={`kid-button text-base md:text-lg px-2 md:px-3 py-1 md:py-2 ${
+              difficulty === d ? '' : 'opacity-50'
+            }`}
+          >
+            {d === 'easy' ? '🐣' : d === 'medium' ? '🐱' : '🦁'}
+          </button>
         ))}
-      </select>
+      </div>
 
       {/* Grid Size Selector - Compact on mobile */}
       <select

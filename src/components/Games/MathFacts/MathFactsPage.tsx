@@ -33,15 +33,20 @@ const MathFactsPage: React.FC<MathFactsPageProps> = ({ onNavigateHome }) => {
 
   const headerActions = (
     <>
-      <select
-        value={difficulty}
-        onChange={(e) => setDifficulty(e.target.value as Difficulty)}
-        className="kid-input text-xs md:text-sm px-2 md:px-3 py-1 md:py-2"
-      >
-        <option value="easy">🟢 Easy</option>
-        <option value="medium">🟡 Medium</option>
-        <option value="hard">🔴 Hard</option>
-      </select>
+      <div className="flex gap-1">
+        {(['easy', 'medium', 'hard'] as const).map(d => (
+          <button
+            key={d}
+            aria-label={d === 'easy' ? 'Easy' : d === 'medium' ? 'Medium' : 'Hard'}
+            onClick={() => setDifficulty(d as Difficulty)}
+            className={`kid-button text-base md:text-lg px-2 md:px-3 py-1 md:py-2 ${
+              difficulty === d ? '' : 'opacity-50'
+            }`}
+          >
+            {d === 'easy' ? '🐣' : d === 'medium' ? '🐱' : '🦁'}
+          </button>
+        ))}
+      </div>
 
       <button
         onClick={resetGame}

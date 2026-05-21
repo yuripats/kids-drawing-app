@@ -177,7 +177,7 @@ const SnakePage: React.FC<SnakePageProps> = ({ onNavigateHome }) => {
                 <strong>Speed:</strong>
                 <ul className="ml-4 mt-1 space-y-1">
                   <li>🐌 <strong>Slow</strong> - Relaxed pace (200ms)</li>
-                  <li>🏃 <strong>Medium</strong> - Moderate speed (150ms)</li>
+                  <li>🏃 Medium - Moderate speed (150ms)</li>
                   <li>⚡ <strong>Fast</strong> - Quick reflexes needed! (100ms)</li>
                 </ul>
               </div>
@@ -185,7 +185,7 @@ const SnakePage: React.FC<SnakePageProps> = ({ onNavigateHome }) => {
                 <strong>Grid Size:</strong>
                 <ul className="ml-4 mt-1 space-y-1">
                   <li>📐 <strong>Small</strong> - Cozy 15×15 grid</li>
-                  <li>📏 <strong>Medium</strong> - Standard 20×20 grid</li>
+                  <li>📏 Medium - Standard 20×20 grid</li>
                   <li>📊 <strong>Large</strong> - Spacious 25×25 grid</li>
                   <li>🗺️ <strong>X-Large</strong> - Huge 30×30 grid!</li>
                 </ul>
