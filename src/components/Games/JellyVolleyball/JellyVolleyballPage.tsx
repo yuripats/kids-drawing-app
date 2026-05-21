@@ -2,6 +2,7 @@
 
 import { useJellyVolleyball } from '../../../hooks/useJellyVolleyball';
 import GameCanvas from './GameCanvas';
+import GameLayout from '../../shared/GameLayout';
 
 interface Props {
   onNavigateHome: () => void;
@@ -21,20 +22,19 @@ export default function JellyVolleyballPage({ onNavigateHome }: Props) {
   });
 
   return (
-    <div className="p-4 min-h-screen bg-gradient-to-b from-blue-100 to-blue-200">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-4">
-        <h1 className="text-3xl font-bold text-blue-900">Jelly Volleyball</h1>
-        <div className="flex gap-2">
-          <button className="kid-button text-sm" onClick={controls.togglePause}>
-            {isPaused ? '▶️ Resume' : '⏸️ Pause'}
-          </button>
-          <button className="kid-button text-sm" onClick={onNavigateHome}>
-            ← Home
-          </button>
-        </div>
-      </div>
-
+    <GameLayout
+      title="Jelly Volleyball"
+      emoji="🏐"
+      onNavigateHome={onNavigateHome}
+      headerActions={
+        <button
+          className="kid-button text-xs md:text-sm px-2 md:px-4 py-1 md:py-2"
+          onClick={controls.togglePause}
+        >
+          {isPaused ? '▶️ Resume' : '⏸️ Pause'}
+        </button>
+      }
+    >
       {/* Game Canvas */}
       <div className="flex justify-center mb-4">
         <GameCanvas
@@ -162,6 +162,6 @@ export default function JellyVolleyballPage({ onNavigateHome }: Props) {
           </div>
         </div>
       )}
-    </div>
+    </GameLayout>
   );
 }

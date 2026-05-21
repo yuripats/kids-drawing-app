@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useColorBlocksGame } from '../../../hooks/useColorBlocksGame';
 import ColorBlocksBoard from './ColorBlocksBoard';
 import { GameConfig } from './types';
+import GameLayout from '../../shared/GameLayout';
 
 interface ColorBlocksPageProps {
   onNavigateHome: () => void;
@@ -26,18 +27,12 @@ const ColorBlocksPage: React.FC<ColorBlocksPageProps> = ({ onNavigateHome }) => 
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-purple-100 to-pink-100 pb-4">
-      {/* Compact Header - Mobile First */}
-      <div className="sticky top-0 z-10 bg-purple-500 shadow-md px-3 py-2 flex items-center justify-between">
-        <h1 className="text-xl font-bold text-white">🎨 Color Blocks</h1>
-        <button
-          className="px-3 py-1 bg-white text-purple-700 rounded-lg font-semibold text-sm hover:bg-purple-50 active:bg-purple-100"
-          onClick={onNavigateHome}
-        >
-          ← Home
-        </button>
-      </div>
-
+    <GameLayout
+      title="Color Blocks"
+      emoji="🎨"
+      onNavigateHome={onNavigateHome}
+      bgColorClass="bg-gradient-to-b from-purple-100 to-pink-100"
+    >
       {/* Score Display - Compact */}
       <div className="px-3 py-2 bg-white shadow-sm border-b border-gray-200">
         <div className="flex justify-around items-center text-center">
@@ -209,7 +204,7 @@ const ColorBlocksPage: React.FC<ColorBlocksPageProps> = ({ onNavigateHome }) => 
           </div>
         </details>
       </div>
-    </div>
+    </GameLayout>
   );
 };
 

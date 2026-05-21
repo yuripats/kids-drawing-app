@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import TetrisBoard from './TetrisBoard';
+import GameLayout from '../../shared/GameLayout';
 
 interface Props {
   onNavigateHome: () => void;
@@ -14,16 +15,11 @@ export default function TetrisPage({ onNavigateHome }: Props) {
   const changed = appliedWidth !== width || appliedHeight !== height;
 
   return (
-    <div className="p-4">
-      <div className="flex items-center justify-between mb-4">
-        <h1 className="text-2xl font-bold">Tetris</h1>
-        <button className="kid-button" onClick={onNavigateHome}>← Home</button>
-      </div>
-
+    <GameLayout title="Tetris" emoji="🧱" onNavigateHome={onNavigateHome}>
       <div className="kid-card mb-4 flex flex-wrap items-center gap-3">
         <div className="flex items-center gap-2">
           <label className="text-sm">Width</label>
-<input
+          <input
             className="kid-input w-16 text-center"
             type="number"
             value={width}
@@ -35,7 +31,7 @@ export default function TetrisPage({ onNavigateHome }: Props) {
         </div>
         <div className="flex items-center gap-2">
           <label className="text-sm">Height</label>
-<input
+          <input
             className="kid-input w-16 text-center"
             type="number"
             value={height}
@@ -58,6 +54,6 @@ export default function TetrisPage({ onNavigateHome }: Props) {
       </div>
 
       <TetrisBoard key={`${appliedWidth}x${appliedHeight}`} config={{ width: appliedWidth, height: appliedHeight, tickMs: 800 }} />
-    </div>
+    </GameLayout>
   );
 }

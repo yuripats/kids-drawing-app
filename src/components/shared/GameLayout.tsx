@@ -40,10 +40,10 @@ const GameLayout: React.FC<GameLayoutProps> = ({
           <button
             className="kid-button text-xs md:text-sm bg-slate-500 hover:bg-slate-600 px-2 md:px-4 py-1 md:py-2"
             onClick={onNavigateHome}
-            title="Home"
+            aria-label="← Home"
           >
-            <span className="md:hidden">←</span>
-            <span className="hidden md:inline">← Home</span>
+            <span className="md:hidden" aria-hidden="true">←</span>
+            <span className="hidden md:inline" aria-hidden="true">← Home</span>
           </button>
         </div>
       </div>

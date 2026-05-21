@@ -8,6 +8,7 @@ import { useSnakeGame } from '../../../hooks/useSnakeGame';
 import { SnakeBoard } from './SnakeBoard';
 import { SnakeControls } from './SnakeControls';
 import type { Difficulty, GridSize } from './types';
+import GameLayout from '../../shared/GameLayout';
 
 interface SnakePageProps {
   onNavigateHome: () => void;
@@ -55,16 +56,13 @@ const SnakePage: React.FC<SnakePageProps> = ({ onNavigateHome }) => {
   };
 
   return (
-    <div className="p-2 md:p-4 min-h-screen bg-gradient-to-b from-emerald-100 to-emerald-200">
-      {/* Header - Mobile First */}
-      <div className="flex items-center justify-between mb-2 md:mb-4 gap-2">
-        <h1 className="text-xl md:text-3xl font-bold text-emerald-800 flex items-center gap-1 md:gap-2">
-          <span className="text-2xl md:text-3xl">🐍</span>
-          <span className="hidden sm:inline">Snake Game</span>
-        </h1>
-
-        <div className="flex gap-1 md:gap-2 flex-wrap items-center justify-end">
-          {/* Speed Selector - Compact on mobile */}
+    <GameLayout
+      title="Snake Game"
+      emoji="🐍"
+      onNavigateHome={onNavigateHome}
+      bgColorClass="bg-gradient-to-b from-emerald-100 to-emerald-200"
+      headerActions={
+        <>
           <select
             value={gameState.difficulty}
             onChange={handleDifficultyChange}
@@ -77,7 +75,6 @@ const SnakePage: React.FC<SnakePageProps> = ({ onNavigateHome }) => {
             <option value="hard">⚡ Fast</option>
           </select>
 
-          {/* Grid Size Selector - Compact on mobile */}
           <select
             value={gameState.gridSize}
             onChange={handleGridSizeChange}
@@ -91,7 +88,6 @@ const SnakePage: React.FC<SnakePageProps> = ({ onNavigateHome }) => {
             <option value="xlarge">🗺️ 30×30</option>
           </select>
 
-          {/* Pause/Resume Button - Compact on mobile */}
           {(gameState.gameStatus === 'playing' || gameState.gameStatus === 'paused') && (
             <button
               className="kid-button text-xs md:text-sm bg-yellow-500 hover:bg-yellow-600 px-2 md:px-4 py-1 md:py-2"
@@ -102,7 +98,6 @@ const SnakePage: React.FC<SnakePageProps> = ({ onNavigateHome }) => {
             </button>
           )}
 
-          {/* Reset Button - Compact on mobile */}
           {gameState.gameStatus !== 'ready' && (
             <button
               className="kid-button text-xs md:text-sm bg-blue-500 hover:bg-blue-600 px-2 md:px-4 py-1 md:py-2"
@@ -111,19 +106,9 @@ const SnakePage: React.FC<SnakePageProps> = ({ onNavigateHome }) => {
               🔄<span className="hidden md:inline ml-1">Play Again</span>
             </button>
           )}
-
-          {/* Home Button - Compact on mobile */}
-          <button
-            className="kid-button text-xs md:text-sm bg-slate-500 hover:bg-slate-600 px-2 md:px-4 py-1 md:py-2"
-            onClick={onNavigateHome}
-            title="Home"
-          >
-            <span className="md:hidden">←</span>
-            <span className="hidden md:inline">← Home</span>
-          </button>
-        </div>
-      </div>
-
+        </>
+      }
+    >
       {/* Score Display - Compact on mobile */}
       <div className="kid-card max-w-4xl mx-auto mb-2 md:mb-4 p-2 md:p-4">
         <div className="grid grid-cols-3 gap-2 md:gap-4">
@@ -259,7 +244,7 @@ const SnakePage: React.FC<SnakePageProps> = ({ onNavigateHome }) => {
           </div>
         </div>
       )}
-    </div>
+    </GameLayout>
   );
 };
 
