@@ -9,6 +9,7 @@ import GameLayout from '../../shared/GameLayout';
 import GameBoard from './GameBoard';
 import type { Difficulty, GridSize } from './types';
 import { gridSizeSettings } from './constants';
+import { useWinCelebration } from '../../../hooks/useWinCelebration';
 
 interface PopBalloonsPageProps {
   onNavigateHome: () => void;
@@ -30,6 +31,11 @@ const PopBalloonsPage: React.FC<PopBalloonsPageProps> = ({ onNavigateHome }) => 
     totalPopped,
     totalMissed
   } = gameState;
+
+  useWinCelebration(
+    gameStatus === 'gameOver',
+    score === highScore && highScore > 0 && score > 0,
+  );
 
   const handleGridSizeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     if (gameStatus !== 'playing') {
@@ -304,7 +310,7 @@ const PopBalloonsPage: React.FC<PopBalloonsPageProps> = ({ onNavigateHome }) => 
 
       {/* Game Over Modal */}
       {gameStatus === 'gameOver' && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div className="fixed inset-0 bg-gradient-to-b from-yellow-50/90 to-orange-50/90 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div className="kid-card max-w-md w-full text-center">
             <div className="text-6xl mb-4">
               {score > highScore || score === highScore ? '🎉' : '😊'}

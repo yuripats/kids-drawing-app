@@ -7,6 +7,7 @@ import React from 'react';
 import { useSimonSays } from '../../../hooks/useSimonSays';
 import GameLayout from '../../shared/GameLayout';
 import type { Speed, ButtonConfig } from './types';
+import { useWinCelebration } from '../../../hooks/useWinCelebration';
 
 interface SimonSaysPageProps {
   onNavigateHome: () => void;
@@ -23,6 +24,11 @@ const SimonSaysPage: React.FC<SimonSaysPageProps> = ({ onNavigateHome }) => {
   const { gameState, startGame, handleButtonPress, resetGame, setSpeed } = useSimonSays();
 
   const { round, gameStatus, speed, highScore, showingIndex } = gameState;
+
+  useWinCelebration(
+    gameStatus === 'gameOver',
+    round === highScore && round > 1,
+  );
 
   const handleSpeedChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSpeed(e.target.value as Speed);
@@ -211,7 +217,7 @@ const SimonSaysPage: React.FC<SimonSaysPageProps> = ({ onNavigateHome }) => {
 
       {/* Game Over Modal */}
       {gameStatus === 'gameOver' && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div className="fixed inset-0 bg-gradient-to-b from-purple-50/90 to-pink-50/90 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div className="kid-card max-w-md w-full text-center">
             <div className="text-6xl mb-4">😅</div>
             <h2 className="text-3xl font-bold text-red-600 mb-4">

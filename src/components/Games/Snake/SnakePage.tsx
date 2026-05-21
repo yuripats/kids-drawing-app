@@ -10,6 +10,7 @@ import { SnakeControls } from './SnakeControls';
 import type { Difficulty, GridSize } from './types';
 import GameLayout from '../../shared/GameLayout';
 import { getStatusColor } from '../../../utils/gameUtils';
+import { useWinCelebration } from '../../../hooks/useWinCelebration';
 
 interface SnakePageProps {
   onNavigateHome: () => void;
@@ -17,6 +18,11 @@ interface SnakePageProps {
 
 const SnakePage: React.FC<SnakePageProps> = ({ onNavigateHome }) => {
   const { gameState, config, controls } = useSnakeGame();
+
+  useWinCelebration(
+    gameState.gameStatus === 'gameOver',
+    gameState.score === gameState.highScore && gameState.score > 0,
+  );
 
   const handleDifficultyChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     controls.setDifficulty(e.target.value as Difficulty);
@@ -198,7 +204,7 @@ const SnakePage: React.FC<SnakePageProps> = ({ onNavigateHome }) => {
 
       {/* Game Over Modal Overlay */}
       {gameState.gameStatus === 'gameOver' && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div className="fixed inset-0 bg-gradient-to-b from-emerald-50/90 to-emerald-100/90 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div className="kid-card max-w-md w-full text-center">
             <h2 className="text-3xl font-bold text-red-600 mb-4">Game Over!</h2>
 
