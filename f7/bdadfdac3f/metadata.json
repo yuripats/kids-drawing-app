@@ -1,0 +1,30 @@
+{
+  "cli_version": "0.6.2",
+  "checkpoint_id": "f7bdadfdac3f",
+  "strategy": "manual-commit",
+  "branch": "claude/resurrect-20260521",
+  "checkpoints_count": 5,
+  "files_touched": [
+    "src/components/Games/Sudoku/SudokuPage.tsx",
+    "src/hooks/useSudokuGame.test.ts",
+    "src/hooks/useSudokuGame.ts",
+    "src/services/sudoku/SudokuEngine.ts",
+    "src/types/sudoku.ts",
+    "src/utils/sudoku.ts"
+  ],
+  "sessions": [
+    {
+      "metadata": "/f7/bdadfdac3f/0/metadata.json",
+      "transcript": "/f7/bdadfdac3f/0/full.jsonl",
+      "content_hash": "/f7/bdadfdac3f/0/content_hash.txt",
+      "prompt": "/f7/bdadfdac3f/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 984,
+    "cache_creation_tokens": 6010644,
+    "cache_read_tokens": 49452256,
+    "output_tokens": 276478,
+    "api_call_count": 169
+  }
+}

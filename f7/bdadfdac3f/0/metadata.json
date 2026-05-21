@@ -1,0 +1,72 @@
+{
+  "cli_version": "0.6.2",
+  "checkpoint_id": "f7bdadfdac3f",
+  "session_id": "b83f2d48-bb33-4908-bf30-863719cd5c48",
+  "strategy": "manual-commit",
+  "created_at": "2026-05-21T04:57:36.657487Z",
+  "branch": "claude/resurrect-20260521",
+  "checkpoints_count": 5,
+  "files_touched": [
+    "src/components/Games/Sudoku/SudokuPage.tsx",
+    "src/hooks/useSudokuGame.test.ts",
+    "src/hooks/useSudokuGame.ts",
+    "src/services/sudoku/SudokuEngine.ts",
+    "src/types/sudoku.ts",
+    "src/utils/sudoku.ts"
+  ],
+  "agent": "Claude Code",
+  "model": "",
+  "turn_id": "887aa22fe487",
+  "token_usage": {
+    "input_tokens": 984,
+    "cache_creation_tokens": 6010644,
+    "cache_read_tokens": 49452256,
+    "output_tokens": 276478,
+    "api_call_count": 169
+  },
+  "session_metrics": {
+    "turn_count": 58
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-05-21T04:57:36.604041Z",
+    "agent_lines": 149,
+    "agent_removed": 6,
+    "human_added": 0,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 149,
+    "total_lines_changed": 155,
+    "agent_percentage": 100,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 2,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0
+    },
+    {
+      "checkpoint_number": 3,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0
+    },
+    {
+      "checkpoint_number": 4,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0
+    },
+    {
+      "checkpoint_number": 5,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0
+    }
+  ]
+}
