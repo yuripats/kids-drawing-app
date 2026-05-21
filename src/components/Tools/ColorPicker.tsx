@@ -117,8 +117,8 @@ const ColorPicker = ({ selectedColor, onColorChange }: ColorPickerProps) => {
                 minHeight: '44px'
               }}
               onClick={() => handleColorSelect(color)}
+              onKeyDown={(e) => handleKeyDown(e, color)}
               aria-label={`Select ${color} color`}
-              role="button"
             >
               {isSelected && (
                 <span className="text-white text-lg font-bold drop-shadow-lg">
