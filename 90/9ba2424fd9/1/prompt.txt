@@ -1,0 +1,17 @@
+<task-notification>
+<task-id>bovu9z4la</task-id>
+<tool-use-id>toolu_015oSPWaPHpJvhhd1PvQrkoH</tool-use-id>
+<output-file>/private/tmp/claude-501/-Users-yp-work-kids-drawing-app/fabf4517-18c7-47ac-a854-b0f1bd19c965/tasks/bovu9z4la.output</output-file>
+<status>completed</status>
+<summary>Background command "Run game unit tests" completed (exit code 0)</summary>
+</task-notification>
+
+---
+
+<task-notification>
+<task-id>bc872vdmo</task-id>
+<tool-use-id>toolu_012wQnutr69gErkLz1kLc15j</tool-use-id>
+<output-file>/private/tmp/claude-501/-Users-yp-work-kids-drawing-app/fabf4517-18c7-47ac-a854-b0f1bd19c965/tasks/bc872vdmo.output</output-file>
+<status>completed</status>
+<summary>Background command "Production build" completed (exit code 0)</summary>
+</task-notification>
