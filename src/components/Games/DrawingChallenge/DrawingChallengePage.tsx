@@ -300,7 +300,6 @@ const DrawingChallengePage: React.FC<DrawingChallengePageProps> = ({ onNavigateH
               height={450}
               onDrawingChange={() => {
                 // Could save drawing here if needed
-                console.log('Drawing updated');
               }}
               clearCanvasRef={clearCanvasRef}
             />

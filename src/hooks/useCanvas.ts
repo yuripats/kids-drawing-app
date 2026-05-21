@@ -111,7 +111,6 @@ export const useCanvas = ({ width, height, onDrawingChange, stencil, initialData
   const drawStencil = useCallback((context: CanvasRenderingContext2D, stencil: Stencil) => {
     // Prevent multiple simultaneous stencil drawings
     if (isDrawingStencilRef.current) {
-      console.log('Skipping stencil draw - already in progress');
       return;
     }
     
