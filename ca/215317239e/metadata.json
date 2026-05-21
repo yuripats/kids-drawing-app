@@ -3,7 +3,7 @@
   "checkpoint_id": "ca215317239e",
   "strategy": "manual-commit",
   "branch": "claude/resurrect-20260521",
-  "checkpoints_count": 2,
+  "checkpoints_count": 4,
   "files_touched": [
     "src/components/Games/DrawingChallenge/DrawingChallengePage.tsx",
     "src/hooks/useCanvas.ts"
@@ -14,13 +14,19 @@
       "transcript": "/ca/215317239e/0/full.jsonl",
       "content_hash": "/ca/215317239e/0/content_hash.txt",
       "prompt": "/ca/215317239e/0/prompt.txt"
+    },
+    {
+      "metadata": "/ca/215317239e/1/metadata.json",
+      "transcript": "/ca/215317239e/1/full.jsonl",
+      "content_hash": "/ca/215317239e/1/content_hash.txt",
+      "prompt": "/ca/215317239e/1/prompt.txt"
     }
   ],
   "token_usage": {
-    "input_tokens": 1092,
-    "cache_creation_tokens": 7649528,
-    "cache_read_tokens": 57998996,
-    "output_tokens": 298690,
-    "api_call_count": 187
+    "input_tokens": 1847,
+    "cache_creation_tokens": 9606328,
+    "cache_read_tokens": 81634313,
+    "output_tokens": 621031,
+    "api_call_count": 440
   }
 }
