@@ -34,4 +34,9 @@ test('onboarding overlay appears on first load and can be dismissed', async ({ p
   // localStorage should now have the completion flag set
   const flag = await page.evaluate(() => localStorage.getItem('kda:firstRunComplete'));
   expect(flag).not.toBeNull();
+
+  // Reload — overlay must NOT reappear (firstRunComplete persists across page loads)
+  await page.reload();
+  await expect(page.getByRole('dialog', { name: 'Welcome to Kids Drawing App' })).not.toBeVisible({ timeout: 2000 });
+  await expect(page.getByRole('heading', { name: /Fun Games to Play/i })).toBeVisible();
 });
