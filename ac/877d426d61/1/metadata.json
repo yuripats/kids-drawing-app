@@ -1,0 +1,92 @@
+{
+  "cli_version": "0.6.2",
+  "checkpoint_id": "ac877d426d61",
+  "session_id": "c8482907-c92a-4ac1-ab8c-3f0d0e0a033b",
+  "strategy": "manual-commit",
+  "created_at": "2026-05-21T04:51:32.232756Z",
+  "branch": "claude/resurrect-20260521",
+  "checkpoints_count": 5,
+  "files_touched": [
+    "src/components/Games/ColorMixer/ColorMixerPage.tsx",
+    "src/hooks/useColorMixer.test.ts",
+    "src/hooks/useColorMixer.ts",
+    "tests/e2e/home-navigation.spec.ts",
+    "tests/e2e/sudoku.spec.ts"
+  ],
+  "agent": "Claude Code",
+  "model": "claude-sonnet-4-6",
+  "turn_id": "6d88a4fa076a",
+  "token_usage": {
+    "input_tokens": 1004,
+    "cache_creation_tokens": 1487678,
+    "cache_read_tokens": 29654099,
+    "output_tokens": 226006,
+    "api_call_count": 336
+  },
+  "session_metrics": {
+    "turn_count": 9
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 2,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0
+    },
+    {
+      "checkpoint_number": 3,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0
+    },
+    {
+      "checkpoint_number": 4,
+      "user_lines_added": 130,
+      "user_lines_removed": 0,
+      "agent_lines_added": 4066,
+      "agent_lines_removed": 3,
+      "user_added_per_file": {
+        ".claude/agents/entire-search.md": 25,
+        ".claude/settings.json": 84,
+        ".claude/settings.local.json": 21
+      }
+    },
+    {
+      "checkpoint_number": 5,
+      "user_lines_added": 130,
+      "user_lines_removed": 0,
+      "agent_lines_added": 4066,
+      "agent_lines_removed": 3,
+      "user_added_per_file": {
+        ".claude/agents/entire-search.md": 25,
+        ".claude/settings.json": 84,
+        ".claude/settings.local.json": 21
+      }
+    },
+    {
+      "checkpoint_number": 6,
+      "user_lines_added": 150,
+      "user_lines_removed": 11,
+      "agent_lines_added": 4082,
+      "agent_lines_removed": 3,
+      "user_added_per_file": {
+        ".claude/agents/entire-search.md": 25,
+        ".claude/settings.json": 84,
+        ".claude/settings.local.json": 21,
+        ".omc/project-memory.json": 6,
+        ".omc/state/agent-replay-b83f2d48-bb33-4908-bf30-863719cd5c48.jsonl": 1,
+        ".omc/state/hud-stdin-cache.json": 1,
+        ".omc/state/mission-state.json": 11,
+        ".omc/state/subagent-tracking.json": 1
+      },
+      "user_removed_per_file": {
+        ".omc/project-memory.json": 6,
+        ".omc/state/hud-stdin-cache.json": 1,
+        ".omc/state/mission-state.json": 3,
+        ".omc/state/subagent-tracking.json": 1
+      }
+    }
+  ]
+}

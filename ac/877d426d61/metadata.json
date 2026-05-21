@@ -3,7 +3,7 @@
   "checkpoint_id": "ac877d426d61",
   "strategy": "manual-commit",
   "branch": "claude/resurrect-20260521",
-  "checkpoints_count": 7,
+  "checkpoints_count": 12,
   "files_touched": [
     "src/components/Games/ColorMixer/ColorMixerPage.tsx",
     "src/hooks/useColorMixer.test.ts",
@@ -17,13 +17,19 @@
       "transcript": "/ac/877d426d61/0/full.jsonl",
       "content_hash": "/ac/877d426d61/0/content_hash.txt",
       "prompt": "/ac/877d426d61/0/prompt.txt"
+    },
+    {
+      "metadata": "/ac/877d426d61/1/metadata.json",
+      "transcript": "/ac/877d426d61/1/full.jsonl",
+      "content_hash": "/ac/877d426d61/1/content_hash.txt",
+      "prompt": "/ac/877d426d61/1/prompt.txt"
     }
   ],
   "token_usage": {
-    "input_tokens": 954,
-    "cache_creation_tokens": 6005454,
-    "cache_read_tokens": 46767138,
-    "output_tokens": 273622,
-    "api_call_count": 164
+    "input_tokens": 1958,
+    "cache_creation_tokens": 7493132,
+    "cache_read_tokens": 76421237,
+    "output_tokens": 499628,
+    "api_call_count": 500
   }
 }
