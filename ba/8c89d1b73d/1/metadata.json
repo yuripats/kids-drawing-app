@@ -1,0 +1,52 @@
+{
+  "cli_version": "0.6.2",
+  "checkpoint_id": "ba8c89d1b73d",
+  "session_id": "c8482907-c92a-4ac1-ab8c-3f0d0e0a033b",
+  "strategy": "manual-commit",
+  "created_at": "2026-05-21T05:12:45.072914Z",
+  "branch": "claude/resurrect-20260521",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "index.html",
+    "src/hooks/useJellyVolleyball.ts",
+    "src/hooks/usePopBalloons.ts",
+    "src/hooks/useSnakeGame.ts",
+    "src/hooks/useWinCelebration.ts"
+  ],
+  "agent": "Claude Code",
+  "model": "claude-sonnet-4-6",
+  "turn_id": "a7a20fd84c42",
+  "checkpoint_transcript_start": 6376,
+  "transcript_lines_at_start": 6376,
+  "token_usage": {
+    "input_tokens": 118,
+    "cache_creation_tokens": 113089,
+    "cache_read_tokens": 3871934,
+    "output_tokens": 26172,
+    "api_call_count": 40
+  },
+  "session_metrics": {
+    "turn_count": 14
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-05-21T05:12:44.962101Z",
+    "agent_lines": 103,
+    "agent_removed": 5,
+    "human_added": 54,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 157,
+    "total_lines_changed": 162,
+    "agent_percentage": 66.66666666666666,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0
+    }
+  ]
+}
