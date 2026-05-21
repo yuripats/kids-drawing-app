@@ -1,5 +1,5 @@
 import { Difficulty } from '../../types/sudoku';
-import { fromPuzzleString, validateConflicts } from '../../utils/sudoku';
+import { fromPuzzleString, validateConflicts, solvePuzzle } from '../../utils/sudoku';
 import { Cell } from '../../types/sudoku';
 
 const EASY_PUZZLES: string[] = [
@@ -20,10 +20,12 @@ function pickPuzzle(d: Difficulty): string {
   return pool[Math.floor(Math.random() * pool.length)];
 }
 
-export function loadPuzzle(d: Difficulty): { id: string; board: Cell[] } {
+export function loadPuzzle(d: Difficulty): { id: string; board: Cell[]; solution: number[] } {
   const p = pickPuzzle(d);
   const id = `${d}-${Date.now()}`;
   const raw = fromPuzzleString(p);
   const validated = validateConflicts(raw);
-  return { id, board: validated };
+  const solution = solvePuzzle(raw);
+  if (!solution) throw new Error(`Unsolvable ${d} puzzle`);
+  return { id, board: validated, solution };
 }
