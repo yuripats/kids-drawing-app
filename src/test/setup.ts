@@ -11,3 +11,20 @@ const localStorageMock = {
   get length(): number { return Object.keys(_store).length; },
 };
 Object.defineProperty(globalThis, 'localStorage', { value: localStorageMock, writable: true });
+
+// jsdom does not implement window.matchMedia — stub it so hooks that check
+// prefers-reduced-motion don't throw in the test environment.
+// Default: matches=false (motion allowed), which preserves existing test expectations.
+Object.defineProperty(globalThis, 'matchMedia', {
+  writable: true,
+  value: (query: string) => ({
+    matches: false,
+    media: query,
+    onchange: null,
+    addListener: () => {},
+    removeListener: () => {},
+    addEventListener: () => {},
+    removeEventListener: () => {},
+    dispatchEvent: () => false,
+  }),
+});

@@ -136,6 +136,8 @@ export function useJellyVolleyball(config: GameConfig = getDefaultConfig()) {
   // Cached bounding rect — updated on touchstart and window resize to avoid
   // calling getBoundingClientRect() on every touchmove event.
   const rectRef = useRef<DOMRect | null>(null);
+  // Tracks whether visibilitychange caused the current pause (vs user-initiated)
+  const visibilityPausedRef = useRef(false);
 
   // Game loop
   const gameLoop = useCallback(() => {
@@ -403,6 +405,25 @@ export function useJellyVolleyball(config: GameConfig = getDefaultConfig()) {
       window.removeEventListener('resize', handleResize);
     };
   }, [gameState.court.width]);
+
+  // Pause the game when the tab is hidden; resume when it comes back.
+  // visibilityPausedRef distinguishes these auto-pauses from manual user pauses
+  // so resuming on tab-show never accidentally un-pauses a user-initiated pause.
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        if (!isPaused && gameState.gameStatus === 'playing') {
+          visibilityPausedRef.current = true;
+          setIsPaused(true);
+        }
+      } else if (visibilityPausedRef.current) {
+        visibilityPausedRef.current = false;
+        setIsPaused(false);
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
+  }, [isPaused, gameState.gameStatus]);
 
   // Clear score popup after 2 seconds
   useEffect(() => {

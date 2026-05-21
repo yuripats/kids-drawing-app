@@ -17,11 +17,16 @@ export function useWinCelebration(gameOver: boolean, isHighScore: boolean): void
     if (!gameOver || !isHighScore) return;
 
     playSound('win');
-    confetti({
-      particleCount: 150,
-      spread: 80,
-      origin: { y: 0.6 },
-    });
+
+    // Respect the user's motion preference — skip the particle burst but still
+    // play the sound so the win moment isn't completely silent.
+    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      confetti({
+        particleCount: 150,
+        spread: 80,
+        origin: { y: 0.6 },
+      });
+    }
 
     // Cancel any in-flight animation frames when this effect re-runs or the
     // component unmounts — prevents stale rAF callbacks after modal closes.

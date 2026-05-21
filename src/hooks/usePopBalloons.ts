@@ -174,6 +174,8 @@ export const usePopBalloons = (): UsePopBalloonsReturn => {
 
   const spawnTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const gameTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  // Tracks whether a tab-hide event stopped the timers (vs natural game over)
+  const visibilityPausedRef = useRef(false);
 
   // ── Load high score whenever difficulty changes (includes mount) ──────────
   useEffect(() => {
@@ -308,6 +310,41 @@ export const usePopBalloons = (): UsePopBalloonsReturn => {
       }
     };
   }, [state.gameStatus]);
+
+  // ── Pause timers on tab hide; restart them when tab is shown again ────────
+  // PopBalloons has no 'paused' gameStatus, so we manage the intervals directly.
+  // stateRef gives fresh access to difficulty/gameStatus without re-registration.
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        if (stateRef.current.gameStatus === 'playing') {
+          visibilityPausedRef.current = true;
+          if (spawnTimerRef.current) {
+            clearInterval(spawnTimerRef.current);
+            spawnTimerRef.current = null;
+          }
+          if (gameTimerRef.current) {
+            clearInterval(gameTimerRef.current);
+            gameTimerRef.current = null;
+          }
+        }
+      } else if (visibilityPausedRef.current) {
+        visibilityPausedRef.current = false;
+        if (stateRef.current.gameStatus === 'playing') {
+          spawnBalloon();
+          spawnTimerRef.current = setInterval(
+            spawnBalloon,
+            difficultySettings[stateRef.current.difficulty].spawnRate,
+          );
+          gameTimerRef.current = setInterval(() => {
+            dispatch({ type: 'TICK' });
+          }, 1000);
+        }
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
+  }, [spawnBalloon]); // spawnBalloon is stable (empty-dep useCallback chain)
 
   // ── Persist high score on game over ──────────────────────────────────────
   useEffect(() => {
