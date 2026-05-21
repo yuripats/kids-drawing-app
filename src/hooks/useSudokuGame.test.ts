@@ -29,7 +29,7 @@ describe('useSudokuGame hints', () => {
     });
 
     expect(coord).not.toBeNull();
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+     
     const { row, col } = coord!;
     expect(row).toBeGreaterThanOrEqual(0);
     expect(row).toBeLessThanOrEqual(8);

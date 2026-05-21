@@ -104,7 +104,7 @@ export const useBubblePop = () => {
     };
   // gameState.bubbles.length intentionally omitted — read from prev inside the
   // functional update instead of the closure to avoid loop restarts on every spawn.
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+   
   }, [gameState.gameStatus, createBubble]);
 
   // Clear all pending pop-animation timeouts on unmount
