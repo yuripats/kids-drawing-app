@@ -272,6 +272,23 @@ export const distance = (x1: number, y1: number, x2: number, y2: number): number
   return Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
 };
 
+// Map a game status string to a Tailwind text-color class.
+// Pass per-game overrides to change individual status colours.
+const DEFAULT_STATUS_COLORS: Record<string, string> = {
+  ready: 'text-blue-600',
+  playing: 'text-green-600',
+  paused: 'text-yellow-600',
+  gameOver: 'text-red-600',
+  completed: 'text-green-600',
+};
+
+export function getStatusColor(
+  status: string,
+  overrides?: Record<string, string>
+): string {
+  return overrides?.[status] ?? DEFAULT_STATUS_COLORS[status] ?? 'text-slate-600';
+}
+
 // Add shake animation to CSS if not already present
 if (typeof document !== 'undefined') {
   const styleId = 'game-utils-styles';

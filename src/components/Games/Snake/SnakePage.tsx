@@ -9,6 +9,7 @@ import { SnakeBoard } from './SnakeBoard';
 import { SnakeControls } from './SnakeControls';
 import type { Difficulty, GridSize } from './types';
 import GameLayout from '../../shared/GameLayout';
+import { getStatusColor } from '../../../utils/gameUtils';
 
 interface SnakePageProps {
   onNavigateHome: () => void;
@@ -37,21 +38,6 @@ const SnakePage: React.FC<SnakePageProps> = ({ onNavigateHome }) => {
         return 'Game Over! Press R or Play Again to restart';
       default:
         return '';
-    }
-  };
-
-  const getStatusColor = (): string => {
-    switch (gameState.gameStatus) {
-      case 'ready':
-        return 'text-blue-600';
-      case 'playing':
-        return 'text-green-600';
-      case 'paused':
-        return 'text-yellow-600';
-      case 'gameOver':
-        return 'text-red-600';
-      default:
-        return 'text-slate-600';
     }
   };
 
@@ -129,7 +115,7 @@ const SnakePage: React.FC<SnakePageProps> = ({ onNavigateHome }) => {
 
       {/* Status Message - Smaller on mobile */}
       <div className="text-center mb-2 md:mb-4">
-        <p className={`text-sm md:text-lg font-semibold ${getStatusColor()}`}>
+        <p className={`text-sm md:text-lg font-semibold ${getStatusColor(gameState.gameStatus)}`}>
           {getStatusMessage()}
         </p>
       </div>

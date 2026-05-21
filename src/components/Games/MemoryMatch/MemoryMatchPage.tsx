@@ -9,7 +9,7 @@ import GameLayout from '../../shared/GameLayout';
 import GameBoard from './GameBoard';
 import type { Difficulty, Theme } from './types';
 import { difficultySettings, themeNames } from './themes';
-import { formatTime, celebrateWin } from '../../../utils/gameUtils';
+import { formatTime, celebrateWin, getStatusColor } from '../../../utils/gameUtils';
 
 interface MemoryMatchPageProps {
   onNavigateHome: () => void;
@@ -60,19 +60,6 @@ const MemoryMatchPage: React.FC<MemoryMatchPageProps> = ({ onNavigateHome }) => 
         return '🎉 You won! Congratulations!';
       default:
         return '';
-    }
-  };
-
-  const getStatusColor = (): string => {
-    switch (gameStatus) {
-      case 'ready':
-        return 'text-blue-600';
-      case 'playing':
-        return 'text-purple-600';
-      case 'completed':
-        return 'text-green-600';
-      default:
-        return 'text-slate-600';
     }
   };
 
@@ -170,7 +157,7 @@ const MemoryMatchPage: React.FC<MemoryMatchPageProps> = ({ onNavigateHome }) => 
 
       {/* Status Message - Smaller on mobile */}
       <div className="text-center mb-2 md:mb-4">
-        <p className={`text-sm md:text-lg font-semibold ${getStatusColor()}`}>
+        <p className={`text-sm md:text-lg font-semibold ${getStatusColor(gameStatus, { playing: 'text-purple-600' })}`}>
           {getStatusMessage()}
         </p>
       </div>
