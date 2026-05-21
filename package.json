@@ -10,6 +10,7 @@
     "test": "vitest",
     "test:games": "vitest run --config vitest.games.config.ts",
     "test:touch": "vitest run --config vitest.mobile.config.ts",
+    "test:fast": "vitest run && vitest run --config vitest.games.config.ts && vitest run --config vitest.mobile.config.ts",
     "test:e2e": "playwright test",
     "mcp:playwright": "PLAYWRIGHT_BASE_URL=http://localhost:5173 npx @playwright/mcp@latest --headless=false",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",

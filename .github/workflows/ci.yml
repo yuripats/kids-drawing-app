@@ -31,7 +31,13 @@ jobs:
       
       - name: Run tests
         run: npm run test -- --run
-      
+
+      - name: Run games tests
+        run: npm run test:games
+
+      - name: Run touch/mobile tests
+        run: npm run test:touch
+
       - name: Build application
         run: |
           export VITE_COMMIT_HASH=${GITHUB_SHA:0:7}
