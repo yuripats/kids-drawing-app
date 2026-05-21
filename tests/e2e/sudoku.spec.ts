@@ -1,5 +1,13 @@
 import { test, expect } from '@playwright/test';
 
+// Pre-dismiss the first-run onboarding overlay (PR-5d) before React boots,
+// so aria-modal does not hide page content from Playwright's a11y tree.
+test.beforeEach(async ({ context }) => {
+  await context.addInitScript(() => {
+    localStorage.setItem('kda:firstRunComplete', 'true');
+  });
+});
+
 test('navigate to Sudoku and make a move', async ({ page }) => {
   await page.goto('/');
 

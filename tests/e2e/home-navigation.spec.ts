@@ -1,5 +1,13 @@
 import { test, expect } from '@playwright/test';
 
+// Pre-dismiss the first-run onboarding overlay (PR-5d) before React boots,
+// so aria-modal does not hide the home heading from Playwright's a11y tree.
+test.beforeEach(async ({ context }) => {
+  await context.addInitScript(() => {
+    localStorage.setItem('kda:firstRunComplete', 'true');
+  });
+});
+
 /**
  * Regression net: clicking every home tile navigates away from home,
  * and clicking "← Home" returns to the home page.

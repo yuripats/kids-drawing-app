@@ -7,6 +7,16 @@ import type { ColorMixerState, ColorRGB } from '../components/Games/ColorMixer/t
 import { challenges } from '../components/Games/ColorMixer/challenges';
 import { playSound } from '../utils/gameUtils';
 
+/** Returns 0 (no match) → 1 (exact match). Max distance is black→white. */
+export function computeProximity(mix: ColorRGB, target: ColorRGB): number {
+  const dist = Math.sqrt(
+    (mix.r - target.r) ** 2 +
+    (mix.g - target.g) ** 2 +
+    (mix.b - target.b) ** 2
+  );
+  return Math.max(0, 1 - dist / Math.sqrt(255 * 255 * 3));
+}
+
 export const useColorMixer = () => {
   const [gameState, setGameState] = useState<ColorMixerState>({
     currentMix: { r: 0, g: 0, b: 0 }, // Start from black so adding colors is visible
@@ -57,10 +67,15 @@ export const useColorMixer = () => {
     }));
   }, []);
 
+  const proximity = gameState.challenge
+    ? computeProximity(gameState.currentMix, gameState.challenge.target)
+    : 0;
+
   return {
     gameState,
     addColor,
     checkMatch,
-    reset
+    reset,
+    proximity,
   };
 };
