@@ -18,6 +18,7 @@ import MathFactsPage from './components/Games/MathFacts/MathFactsPage';
 import ShapeSortingPage from './components/Games/ShapeSorting/ShapeSortingPage';
 import DrawingGallery from './components/Gallery/DrawingGallery';
 import { SavedDrawing } from './hooks/useDrawings';
+import OnboardingOverlay from './components/Onboarding/OnboardingOverlay';
 
 type AppPage = 'home' | 'draw' | 'stencil' | 'colorblocks' | 'sudoku' | 'tetris' | 'jellyvolleyball' | 'snake' | 'memoryMatch' | 'drawingChallenge' | 'popBalloons' | 'simonSays' | 'bubblePop' | 'colorMixer' | 'mathFacts' | 'shapeSorting' | 'gallery';
 
@@ -166,6 +167,7 @@ function App() {
 
   return (
     <div>
+      <OnboardingOverlay />
       {renderCurrentPage()}
     </div>
   );
