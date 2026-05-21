@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import StencilGallery from './Stencils/StencilGallery';
 import { Stencil } from '../types/Stencil';
+import { get as storageGet } from '../utils/storage';
 
 interface HomePageProps {
   onNavigateToDrawing: () => void;
@@ -23,6 +24,9 @@ interface HomePageProps {
 function HomePage({ onNavigateToDrawing, onNavigateToStencil, onNavigateToColorBlocks, onNavigateToSudoku, onNavigateToTetris, onNavigateToJellyVolleyball, onNavigateToSnake, onNavigateToMemoryMatch, onNavigateToDrawingChallenge, onNavigateToPopBalloons, onNavigateToSimonSays, onNavigateToBubblePop, onNavigateToColorMixer, onNavigateToMathFacts, onNavigateToShapeSorting }: HomePageProps) {
   const [isExcited, setIsExcited] = useState(false);
   const [showStencils, setShowStencils] = useState(false);
+
+  // Read drawing streak directly from storage (refreshes on every render / navigation back)
+  const drawingStreak = storageGet<number>('daily:streak', 0);
 
   const handleStencilSelect = (stencil: Stencil) => {
     onNavigateToStencil(stencil);
@@ -157,10 +161,15 @@ function HomePage({ onNavigateToDrawing, onNavigateToStencil, onNavigateToColorB
 
             {/* Drawing Challenge - NEW! */}
             <button
-              className="kid-card bg-purple-500 hover:bg-purple-600 active:bg-purple-700 transition-colors duration-200 p-6 text-center cursor-pointer border-2 border-transparent hover:border-purple-700"
+              className="kid-card bg-purple-500 hover:bg-purple-600 active:bg-purple-700 transition-colors duration-200 p-6 text-center cursor-pointer border-2 border-transparent hover:border-purple-700 relative"
               onClick={() => onNavigateToDrawingChallenge()}
               onTouchStart={() => setIsExcited(true)}
             >
+              {drawingStreak > 0 && (
+                <span className="absolute top-1 right-1 bg-orange-400 text-white text-xs font-bold rounded-full px-2 py-0.5 leading-none">
+                  🔥 {drawingStreak}d
+                </span>
+              )}
               <div className="text-5xl mb-2">🎨</div>
               <div className="text-white font-bold text-lg">Drawing Challenge</div>
             </button>

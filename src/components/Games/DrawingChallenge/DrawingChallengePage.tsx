@@ -18,6 +18,7 @@ interface DrawingChallengePageProps {
 const DrawingChallengePage: React.FC<DrawingChallengePageProps> = ({ onNavigateHome }) => {
   const {
     gameState,
+    daily,
     startChallenge,
     finishChallenge,
     nextPrompt,
@@ -132,6 +133,36 @@ const DrawingChallengePage: React.FC<DrawingChallengePageProps> = ({ onNavigateH
       headerActions={headerActions}
       bgColorClass="bg-gradient-to-b from-purple-100 to-pink-100"
     >
+      {/* Daily Challenge Banner */}
+      {!showCanvas && (
+        <div className="kid-card max-w-4xl mx-auto mb-2 md:mb-4 p-3 md:p-5 bg-gradient-to-r from-yellow-100 to-orange-100 border-2 border-yellow-300">
+          <div className="flex items-center justify-between flex-wrap gap-2">
+            <div>
+              <p className="text-xs md:text-sm font-bold text-yellow-700 uppercase tracking-wide mb-1">
+                🌟 Today's Challenge
+              </p>
+              <p className="text-lg md:text-2xl font-bold text-orange-700">
+                {daily.dailyPrompt.emoji} Draw a {daily.dailyPrompt.text}!
+              </p>
+            </div>
+            <div className="text-center">
+              {daily.streak > 0 ? (
+                <>
+                  <p className="text-2xl md:text-3xl font-bold text-orange-500">
+                    🔥 Day {daily.streak}
+                  </p>
+                  <p className="text-xs text-orange-600 font-semibold">streak!</p>
+                </>
+              ) : (
+                <p className="text-sm font-semibold text-yellow-700">
+                  Start your streak today!
+                </p>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Stats Panel - Compact on mobile */}
       <div className="kid-card max-w-4xl mx-auto mb-2 md:mb-4 p-2 md:p-4">
         <div className="grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-4">

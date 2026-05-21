@@ -2,6 +2,7 @@ import { useState, useCallback, useEffect, useRef } from 'react';
 import DrawingCanvasWithTools from './Canvas/DrawingCanvasWithTools';
 import { isMobileDevice, getViewportDimensions } from '../utils/DeviceUtils';
 import { Stencil } from '../types/Stencil';
+import { useDrawings } from '../hooks/useDrawings';
 
 interface DrawingPageProps {
   onNavigateHome: () => void;
@@ -11,12 +12,18 @@ interface DrawingPageProps {
 const DrawingPage = ({ onNavigateHome, stencil }: DrawingPageProps) => {
   const [isMobile, setIsMobile] = useState(false);
   const [viewport, setViewport] = useState({ width: 800, height: 600 });
+  const [quotaExceeded, setQuotaExceeded] = useState(false);
   const clearCanvasRef = useRef<(() => void) | null>(null);
+  const { save } = useDrawings();
 
   const handleDrawingChange = useCallback((dataURL: string) => {
-    // For now, just log the drawing change
-    console.log('Drawing updated:', dataURL.substring(0, 50) + '...');
-  }, []);
+    try {
+      save(dataURL);
+      setQuotaExceeded(false);
+    } catch {
+      setQuotaExceeded(true);
+    }
+  }, [save]);
 
   const handleClearCanvas = useCallback(() => {
     if (clearCanvasRef.current) {
@@ -73,12 +80,15 @@ const DrawingPage = ({ onNavigateHome, stencil }: DrawingPageProps) => {
       <div className="min-h-screen bg-gray-50 flex flex-col">
         {/* Mobile Header */}
         <header className="bg-white border-b border-gray-200 px-4 py-3 flex justify-between items-center">
-          <button 
+          <button
             onClick={onNavigateHome}
             className="kid-button bg-secondary-500 hover:bg-secondary-600 active:bg-secondary-700 px-3 py-2 text-sm"
           >
             ← Home
           </button>
+          {quotaExceeded && (
+            <span className="text-xs text-red-600 font-semibold">⚠️ Storage full</span>
+          )}
           
           <h1 className="font-bold text-primary-600 text-base truncate mx-2">
             {stencil ? `🎭 ${stencil.name}` : '🎨 Draw!'}
@@ -93,6 +103,13 @@ const DrawingPage = ({ onNavigateHome, stencil }: DrawingPageProps) => {
             Clear
           </button>
         </header>
+
+        {/* Memory full banner */}
+        {quotaExceeded && (
+          <div className="bg-yellow-100 border-b border-yellow-300 px-4 py-2 text-sm text-yellow-800 text-center">
+            📱 Memory full! Tap a drawing in the Gallery to delete some.
+          </div>
+        )}
 
         {/* Canvas with Tools - takes remaining space */}
         <main className="flex-1 flex flex-col">
@@ -165,8 +182,14 @@ const DrawingPage = ({ onNavigateHome, stencil }: DrawingPageProps) => {
       </main>
 
       {/* Footer Info */}
-      <footer className="mt-8 text-center text-gray-500 text-sm">
-        <p>✨ Your drawing will be automatically saved when you're done!</p>
+      <footer className="mt-8 text-center text-sm">
+        {quotaExceeded ? (
+          <p className="text-yellow-700 font-semibold">
+            📱 Memory full! Tap a drawing in the Gallery to delete some.
+          </p>
+        ) : (
+          <p className="text-gray-500">✨ Your drawing will be automatically saved when you're done!</p>
+        )}
       </footer>
     </div>
   );
