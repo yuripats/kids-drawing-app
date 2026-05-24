@@ -19,6 +19,8 @@ export const useBubblePop = () => {
 
   const animationFrameRef = useRef<number>();
   const lastBubbleTimeRef = useRef<number>(Date.now());
+  // Tracks pending pop-animation timeouts so they can be cleared on unmount
+  const popTimeoutsRef = useRef<NodeJS.Timeout[]>([]);
 
   // Generate random bubble
   const createBubble = useCallback((): Bubble => {
@@ -46,13 +48,14 @@ export const useBubblePop = () => {
         b.id === bubbleId ? { ...b, popping: true } : b
       );
 
-      // Remove bubble after animation completes (500ms)
-      setTimeout(() => {
+      // Remove bubble after animation completes (500ms); tracked for cleanup
+      const popId = setTimeout(() => {
         setGameState(current => ({
           ...current,
           bubbles: current.bubbles.filter(b => b.id !== bubbleId)
         }));
       }, 500);
+      popTimeoutsRef.current.push(popId);
 
       return {
         ...prev,
@@ -63,32 +66,31 @@ export const useBubblePop = () => {
     });
   }, []);
 
-  // Animation loop
+  // Animation loop — stable: deps contain only gameStatus so the loop is set up
+  // once per play/pause transition and never restarted on bubble count changes.
   useEffect(() => {
     if (gameState.gameStatus !== 'playing') return;
 
     const animate = () => {
       const now = Date.now();
 
-      // Add new bubble every 2 seconds
-      if (now - lastBubbleTimeRef.current > 2000 && gameState.bubbles.length < 12) {
-        lastBubbleTimeRef.current = now;
-        setGameState(prev => ({
-          ...prev,
-          bubbles: [...prev.bubbles, createBubble()]
-        }));
-      }
+      // ONE setGameState per frame: spawn (if due) + move + filter in a single
+      // functional update so the second operation reads post-spawn state via
+      // `prev`, never a stale closure value.
+      setGameState(prev => {
+        // Check cap against prev.bubbles.length, not stale closure
+        let bubbles = prev.bubbles;
+        if (now - lastBubbleTimeRef.current > 2000 && bubbles.length < 12) {
+          lastBubbleTimeRef.current = now;
+          bubbles = [...bubbles, createBubble()];
+        }
 
-      // Update bubble positions
-      setGameState(prev => ({
-        ...prev,
-        bubbles: prev.bubbles
-          .map(bubble => ({
-            ...bubble,
-            y: bubble.y - bubble.speed
-          }))
-          .filter(bubble => bubble.y > -bubble.size)
-      }));
+        bubbles = bubbles
+          .map(bubble => ({ ...bubble, y: bubble.y - bubble.speed }))
+          .filter(bubble => bubble.y > -bubble.size);
+
+        return { ...prev, bubbles };
+      });
 
       animationFrameRef.current = requestAnimationFrame(animate);
     };
@@ -100,7 +102,18 @@ export const useBubblePop = () => {
         cancelAnimationFrame(animationFrameRef.current);
       }
     };
-  }, [gameState.gameStatus, gameState.bubbles.length, createBubble]);
+  // gameState.bubbles.length intentionally omitted — read from prev inside the
+  // functional update instead of the closure to avoid loop restarts on every spawn.
+   
+  }, [gameState.gameStatus, createBubble]);
+
+  // Clear all pending pop-animation timeouts on unmount
+  useEffect(() => {
+    return () => {
+      popTimeoutsRef.current.forEach(clearTimeout);
+      popTimeoutsRef.current = [];
+    };
+  }, []);
 
   const togglePause = useCallback(() => {
     setGameState(prev => ({

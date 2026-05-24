@@ -33,6 +33,39 @@ export function peersOf(index: number): number[] {
   return Array.from(peers);
 }
 
+/**
+ * Backtracking solver. Returns the complete solution (81 values) or null if unsolvable.
+ * Operates on a copy so the original board is not modified.
+ */
+export function solvePuzzle(board: Cell[]): number[] | null {
+  const vals = board.map((c) => c.value ?? 0);
+  return backtrack(vals) ? vals : null;
+}
+
+function backtrack(vals: number[]): boolean {
+  const idx = vals.indexOf(0);
+  if (idx === -1) return true; // all cells filled → solved
+  const r = Math.floor(idx / 9);
+  const c = idx % 9;
+  const br = Math.floor(r / 3) * 3;
+  const bc = Math.floor(c / 3) * 3;
+  const used = new Set<number>();
+  for (let i = 0; i < 9; i++) {
+    if (vals[r * 9 + i]) used.add(vals[r * 9 + i]);
+    if (vals[i * 9 + c]) used.add(vals[i * 9 + c]);
+  }
+  for (let rr = br; rr < br + 3; rr++)
+    for (let cc = bc; cc < bc + 3; cc++)
+      if (vals[rr * 9 + cc]) used.add(vals[rr * 9 + cc]);
+  for (let n = 1; n <= 9; n++) {
+    if (used.has(n)) continue;
+    vals[idx] = n;
+    if (backtrack(vals)) return true;
+    vals[idx] = 0;
+  }
+  return false;
+}
+
 export function validateConflicts(board: Cell[]): Cell[] {
   const next = board.map((c) => ({ ...c, conflict: { row: false, col: false, box: false } }));
   for (let idx = 0; idx < 81; idx++) {

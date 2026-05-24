@@ -5,26 +5,19 @@
 import { useState, useCallback, useEffect } from 'react';
 import type { ShapeSortingState, ShapeType, Shape, FieldSize, ShapeSortingSettings } from '../components/Games/ShapeSorting/types';
 import { playSound } from '../utils/gameUtils';
+import * as storage from '../utils/storage';
 
 const SHAPE_TYPES: ShapeType[] = ['circle', 'square', 'triangle', 'star'];
 const COLORS = ['#FF6B9D', '#4ECDC4', '#F7DC6F', '#BB8FCE', '#85C1E2', '#52C41A', '#FA8C16', '#EB2F96', '#13C2C2'];
 const STORAGE_KEY = 'shapeSortingSettings';
 
 const loadSettings = (): ShapeSortingSettings => {
-  try {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) {
-      return JSON.parse(saved);
-    }
-  } catch (error) {
-    console.error('Failed to load shape sorting settings:', error);
-  }
-  return { fieldSize: 12 }; // Default to 12 shapes for more fun
+  return storage.get(STORAGE_KEY, { fieldSize: 12 });
 };
 
 const saveSettings = (settings: ShapeSortingSettings) => {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(settings));
+    storage.set(STORAGE_KEY, settings);
   } catch (error) {
     console.error('Failed to save shape sorting settings:', error);
   }

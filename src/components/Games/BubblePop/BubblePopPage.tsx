@@ -129,6 +129,14 @@ const BubblePopPage: React.FC<BubblePopPageProps> = ({ onNavigateHome }) => {
       onNavigateHome={onNavigateHome}
       headerActions={headerActions}
       bgColorClass="bg-gradient-to-b from-cyan-100 to-blue-200"
+      instructions={
+        <div className="space-y-2 text-slate-700">
+          <p>• Tap the bubbles to pop them!</p>
+          <p>• Bigger bubbles = more points</p>
+          <p>• Relax and enjoy - no time limit!</p>
+          <p>• Perfect for ages 3+</p>
+        </div>
+      }
     >
       {/* Stats */}
       <div className="kid-card max-w-4xl mx-auto mb-2 md:mb-4 p-2 md:p-4">
@@ -206,16 +214,6 @@ const BubblePopPage: React.FC<BubblePopPageProps> = ({ onNavigateHome }) => {
         )}
       </div>
 
-      {/* Instructions - Hidden on mobile */}
-      <div className="kid-card max-w-4xl mx-auto mt-4 hidden md:block">
-        <h2 className="text-xl font-bold mb-3 text-center text-cyan-800">How to Play</h2>
-        <div className="space-y-2 text-slate-700">
-          <p>• Tap the bubbles to pop them!</p>
-          <p>• Bigger bubbles = more points</p>
-          <p>• Relax and enjoy - no time limit!</p>
-          <p>• Perfect for ages 3+</p>
-        </div>
-      </div>
     </GameLayout>
   );
 };

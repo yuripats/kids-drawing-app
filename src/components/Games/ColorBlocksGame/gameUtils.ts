@@ -1,4 +1,5 @@
 import { GameState, GameConfig, Position } from './types';
+import * as storage from '../../../utils/storage';
 
 const STORAGE_KEY = 'colorBlocksHighScore';
 
@@ -26,14 +27,13 @@ const createGrid = (width: number, height: number, colors: string[]): string[][]
 };
 
 const loadHighScore = (): number => {
-  const saved = localStorage.getItem(STORAGE_KEY);
-  return saved ? parseInt(saved, 10) : 0;
+  return storage.get(STORAGE_KEY, 0);
 };
 
 export const saveHighScore = (score: number): void => {
   const currentHigh = loadHighScore();
   if (score > currentHigh) {
-    localStorage.setItem(STORAGE_KEY, score.toString());
+    storage.set(STORAGE_KEY, score);
   }
 };
 

@@ -7,11 +7,14 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import type { DrawingChallengeState, Category, GameMode, Prompt, GameStatus } from '../components/Games/DrawingChallenge/types';
 import { getRandomPrompt } from '../components/Games/DrawingChallenge/prompts';
 import { loadGameData, saveGameData, playSound } from '../utils/gameUtils';
+import { useDailyChallenge } from './useDailyChallenge';
+import type { DailyState } from './useDailyChallenge';
 
 const GAME_KEY = 'drawingChallenge';
 
 interface UseDrawingChallengeReturn {
   gameState: DrawingChallengeState;
+  daily: DailyState;
   startChallenge: () => void;
   finishChallenge: () => void;
   nextPrompt: () => void;
@@ -21,6 +24,7 @@ interface UseDrawingChallengeReturn {
 }
 
 export const useDrawingChallenge = (): UseDrawingChallengeReturn => {
+  const daily = useDailyChallenge();
   const [currentPrompt, setCurrentPrompt] = useState<Prompt | null>(null);
   const [gameStatus, setGameStatus] = useState<GameStatus>('ready');
   const [mode, setModeState] = useState<GameMode>('free');
@@ -31,7 +35,7 @@ export const useDrawingChallenge = (): UseDrawingChallengeReturn => {
 
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Load completed challenges from localStorage
+  // Load completed challenges from storage
   useEffect(() => {
     const savedData = loadGameData<{ completed: string[] }>(
       GAME_KEY,
@@ -40,7 +44,7 @@ export const useDrawingChallenge = (): UseDrawingChallengeReturn => {
     setCompletedChallenges(savedData.completed);
   }, []);
 
-  // Save completed challenges to localStorage
+  // Save completed challenges to storage
   useEffect(() => {
     saveGameData(GAME_KEY, { completed: completedChallenges });
   }, [completedChallenges]);
@@ -143,6 +147,7 @@ export const useDrawingChallenge = (): UseDrawingChallengeReturn => {
 
   return {
     gameState,
+    daily,
     startChallenge,
     finishChallenge,
     nextPrompt,

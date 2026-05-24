@@ -4,10 +4,12 @@ import SudokuKeypad from './SudokuKeypad';
 import SudokuHeader from './SudokuHeader';
 import { useSudokuGame } from '../../../hooks/useSudokuGame';
 import { Difficulty } from '../../../types/sudoku';
+import GameLayout from '../../shared/GameLayout';
 
 export default function SudokuPage({ onNavigateHome }: { onNavigateHome: () => void }) {
   const [difficulty, setDifficulty] = useState<Difficulty>('easy');
   const game = useSudokuGame({ difficulty });
+  const hintsRemaining = 3 - game.hintsUsed;
 
   // Handle keyboard input
   useEffect(() => {
@@ -48,16 +50,25 @@ export default function SudokuPage({ onNavigateHome }: { onNavigateHome: () => v
     };
   }, [game]);
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-secondary-100 via-primary-50 to-secondary-50 p-4">
-      <header className="flex items-center justify-between mb-4">
-        <button className="kid-button bg-secondary-500 hover:bg-secondary-600 active:bg-secondary-700" onClick={onNavigateHome}>
-          ← Home
-        </button>
-        <h1 className="text-2xl font-bold text-primary-600">🧩 Sudoku</h1>
-        <div className="w-16" />
-      </header>
+  const headerActions = (
+    <button
+      aria-label={`Hint (${hintsRemaining} remaining)`}
+      disabled={hintsRemaining <= 0 || game.status !== 'in_progress'}
+      onClick={() => game.getHint()}
+      className="kid-button text-base md:text-lg px-2 md:px-3 py-1 md:py-2 disabled:opacity-40 disabled:cursor-not-allowed"
+    >
+      💡 {hintsRemaining}
+    </button>
+  );
 
+  return (
+    <GameLayout
+      title="Sudoku"
+      emoji="🧩"
+      onNavigateHome={onNavigateHome}
+      bgColorClass="bg-gradient-to-br from-secondary-100 via-primary-50 to-secondary-50"
+      headerActions={headerActions}
+    >
       <div className="kid-card max-w-3xl mx-auto">
         <SudokuHeader
           difficulty={difficulty}
@@ -87,6 +98,6 @@ export default function SudokuPage({ onNavigateHome }: { onNavigateHome: () => v
           />
         </div>
       </div>
-    </div>
+    </GameLayout>
   );
 }

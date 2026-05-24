@@ -4,16 +4,17 @@ import DrawingToolPanel from '../Tools/DrawingToolPanel';
 import { CanvasProps } from '../../types/Drawing';
 import { isMobileDevice } from '../../utils/DeviceUtils';
 
-const DrawingCanvasWithTools = ({ 
-  width = 800, 
-  height = 600, 
+const DrawingCanvasWithTools = ({
+  width = 800,
+  height = 600,
   className = '',
   onDrawingChange,
   clearCanvasRef,
-  stencil 
+  stencil,
+  initialDataURL,
 }: CanvasProps) => {
   const [isMobile] = useState(isMobileDevice());
-  
+
   const {
     canvasRef,
     startDrawing,
@@ -25,8 +26,12 @@ const DrawingCanvasWithTools = ({
     clearCanvas,
     currentColor,
     currentLineWidth,
-    currentTool
-  } = useCanvas({ width, height, onDrawingChange, stencil });
+    currentTool,
+    undo,
+    redo,
+    canUndo,
+    canRedo,
+  } = useCanvas({ width, height, onDrawingChange, stencil, initialDataURL });
 
   const handleColorChange = useCallback((color: string) => {
     setColor(color);
@@ -92,7 +97,11 @@ const DrawingCanvasWithTools = ({
           onColorChange={handleColorChange}
           onBrushSizeChange={handleBrushSizeChange}
           onToolChange={handleToolChange}
-          onClearCanvas={() => {}} // Empty function since clear is handled by parent
+          onClearCanvas={handleClearCanvas}
+          onUndo={undo}
+          onRedo={redo}
+          canUndo={canUndo}
+          canRedo={canRedo}
         />
 
         {/* Canvas Area - takes remaining space */}
@@ -132,6 +141,10 @@ const DrawingCanvasWithTools = ({
         onBrushSizeChange={handleBrushSizeChange}
         onToolChange={handleToolChange}
         onClearCanvas={handleClearCanvas}
+          onUndo={undo}
+          onRedo={redo}
+          canUndo={canUndo}
+          canRedo={canRedo}
       />
 
       {/* Canvas */}

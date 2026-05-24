@@ -1,14 +1,157 @@
 /**
  * Pop the Balloons Game Hook
  * Manages game state and logic for Pop the Balloons
+ * Refactored from 12 useState calls to a single useReducer (PR-4c1)
  */
 
-import { useState, useEffect, useCallback, useRef } from 'react';
-import type { PopBalloonsState, Balloon, BalloonType, Difficulty, GridSize, GameStatus } from '../components/Games/PopBalloons/types';
-import { difficultySettings, gridSizeSettings, POINTS, balloonColors, COMBO_WINDOW } from '../components/Games/PopBalloons/constants';
+import { useReducer, useEffect, useCallback, useRef } from 'react';
+import type {
+  PopBalloonsState,
+  Balloon,
+  BalloonType,
+  Difficulty,
+  GridSize,
+} from '../components/Games/PopBalloons/types';
+import {
+  difficultySettings,
+  gridSizeSettings,
+  POINTS,
+  balloonColors,
+  COMBO_WINDOW,
+} from '../components/Games/PopBalloons/constants';
 import { saveHighScore, getHighScore, playSound, randomChoice } from '../utils/gameUtils';
 
 const GAME_KEY = 'popBalloons';
+
+// Internal state — superset of public PopBalloonsState; adds lastPopTime for combo timing
+interface InternalState extends PopBalloonsState {
+  lastPopTime: number;
+}
+
+// Discriminated union of all state transitions
+export type BalloonAction =
+  | { type: 'RESET'; difficulty: Difficulty; gridSize: GridSize; highScore: number }
+  | { type: 'START' }
+  | { type: 'SET_DIFFICULTY'; difficulty: Difficulty }
+  | { type: 'SET_GRID_SIZE'; gridSize: GridSize }
+  | { type: 'SPAWN_BALLOON'; balloon: Balloon }
+  | { type: 'POP_BALLOON'; balloonId: string; now: number }
+  | { type: 'EXPIRE_BALLOON'; balloonId: string }
+  | { type: 'TICK' }
+  | { type: 'LOAD_HIGH_SCORE'; highScore: number };
+
+export function makeInitialState(
+  difficulty: Difficulty,
+  gridSize: GridSize = 'small',
+  highScore = 0,
+): InternalState {
+  const settings = difficultySettings[difficulty];
+  return {
+    difficulty,
+    gridSize,
+    balloons: [],
+    score: 0,
+    highScore,
+    combo: 0,
+    maxCombo: 0,
+    gameStatus: 'ready',
+    timeRemaining: settings.gameDuration,
+    lives: settings.startingLives,
+    totalPopped: 0,
+    totalMissed: 0,
+    lastPopTime: 0,
+  };
+}
+
+export function balloonReducer(state: InternalState, action: BalloonAction): InternalState {
+  switch (action.type) {
+    case 'RESET':
+      return makeInitialState(action.difficulty, action.gridSize, action.highScore);
+
+    case 'START':
+      return { ...state, gameStatus: 'playing', lastPopTime: Date.now() };
+
+    case 'SET_DIFFICULTY':
+      // Changing difficulty resets the game (matches original initializeGame re-run behaviour)
+      return makeInitialState(action.difficulty, state.gridSize, state.highScore);
+
+    case 'SET_GRID_SIZE':
+      return { ...state, gridSize: action.gridSize };
+
+    case 'SPAWN_BALLOON':
+      return { ...state, balloons: [...state.balloons, action.balloon] };
+
+    case 'POP_BALLOON': {
+      const balloon = state.balloons.find(b => b.id === action.balloonId);
+      if (!balloon) return state;
+
+      const withoutBalloon = state.balloons.filter(b => b.id !== action.balloonId);
+
+      if (balloon.type === 'bomb') {
+        const newLives = state.lives - 1;
+        return {
+          ...state,
+          balloons: withoutBalloon,
+          lives: newLives,
+          combo: 0,
+          gameStatus: newLives <= 0 ? 'gameOver' : state.gameStatus,
+        };
+      }
+
+      // Good balloon — compute combo from reducer state (no stale closure)
+      const timeSinceLastPop = action.now - state.lastPopTime;
+      const newCombo = timeSinceLastPop < COMBO_WINDOW ? state.combo + 1 : 1;
+      const basePoints = balloon.type === 'golden' ? POINTS.golden : POINTS.normal;
+      const comboBonus = newCombo > 1 ? (newCombo - 1) * POINTS.combo : 0;
+
+      return {
+        ...state,
+        balloons: withoutBalloon,
+        score: state.score + basePoints + comboBonus,
+        combo: newCombo,
+        maxCombo: Math.max(state.maxCombo, newCombo),
+        totalPopped: state.totalPopped + 1,
+        lastPopTime: action.now,
+      };
+    }
+
+    case 'EXPIRE_BALLOON': {
+      const balloon = state.balloons.find(b => b.id === action.balloonId);
+      if (!balloon) return state; // Already popped — no-op
+
+      const withoutBalloon = state.balloons.filter(b => b.id !== action.balloonId);
+
+      if (balloon.type === 'bomb') {
+        // Bomb expired — no life penalty, but combo resets
+        return { ...state, balloons: withoutBalloon, combo: 0 };
+      }
+
+      // Normal/golden missed
+      const newLives = state.lives - 1;
+      return {
+        ...state,
+        balloons: withoutBalloon,
+        totalMissed: state.totalMissed + 1,
+        lives: newLives,
+        combo: 0,
+        gameStatus: newLives <= 0 ? 'gameOver' : state.gameStatus,
+      };
+    }
+
+    case 'TICK': {
+      if (state.timeRemaining <= 1) {
+        return { ...state, timeRemaining: 0, gameStatus: 'gameOver' };
+      }
+      return { ...state, timeRemaining: state.timeRemaining - 1 };
+    }
+
+    case 'LOAD_HIGH_SCORE':
+      return { ...state, highScore: action.highScore };
+
+    default:
+      return state;
+  }
+}
 
 interface UsePopBalloonsReturn {
   gameState: PopBalloonsState;
@@ -20,207 +163,122 @@ interface UsePopBalloonsReturn {
 }
 
 export const usePopBalloons = (): UsePopBalloonsReturn => {
-  const [difficulty, setDifficultyState] = useState<Difficulty>('easy');
-  const [gridSize, setGridSizeState] = useState<GridSize>('small');
-  const [balloons, setBalloons] = useState<Balloon[]>([]);
-  const [score, setScore] = useState(0);
-  const [highScore, setHighScore] = useState(0);
-  const [combo, setCombo] = useState(0);
-  const [maxCombo, setMaxCombo] = useState(0);
-  const [gameStatus, setGameStatus] = useState<GameStatus>('ready');
-  const [timeRemaining, setTimeRemaining] = useState(difficultySettings[difficulty].gameDuration);
-  const [lives, setLives] = useState(difficultySettings[difficulty].startingLives);
-  const [totalPopped, setTotalPopped] = useState(0);
-  const [totalMissed, setTotalMissed] = useState(0);
+  const [state, dispatch] = useReducer(balloonReducer, makeInitialState('easy'));
 
-  const spawnTimerRef = useRef<NodeJS.Timeout | null>(null);
-  const gameTimerRef = useRef<NodeJS.Timeout | null>(null);
-  const lastPopTimeRef = useRef<number>(0);
-  const occupiedPositionsRef = useRef<Set<string>>(new Set());
-
-  // Load high score
+  // stateRef — gives setTimeout / setInterval callbacks access to fresh state
+  // without needing them in their dependency arrays
+  const stateRef = useRef(state);
   useEffect(() => {
-    const savedHighScore = getHighScore(`${GAME_KEY}_${difficulty}`);
-    setHighScore(savedHighScore);
-  }, [difficulty]);
+    stateRef.current = state;
+  }, [state]);
 
-  // Initialize game
-  const initializeGame = useCallback(() => {
-    const settings = difficultySettings[difficulty];
-    setBalloons([]);
-    setScore(0);
-    setCombo(0);
-    setMaxCombo(0);
-    setTimeRemaining(settings.gameDuration);
-    setLives(settings.startingLives);
-    setTotalPopped(0);
-    setTotalMissed(0);
-    setGameStatus('ready');
-    occupiedPositionsRef.current.clear();
-    lastPopTimeRef.current = 0;
-  }, [difficulty]);
+  const spawnTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const gameTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  // Tracks whether a tab-hide event stopped the timers (vs natural game over)
+  const visibilityPausedRef = useRef(false);
 
-  // Get random unoccupied position
+  // ── Load high score whenever difficulty changes (includes mount) ──────────
+  useEffect(() => {
+    const saved = getHighScore(`${GAME_KEY}_${state.difficulty}`);
+    dispatch({ type: 'LOAD_HIGH_SCORE', highScore: saved });
+  }, [state.difficulty]);
+
+  // ── Derive occupied positions from current state (replaces occupiedPositionsRef) ──
   const getRandomPosition = useCallback((): { row: number; col: number } | null => {
+    const { balloons, gridSize } = stateRef.current;
+    const occupied = new Set(balloons.map(b => `${b.position.row}-${b.position.col}`));
+    const size = gridSizeSettings[gridSize].size;
     const available: { row: number; col: number }[] = [];
-    const currentGridSize = gridSizeSettings[gridSize].size;
 
-    for (let row = 0; row < currentGridSize; row++) {
-      for (let col = 0; col < currentGridSize; col++) {
-        const key = `${row}-${col}`;
-        if (!occupiedPositionsRef.current.has(key)) {
-          available.push({ row, col });
-        }
+    for (let row = 0; row < size; row++) {
+      for (let col = 0; col < size; col++) {
+        if (!occupied.has(`${row}-${col}`)) available.push({ row, col });
       }
     }
 
-    if (available.length === 0) return null;
-    return randomChoice(available);
-  }, [gridSize]);
+    return available.length === 0 ? null : randomChoice(available);
+  }, []);
 
-  // Determine balloon type based on difficulty
-  const getBalloonType = useCallback((): BalloonType => {
-    const settings = difficultySettings[difficulty];
+  const getBalloonType = useCallback((difficulty: Difficulty): BalloonType => {
+    const { bombChance, goldenChance } = difficultySettings[difficulty];
     const rand = Math.random();
-
-    if (rand < settings.bombChance) {
-      return 'bomb';
-    } else if (rand < settings.bombChance + settings.goldenChance) {
-      return 'golden';
-    }
+    if (rand < bombChance) return 'bomb';
+    if (rand < bombChance + goldenChance) return 'golden';
     return 'normal';
-  }, [difficulty]);
+  }, []);
 
-  // Spawn a new balloon
+  // ── Spawn balloon (called from setInterval — reads fresh state via stateRef) ──
   const spawnBalloon = useCallback(() => {
     const position = getRandomPosition();
     if (!position) return; // Grid is full
 
+    const { difficulty } = stateRef.current;
     const settings = difficultySettings[difficulty];
-    const type = getBalloonType();
+    const type = getBalloonType(difficulty);
 
     const balloon: Balloon = {
       id: `balloon-${Date.now()}-${Math.random()}`,
       position,
       type,
-      color: type === 'golden' ? 'hsl(45, 100%, 60%)' : type === 'bomb' ? 'hsl(0, 0%, 30%)' : randomChoice(balloonColors),
+      color:
+        type === 'golden'
+          ? 'hsl(45, 100%, 60%)'
+          : type === 'bomb'
+            ? 'hsl(0, 0%, 30%)'
+            : randomChoice(balloonColors),
       lifetime: settings.balloonLifetime,
-      spawnTime: Date.now()
+      spawnTime: Date.now(),
     };
 
-    const posKey = `${position.row}-${position.col}`;
-    occupiedPositionsRef.current.add(posKey);
+    dispatch({ type: 'SPAWN_BALLOON', balloon });
 
-    setBalloons(prev => [...prev, balloon]);
-
-    // Auto-remove balloon after lifetime
+    // Auto-expire after lifetime — EXPIRE_BALLOON is a no-op if already popped
     setTimeout(() => {
-      setBalloons(prev => {
-        const exists = prev.find(b => b.id === balloon.id);
-        if (exists) {
-          // Balloon was missed
-          setTotalMissed(m => m + 1);
-
-          // Lose a life only for normal and golden balloons (not bombs)
-          if (balloon.type !== 'bomb') {
-            setLives(l => {
-              const newLives = l - 1;
-              if (newLives <= 0) {
-                setGameStatus('gameOver');
-              }
-              return newLives;
-            });
-          }
-
-          // Reset combo
-          setCombo(0);
-        }
-
-        occupiedPositionsRef.current.delete(posKey);
-        return prev.filter(b => b.id !== balloon.id);
-      });
+      dispatch({ type: 'EXPIRE_BALLOON', balloonId: balloon.id });
     }, settings.balloonLifetime);
-  }, [difficulty, getRandomPosition, getBalloonType]);
+  }, [getRandomPosition, getBalloonType]);
 
-  // Handle balloon pop
+  // ── Public callbacks ──────────────────────────────────────────────────────
+
   const handleBalloonPop = useCallback((balloonId: string) => {
-    setBalloons(prev => {
-      const balloon = prev.find(b => b.id === balloonId);
-      if (!balloon) return prev;
+    const balloon = stateRef.current.balloons.find(b => b.id === balloonId);
+    if (!balloon) return;
 
-      const posKey = `${balloon.position.row}-${balloon.position.col}`;
-      occupiedPositionsRef.current.delete(posKey);
+    // Side-effects (sounds) happen before dispatch — keeps reducer pure
+    if (balloon.type === 'bomb') {
+      playSound('lose');
+    } else {
+      playSound(balloon.type === 'golden' ? 'collect' : 'pop');
+    }
 
-      if (balloon.type === 'bomb') {
-        // Hit a bomb!
-        playSound('lose');
-        setLives(l => {
-          const newLives = l - 1;
-          if (newLives <= 0) {
-            setGameStatus('gameOver');
-          }
-          return newLives;
-        });
-        setCombo(0);
-      } else {
-        // Popped a good balloon
-        const now = Date.now();
-        const timeSinceLastPop = now - lastPopTimeRef.current;
-        lastPopTimeRef.current = now;
+    dispatch({ type: 'POP_BALLOON', balloonId, now: Date.now() });
+  }, []);
 
-        // Update combo
-        const newCombo = timeSinceLastPop < COMBO_WINDOW ? combo + 1 : 1;
-        setCombo(newCombo);
-        setMaxCombo(mc => Math.max(mc, newCombo));
-
-        // Calculate points
-        const basePoints = balloon.type === 'golden' ? POINTS.golden : POINTS.normal;
-        const comboBonus = newCombo > 1 ? (newCombo - 1) * POINTS.combo : 0;
-        const totalPoints = basePoints + comboBonus;
-
-        setScore(s => s + totalPoints);
-        setTotalPopped(p => p + 1);
-
-        // Play sound
-        playSound(balloon.type === 'golden' ? 'collect' : 'pop');
-      }
-
-      return prev.filter(b => b.id !== balloonId);
-    });
-  }, [combo]);
-
-  // Start game
   const startGame = useCallback(() => {
-    setGameStatus('playing');
-    lastPopTimeRef.current = Date.now();
+    dispatch({ type: 'START' });
   }, []);
 
-  // Reset game
   const resetGame = useCallback(() => {
-    initializeGame();
-  }, [initializeGame]);
-
-  // Set difficulty
-  const setDifficulty = useCallback((newDifficulty: Difficulty) => {
-    setDifficultyState(newDifficulty);
+    const { difficulty, gridSize, highScore } = stateRef.current;
+    dispatch({ type: 'RESET', difficulty, gridSize, highScore });
   }, []);
 
-  // Set grid size
-  const setGridSize = useCallback((newGridSize: GridSize) => {
-    setGridSizeState(newGridSize);
+  const setDifficulty = useCallback((difficulty: Difficulty) => {
+    dispatch({ type: 'SET_DIFFICULTY', difficulty });
   }, []);
 
-  // Spawn balloons during play
+  const setGridSize = useCallback((gridSize: GridSize) => {
+    dispatch({ type: 'SET_GRID_SIZE', gridSize });
+  }, []);
+
+  // ── Spawn interval (re-runs only when play state or difficulty changes) ───
   useEffect(() => {
-    if (gameStatus === 'playing') {
-      const settings = difficultySettings[difficulty];
+    if (state.gameStatus === 'playing') {
+      spawnBalloon(); // Immediate first spawn
 
       spawnTimerRef.current = setInterval(() => {
         spawnBalloon();
-      }, settings.spawnRate);
-
-      // Spawn first balloon immediately
-      spawnBalloon();
+      }, difficultySettings[state.difficulty].spawnRate);
     } else if (spawnTimerRef.current) {
       clearInterval(spawnTimerRef.current);
       spawnTimerRef.current = null;
@@ -229,31 +287,16 @@ export const usePopBalloons = (): UsePopBalloonsReturn => {
     return () => {
       if (spawnTimerRef.current) {
         clearInterval(spawnTimerRef.current);
+        spawnTimerRef.current = null;
       }
     };
-  }, [gameStatus, difficulty, spawnBalloon]);
+  }, [state.gameStatus, state.difficulty, spawnBalloon]);
 
-  // Game timer countdown
+  // ── Game countdown timer ──────────────────────────────────────────────────
   useEffect(() => {
-    if (gameStatus === 'playing') {
+    if (state.gameStatus === 'playing') {
       gameTimerRef.current = setInterval(() => {
-        setTimeRemaining(prev => {
-          if (prev <= 1) {
-            if (gameTimerRef.current) {
-              clearInterval(gameTimerRef.current);
-            }
-            setGameStatus('gameOver');
-
-            // Save high score
-            if (score > highScore) {
-              saveHighScore(`${GAME_KEY}_${difficulty}`, score);
-              setHighScore(score);
-            }
-
-            return 0;
-          }
-          return prev - 1;
-        });
+        dispatch({ type: 'TICK' });
       }, 1000);
     } else if (gameTimerRef.current) {
       clearInterval(gameTimerRef.current);
@@ -263,36 +306,69 @@ export const usePopBalloons = (): UsePopBalloonsReturn => {
     return () => {
       if (gameTimerRef.current) {
         clearInterval(gameTimerRef.current);
+        gameTimerRef.current = null;
       }
     };
-  }, [gameStatus, score, highScore, difficulty]);
+  }, [state.gameStatus]);
 
-  // Initialize on mount
+  // ── Pause timers on tab hide; restart them when tab is shown again ────────
+  // PopBalloons has no 'paused' gameStatus, so we manage the intervals directly.
+  // stateRef gives fresh access to difficulty/gameStatus without re-registration.
   useEffect(() => {
-    initializeGame();
-  }, [initializeGame]);
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        if (stateRef.current.gameStatus === 'playing') {
+          visibilityPausedRef.current = true;
+          if (spawnTimerRef.current) {
+            clearInterval(spawnTimerRef.current);
+            spawnTimerRef.current = null;
+          }
+          if (gameTimerRef.current) {
+            clearInterval(gameTimerRef.current);
+            gameTimerRef.current = null;
+          }
+        }
+      } else if (visibilityPausedRef.current) {
+        visibilityPausedRef.current = false;
+        if (stateRef.current.gameStatus === 'playing') {
+          spawnBalloon();
+          spawnTimerRef.current = setInterval(
+            spawnBalloon,
+            difficultySettings[stateRef.current.difficulty].spawnRate,
+          );
+          gameTimerRef.current = setInterval(() => {
+            dispatch({ type: 'TICK' });
+          }, 1000);
+        }
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
+  }, [spawnBalloon]); // spawnBalloon is stable (empty-dep useCallback chain)
 
+  // ── Persist high score on game over ──────────────────────────────────────
+  useEffect(() => {
+    if (state.gameStatus === 'gameOver' && state.score > state.highScore) {
+      saveHighScore(`${GAME_KEY}_${state.difficulty}`, state.score);
+      dispatch({ type: 'LOAD_HIGH_SCORE', highScore: state.score });
+    }
+  }, [state.gameStatus, state.score, state.highScore, state.difficulty]);
+
+  // ── Build public state (omit internal lastPopTime field) ─────────────────
   const gameState: PopBalloonsState = {
-    balloons,
-    score,
-    highScore,
-    combo,
-    maxCombo,
-    gameStatus,
-    difficulty,
-    gridSize,
-    timeRemaining,
-    lives,
-    totalPopped,
-    totalMissed
+    balloons: state.balloons,
+    score: state.score,
+    highScore: state.highScore,
+    combo: state.combo,
+    maxCombo: state.maxCombo,
+    gameStatus: state.gameStatus,
+    difficulty: state.difficulty,
+    gridSize: state.gridSize,
+    timeRemaining: state.timeRemaining,
+    lives: state.lives,
+    totalPopped: state.totalPopped,
+    totalMissed: state.totalMissed,
   };
 
-  return {
-    gameState,
-    handleBalloonPop,
-    startGame,
-    resetGame,
-    setDifficulty,
-    setGridSize
-  };
+  return { gameState, handleBalloonPop, startGame, resetGame, setDifficulty, setGridSize };
 };

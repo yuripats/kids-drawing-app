@@ -33,15 +33,20 @@ const MathFactsPage: React.FC<MathFactsPageProps> = ({ onNavigateHome }) => {
 
   const headerActions = (
     <>
-      <select
-        value={difficulty}
-        onChange={(e) => setDifficulty(e.target.value as Difficulty)}
-        className="kid-input text-xs md:text-sm px-2 md:px-3 py-1 md:py-2"
-      >
-        <option value="easy">🟢 Easy</option>
-        <option value="medium">🟡 Medium</option>
-        <option value="hard">🔴 Hard</option>
-      </select>
+      <div className="flex gap-1">
+        {(['easy', 'medium', 'hard'] as const).map(d => (
+          <button
+            key={d}
+            aria-label={d === 'easy' ? 'Easy' : d === 'medium' ? 'Medium' : 'Hard'}
+            onClick={() => setDifficulty(d as Difficulty)}
+            className={`kid-button text-base md:text-lg px-2 md:px-3 py-1 md:py-2 ${
+              difficulty === d ? '' : 'opacity-50'
+            }`}
+          >
+            {d === 'easy' ? '🐣' : d === 'medium' ? '🐱' : '🦁'}
+          </button>
+        ))}
+      </div>
 
       <button
         onClick={resetGame}
@@ -60,6 +65,14 @@ const MathFactsPage: React.FC<MathFactsPageProps> = ({ onNavigateHome }) => {
       onNavigateHome={onNavigateHome}
       headerActions={headerActions}
       bgColorClass="bg-gradient-to-b from-yellow-100 to-green-100"
+      instructions={
+        <ul className="space-y-2 text-slate-700">
+          <li>• Solve the math problem</li>
+          <li>• Type your answer and click "Check Answer"</li>
+          <li>• Get streaks for bonus points!</li>
+          <li>• Choose difficulty: Easy (addition), Medium (+subtraction), Hard (+multiplication)</li>
+        </ul>
+      }
     >
       {/* Stats */}
       <div className="kid-card max-w-4xl mx-auto mb-4 p-4">
@@ -91,7 +104,11 @@ const MathFactsPage: React.FC<MathFactsPageProps> = ({ onNavigateHome }) => {
           </div>
 
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+            <label htmlFor="math-answer" className="sr-only">
+              Your answer
+            </label>
             <input
+              id="math-answer"
               type="number"
               value={userInput}
               onChange={(e) => setUserInput(e.target.value)}
@@ -112,16 +129,6 @@ const MathFactsPage: React.FC<MathFactsPageProps> = ({ onNavigateHome }) => {
         </div>
       )}
 
-      {/* Instructions - Hidden on mobile */}
-      <div className="kid-card max-w-4xl mx-auto hidden md:block">
-        <h2 className="text-xl font-bold mb-3 text-center">How to Play</h2>
-        <ul className="space-y-2 text-slate-700">
-          <li>• Solve the math problem</li>
-          <li>• Type your answer and click "Check Answer"</li>
-          <li>• Get streaks for bonus points!</li>
-          <li>• Choose difficulty: Easy (addition), Medium (+subtraction), Hard (+multiplication)</li>
-        </ul>
-      </div>
     </GameLayout>
   );
 };

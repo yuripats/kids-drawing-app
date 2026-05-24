@@ -2,17 +2,19 @@
 
 import { useJellyVolleyball } from '../../../hooks/useJellyVolleyball';
 import GameCanvas from './GameCanvas';
+import GameLayout from '../../shared/GameLayout';
 
 interface Props {
   onNavigateHome: () => void;
 }
 
 export default function JellyVolleyballPage({ onNavigateHome }: Props) {
-  const courtHeight = 400;
+  const courtWidth = Math.min(window.innerWidth - 32, 800);
+  const courtHeight = courtWidth / 2;
   const { gameState, isPaused, canvasRef, controls } = useJellyVolleyball({
-    courtWidth: 800,
-    courtHeight: courtHeight,
-    netHeight: courtHeight / 4, // Net is 1/4 of viewport height
+    courtWidth,
+    courtHeight,
+    netHeight: courtHeight / 4,
     playerRadius: 35,
     ballRadius: 32,
     gravity: 0.06,
@@ -20,20 +22,19 @@ export default function JellyVolleyballPage({ onNavigateHome }: Props) {
   });
 
   return (
-    <div className="p-4 min-h-screen bg-gradient-to-b from-blue-100 to-blue-200">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-4">
-        <h1 className="text-3xl font-bold text-blue-900">Jelly Volleyball</h1>
-        <div className="flex gap-2">
-          <button className="kid-button text-sm" onClick={controls.togglePause}>
-            {isPaused ? '▶️ Resume' : '⏸️ Pause'}
-          </button>
-          <button className="kid-button text-sm" onClick={onNavigateHome}>
-            ← Home
-          </button>
-        </div>
-      </div>
-
+    <GameLayout
+      title="Jelly Volleyball"
+      emoji="🏐"
+      onNavigateHome={onNavigateHome}
+      headerActions={
+        <button
+          className="kid-button text-xs md:text-sm px-2 md:px-4 py-1 md:py-2"
+          onClick={controls.togglePause}
+        >
+          {isPaused ? '▶️ Resume' : '⏸️ Pause'}
+        </button>
+      }
+    >
       {/* Game Canvas */}
       <div className="flex justify-center mb-4">
         <GameCanvas
@@ -161,6 +162,6 @@ export default function JellyVolleyballPage({ onNavigateHome }: Props) {
           </div>
         </div>
       )}
-    </div>
+    </GameLayout>
   );
 }

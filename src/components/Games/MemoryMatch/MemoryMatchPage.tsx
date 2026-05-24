@@ -9,7 +9,7 @@ import GameLayout from '../../shared/GameLayout';
 import GameBoard from './GameBoard';
 import type { Difficulty, Theme } from './types';
 import { difficultySettings, themeNames } from './themes';
-import { formatTime, celebrateWin } from '../../../utils/gameUtils';
+import { formatTime, celebrateWin, getStatusColor } from '../../../utils/gameUtils';
 
 interface MemoryMatchPageProps {
   onNavigateHome: () => void;
@@ -38,12 +38,6 @@ const MemoryMatchPage: React.FC<MemoryMatchPageProps> = ({ onNavigateHome }) => 
     }
   }, [gameStatus]);
 
-  const handleDifficultyChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    if (gameStatus !== 'playing') {
-      setDifficulty(e.target.value as Difficulty);
-    }
-  };
-
   const handleThemeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     if (gameStatus !== 'playing') {
       setTheme(e.target.value as Theme);
@@ -63,35 +57,24 @@ const MemoryMatchPage: React.FC<MemoryMatchPageProps> = ({ onNavigateHome }) => 
     }
   };
 
-  const getStatusColor = (): string => {
-    switch (gameStatus) {
-      case 'ready':
-        return 'text-blue-600';
-      case 'playing':
-        return 'text-purple-600';
-      case 'completed':
-        return 'text-green-600';
-      default:
-        return 'text-slate-600';
-    }
-  };
-
   const headerActions = (
     <>
-      {/* Difficulty Selector - Compact on mobile */}
-      <select
-        value={difficulty}
-        onChange={handleDifficultyChange}
-        disabled={gameStatus === 'playing'}
-        className="kid-input text-xs md:text-sm px-2 md:px-3 py-1 md:py-2"
-        title="Game Difficulty"
-      >
-        {Object.entries(difficultySettings).map(([key, settings]) => (
-          <option key={key} value={key}>
-            {settings.name}
-          </option>
+      {/* Difficulty Selector - Emoji buttons */}
+      <div className="flex gap-1" title="Game Difficulty">
+        {(['easy', 'medium', 'hard'] as const).map(d => (
+          <button
+            key={d}
+            aria-label={d === 'easy' ? 'Easy' : d === 'medium' ? 'Medium' : 'Hard'}
+            onClick={() => { if (gameStatus !== 'playing') setDifficulty(d as Difficulty); }}
+            disabled={gameStatus === 'playing'}
+            className={`kid-button text-base md:text-lg px-2 md:px-3 py-1 md:py-2 ${
+              difficulty === d ? '' : 'opacity-50'
+            }`}
+          >
+            {d === 'easy' ? '🐣' : d === 'medium' ? '🐱' : '🦁'}
+          </button>
         ))}
-      </select>
+      </div>
 
       {/* Theme Selector - Compact on mobile */}
       <select
@@ -126,6 +109,42 @@ const MemoryMatchPage: React.FC<MemoryMatchPageProps> = ({ onNavigateHome }) => 
       onNavigateHome={onNavigateHome}
       headerActions={headerActions}
       bgColorClass="bg-gradient-to-b from-pink-100 to-purple-100"
+      instructions={
+        <div className="space-y-3 text-slate-700">
+          <div>
+            <h3 className="font-semibold text-lg mb-1">🎯 Goal</h3>
+            <p>Find all matching pairs of cards by remembering where each card is located!</p>
+          </div>
+          <div>
+            <h3 className="font-semibold text-lg mb-1">🎮 How to Play</h3>
+            <ul className="list-disc list-inside space-y-1">
+              <li>Click on a card to flip it over</li>
+              <li>Click on a second card to see if they match</li>
+              <li>If they match, they stay face up! ✓</li>
+              <li>If they don't match, they flip back</li>
+              <li>Try to find all pairs in the fewest moves!</li>
+            </ul>
+          </div>
+          <div>
+            <h3 className="font-semibold text-lg mb-1">⚙️ Settings</h3>
+            <ul className="list-disc list-inside space-y-1">
+              <li><strong>Easy:</strong> 6 pairs (4x3 grid)</li>
+              <li><strong>Medium:</strong> 8 pairs (4x4 grid)</li>
+              <li><strong>Hard:</strong> 12 pairs (4x6 grid)</li>
+            </ul>
+            <p className="mt-2 text-sm italic">Choose your favorite theme and challenge level before starting!</p>
+          </div>
+          <div>
+            <h3 className="font-semibold text-lg mb-1">💡 Tips</h3>
+            <ul className="list-disc list-inside space-y-1">
+              <li>Pay attention to where each card is!</li>
+              <li>Try to remember patterns</li>
+              <li>The fewer moves, the better your score</li>
+              <li>Beat your best time!</li>
+            </ul>
+          </div>
+        </div>
+      }
     >
       {/* Stats Panel - Compact on mobile */}
       <div className="kid-card max-w-4xl mx-auto mb-2 md:mb-4 p-2 md:p-4">
@@ -170,7 +189,7 @@ const MemoryMatchPage: React.FC<MemoryMatchPageProps> = ({ onNavigateHome }) => 
 
       {/* Status Message - Smaller on mobile */}
       <div className="text-center mb-2 md:mb-4">
-        <p className={`text-sm md:text-lg font-semibold ${getStatusColor()}`}>
+        <p className={`text-sm md:text-lg font-semibold ${getStatusColor(gameStatus, { playing: 'text-purple-600' })}`}>
           {getStatusMessage()}
         </p>
       </div>
@@ -178,55 +197,6 @@ const MemoryMatchPage: React.FC<MemoryMatchPageProps> = ({ onNavigateHome }) => 
       {/* Game Board */}
       <div className="mb-2 md:mb-6">
         <GameBoard gameState={gameState} onCardClick={handleCardClick} />
-      </div>
-
-      {/* Instructions - Hidden on mobile, visible on larger screens */}
-      <div className="kid-card max-w-4xl mx-auto hidden md:block">
-        <h2 className="text-xl font-bold mb-3 text-center text-purple-800">
-          How to Play
-        </h2>
-
-        <div className="space-y-3 text-slate-700">
-          <div>
-            <h3 className="font-semibold text-lg mb-1">🎯 Goal</h3>
-            <p>
-              Find all matching pairs of cards by remembering where each card is located!
-            </p>
-          </div>
-
-          <div>
-            <h3 className="font-semibold text-lg mb-1">🎮 How to Play</h3>
-            <ul className="list-disc list-inside space-y-1">
-              <li>Click on a card to flip it over</li>
-              <li>Click on a second card to see if they match</li>
-              <li>If they match, they stay face up! ✓</li>
-              <li>If they don't match, they flip back</li>
-              <li>Try to find all pairs in the fewest moves!</li>
-            </ul>
-          </div>
-
-          <div>
-            <h3 className="font-semibold text-lg mb-1">⚙️ Settings</h3>
-            <ul className="list-disc list-inside space-y-1">
-              <li><strong>Easy:</strong> 6 pairs (4x3 grid)</li>
-              <li><strong>Medium:</strong> 8 pairs (4x4 grid)</li>
-              <li><strong>Hard:</strong> 12 pairs (4x6 grid)</li>
-            </ul>
-            <p className="mt-2 text-sm italic">
-              Choose your favorite theme and challenge level before starting!
-            </p>
-          </div>
-
-          <div>
-            <h3 className="font-semibold text-lg mb-1">💡 Tips</h3>
-            <ul className="list-disc list-inside space-y-1">
-              <li>Pay attention to where each card is!</li>
-              <li>Try to remember patterns</li>
-              <li>The fewer moves, the better your score</li>
-              <li>Beat your best time!</li>
-            </ul>
-          </div>
-        </div>
       </div>
 
       {/* Completion Modal */}

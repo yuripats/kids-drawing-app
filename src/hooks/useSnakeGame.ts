@@ -14,6 +14,7 @@ import type {
   SnakeConfig,
 } from '../components/Games/Snake/types';
 import { buildSnakeConfig } from '../components/Games/Snake/types';
+import * as storage from '../utils/storage';
 
 const HIGH_SCORE_KEY = 'snakeHighScore';
 
@@ -34,18 +35,17 @@ const OPPOSITE_DIRECTIONS: Record<Direction, Direction> = {
 };
 
 /**
- * Get high score from localStorage
+ * Get high score from storage.
  */
 const getHighScore = (): number => {
-  const saved = localStorage.getItem(HIGH_SCORE_KEY);
-  return saved ? parseInt(saved, 10) : 0;
+  return storage.get(HIGH_SCORE_KEY, 0);
 };
 
 /**
- * Save high score to localStorage
+ * Save high score to storage.
  */
 const saveHighScore = (score: number): void => {
-  localStorage.setItem(HIGH_SCORE_KEY, score.toString());
+  storage.set(HIGH_SCORE_KEY, score);
 };
 
 /**
@@ -122,6 +122,8 @@ export const useSnakeGame = () => {
 
   const gameLoopRef = useRef<number | null>(null);
   const nextDirectionRef = useRef<Direction>('right');
+  // Tracks whether a tab-hide event caused the current pause (vs user Space/Esc)
+  const visibilityPausedRef = useRef(false);
 
   /**
    * Get current config based on difficulty and grid size
@@ -329,6 +331,35 @@ export const useSnakeGame = () => {
     setGameState(newState);
     setGridSize(newGridSize);
   }, [stopGameLoop, gameState.difficulty]);
+
+  /**
+   * Pause on tab hide, resume on tab show.
+   * Uses functional setState so the handler captures fresh game state without
+   * needing the effect to re-register on every status change.
+   */
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        setGameState((prev: GameState) => {
+          if (prev.gameStatus === 'playing') {
+            visibilityPausedRef.current = true;
+            return { ...prev, gameStatus: 'paused' as const };
+          }
+          return prev;
+        });
+      } else if (visibilityPausedRef.current) {
+        visibilityPausedRef.current = false;
+        setGameState((prev: GameState) => {
+          if (prev.gameStatus === 'paused') {
+            return { ...prev, gameStatus: 'playing' as const };
+          }
+          return prev;
+        });
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
+  }, []); // functional setState — no deps needed
 
   /**
    * Handle keyboard input

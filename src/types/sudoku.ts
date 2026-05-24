@@ -29,4 +29,6 @@ export interface GameState {
   status: Status;
   settings: Settings;
   version: number;
+  solution: number[]; // length 81, correct value for every cell
+  hintsUsed: number;  // capped at MAX_HINTS (3)
 }

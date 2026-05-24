@@ -2,11 +2,13 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { Difficulty, GameState, Settings } from '../types/sudoku';
 import { createEmptyBoard, validateConflicts } from '../utils/sudoku';
 import { loadPuzzle } from '../services/sudoku/SudokuEngine';
+import * as storage from '../utils/storage';
 
 interface Options { difficulty: Difficulty }
 
-const ACTIVE_KEY = 'kda:sudoku:active';
-const GAME_KEY = (id: string) => `kda:sudoku:game:${id}`;
+const ACTIVE_KEY = 'sudoku:active';
+const GAME_KEY = (id: string) => `sudoku:game:${id}`;
+const MAX_HINTS = 3;
 
 export function useSudokuGame({ difficulty }: Options) {
   const [game, setGame] = useState<GameState>(() => initialGame(difficulty));
@@ -14,12 +16,12 @@ export function useSudokuGame({ difficulty }: Options) {
 
   useEffect(() => {
     // resume active game if present
-    const activeId = localStorage.getItem(ACTIVE_KEY);
+    const activeId = storage.get<string | null>(ACTIVE_KEY, null);
     if (activeId) {
-      const raw = localStorage.getItem(GAME_KEY(activeId));
-      if (raw) {
+      const savedGame = storage.get<SerializedGameState | null>(GAME_KEY(activeId), null);
+      if (savedGame) {
         try {
-          const parsed: GameState = revive(JSON.parse(raw));
+          const parsed: GameState = revive(savedGame);
           setGame(parsed);
           return;
         } catch {
@@ -43,8 +45,8 @@ export function useSudokuGame({ difficulty }: Options) {
   }, [game.status]);
 
   const persist = useCallback((g: GameState) => {
-    localStorage.setItem(ACTIVE_KEY, g.id);
-    localStorage.setItem(GAME_KEY(g.id), JSON.stringify(serialize(g)));
+    storage.set(ACTIVE_KEY, g.id);
+    storage.set(GAME_KEY(g.id), serialize(g));
   }, []);
 
   const selectCell = useCallback((row: number, col: number) => {
@@ -138,7 +140,7 @@ export function useSudokuGame({ difficulty }: Options) {
   }, [persist]);
 
   const newGame = useCallback((d: Difficulty) => {
-    const { id, board } = loadPuzzle(d);
+    const { id, board, solution } = loadPuzzle(d);
     const base: GameState = {
       id,
       difficulty: d,
@@ -151,10 +153,40 @@ export function useSudokuGame({ difficulty }: Options) {
       status: 'in_progress',
       settings: defaultSettings(),
       version: 1,
+      solution,
+      hintsUsed: 0,
     };
     setGame(base);
     persist(base);
   }, [persist]);
+
+  const getHint = useCallback((): { row: number; col: number } | null => {
+    if (game.hintsUsed >= MAX_HINTS) return null;
+    const idx = game.board.findIndex((c, i) => !c.given && c.value !== game.solution[i]);
+    if (idx === -1) return null;
+    const row = Math.floor(idx / 9);
+    const col = idx % 9;
+    setGame((g) => {
+      if (g.hintsUsed >= MAX_HINTS) return g;
+      const prev = g.board;
+      const next = [...prev];
+      next[idx] = { ...next[idx], value: g.solution[idx], notes: new Set<number>(), conflict: { row: false, col: false, box: false } };
+      const validated = validateConflicts(next);
+      const completed = validated.every((c) => c.value && !c.conflict.row && !c.conflict.col && !c.conflict.box);
+      const newState: GameState = {
+        ...g,
+        board: validated,
+        hintsUsed: g.hintsUsed + 1,
+        status: completed ? 'completed' : 'in_progress',
+        history: [...g.history, prev].slice(-50),
+        future: [],
+        selection: { row, col },
+      };
+      persist(newState);
+      return newState;
+    });
+    return { row, col };
+  }, [game, persist]);
 
   const canUndo = game.history.length > 0;
   const canRedo = game.future.length > 0;
@@ -176,6 +208,8 @@ export function useSudokuGame({ difficulty }: Options) {
     undo,
     redo,
     newGame,
+    getHint,
+    hintsUsed: game.hintsUsed,
   };
 }
 
@@ -192,6 +226,8 @@ function initialGame(d: Difficulty): GameState {
     status: 'in_progress',
     settings: defaultSettings(),
     version: 1,
+    solution: [],
+    hintsUsed: 0,
   };
 }
 
@@ -230,17 +266,21 @@ interface SerializedGameState {
   status: 'in_progress' | 'completed';
   settings: Settings;
   version: number;
+  solution?: number[];
+  hintsUsed?: number;
 }
 
 function revive(g: SerializedGameState): GameState {
   return {
     ...g,
     board: g.board.map((c) => ({ ...c, notes: new Set<number>(c.notes || []) })),
-    history: g.history.map((boardState) => 
+    history: g.history.map((boardState) =>
       boardState.map((c) => ({ ...c, notes: new Set<number>(c.notes || []) }))
     ),
-    future: g.future.map((boardState) => 
+    future: g.future.map((boardState) =>
       boardState.map((c) => ({ ...c, notes: new Set<number>(c.notes || []) }))
     ),
+    solution: g.solution ?? [],
+    hintsUsed: g.hintsUsed ?? 0,
   };
 }

@@ -12,7 +12,7 @@ interface ColorMixerPageProps {
 }
 
 const ColorMixerPage: React.FC<ColorMixerPageProps> = ({ onNavigateHome }) => {
-  const { gameState, addColor, checkMatch, reset } = useColorMixer();
+  const { gameState, addColor, checkMatch, reset, proximity } = useColorMixer();
 
   const { currentMix, challenge, score, completedChallenges } = gameState;
 
@@ -25,6 +25,14 @@ const ColorMixerPage: React.FC<ColorMixerPageProps> = ({ onNavigateHome }) => {
       emoji="🌈"
       onNavigateHome={onNavigateHome}
       bgColorClass="bg-gradient-to-b from-pink-100 to-purple-100"
+      instructions={
+        <ul className="space-y-2 text-slate-700">
+          <li>• Mix colors to match the target color</li>
+          <li>• Click color buttons to add that color to your mix</li>
+          <li>• Use the hint to know which colors to combine</li>
+          <li>• Click "Check!" when you think it matches</li>
+        </ul>
+      }
     >
       {/* Stats */}
       <div className="kid-card max-w-4xl mx-auto mb-4 p-4">
@@ -45,7 +53,25 @@ const ColorMixerPage: React.FC<ColorMixerPageProps> = ({ onNavigateHome }) => {
         <div className="kid-card max-w-2xl mx-auto mb-4 text-center">
           <h2 className="text-2xl font-bold text-purple-800 mb-2">Make: {challenge.name}</h2>
           <p className="text-lg text-slate-600 mb-4">{challenge.hint}</p>
-          <div className="w-32 h-32 mx-auto rounded-lg border-4 border-gray-300" style={{ backgroundColor: targetRgb }} />
+          <div className="flex items-end justify-center gap-4">
+            {/* Target color swatch */}
+            <div className="w-32 h-32 rounded-lg border-4 border-gray-300" style={{ backgroundColor: targetRgb }} />
+
+            {/* Proximity thermometer */}
+            <div className={`flex flex-col items-center gap-1${proximity > 0.95 ? ' animate-pulse' : ''}`}>
+              <span className="text-xs font-bold text-slate-500">{Math.round(proximity * 100)}%</span>
+              <div className="relative w-6 h-32 bg-gray-200 rounded-full border-2 border-gray-300 overflow-hidden flex items-end">
+                <div
+                  className="w-full transition-all duration-300"
+                  style={{
+                    height: `${Math.max(2, proximity * 100)}%`,
+                    backgroundColor: `hsl(${(1 - proximity) * 200}deg, 80%, 45%)`,
+                  }}
+                />
+              </div>
+              <span className="text-base" role="img" aria-label="thermometer">🌡️</span>
+            </div>
+          </div>
         </div>
       )}
 
@@ -89,16 +115,6 @@ const ColorMixerPage: React.FC<ColorMixerPageProps> = ({ onNavigateHome }) => {
         </button>
       </div>
 
-      {/* Instructions - Hidden on mobile */}
-      <div className="kid-card max-w-4xl mx-auto hidden md:block">
-        <h2 className="text-xl font-bold mb-3 text-center">How to Play</h2>
-        <ul className="space-y-2 text-slate-700">
-          <li>• Mix colors to match the target color</li>
-          <li>• Click color buttons to add that color to your mix</li>
-          <li>• Use the hint to know which colors to combine</li>
-          <li>• Click "Check!" when you think it matches</li>
-        </ul>
-      </div>
     </GameLayout>
   );
 };

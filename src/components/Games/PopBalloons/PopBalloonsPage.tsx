@@ -8,7 +8,8 @@ import { usePopBalloons } from '../../../hooks/usePopBalloons';
 import GameLayout from '../../shared/GameLayout';
 import GameBoard from './GameBoard';
 import type { Difficulty, GridSize } from './types';
-import { difficultySettings, gridSizeSettings } from './constants';
+import { gridSizeSettings } from './constants';
+import { useWinCelebration } from '../../../hooks/useWinCelebration';
 
 interface PopBalloonsPageProps {
   onNavigateHome: () => void;
@@ -31,11 +32,10 @@ const PopBalloonsPage: React.FC<PopBalloonsPageProps> = ({ onNavigateHome }) => 
     totalMissed
   } = gameState;
 
-  const handleDifficultyChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    if (gameStatus !== 'playing') {
-      setDifficulty(e.target.value as Difficulty);
-    }
-  };
+  useWinCelebration(
+    gameStatus === 'gameOver',
+    score === highScore && highScore > 0 && score > 0,
+  );
 
   const handleGridSizeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     if (gameStatus !== 'playing') {
@@ -71,20 +71,22 @@ const PopBalloonsPage: React.FC<PopBalloonsPageProps> = ({ onNavigateHome }) => 
 
   const headerActions = (
     <>
-      {/* Difficulty Selector - Compact on mobile */}
-      <select
-        value={difficulty}
-        onChange={handleDifficultyChange}
-        disabled={gameStatus === 'playing'}
-        className="kid-input text-xs md:text-sm px-2 md:px-3 py-1 md:py-2"
-        title="Game Difficulty"
-      >
-        {Object.entries(difficultySettings).map(([key, settings]) => (
-          <option key={key} value={key}>
-            {settings.name}
-          </option>
+      {/* Difficulty Selector - Emoji buttons */}
+      <div className="flex gap-1" title="Game Difficulty">
+        {(['easy', 'medium', 'hard'] as const).map(d => (
+          <button
+            key={d}
+            aria-label={d === 'easy' ? 'Easy' : d === 'medium' ? 'Medium' : 'Hard'}
+            onClick={() => { if (gameStatus !== 'playing') setDifficulty(d as Difficulty); }}
+            disabled={gameStatus === 'playing'}
+            className={`kid-button text-base md:text-lg px-2 md:px-3 py-1 md:py-2 ${
+              difficulty === d ? '' : 'opacity-50'
+            }`}
+          >
+            {d === 'easy' ? '🐣' : d === 'medium' ? '🐱' : '🦁'}
+          </button>
         ))}
-      </select>
+      </div>
 
       {/* Grid Size Selector - Compact on mobile */}
       <select
@@ -129,6 +131,46 @@ const PopBalloonsPage: React.FC<PopBalloonsPageProps> = ({ onNavigateHome }) => 
       onNavigateHome={onNavigateHome}
       headerActions={headerActions}
       bgColorClass="bg-gradient-to-b from-yellow-100 to-orange-100"
+      instructions={
+        <div className="space-y-3 text-slate-700">
+          <div>
+            <h3 className="font-semibold text-lg mb-1">🎯 Goal</h3>
+            <p>Pop as many balloons as you can before time runs out! Avoid the bombs!</p>
+          </div>
+          <div>
+            <h3 className="font-semibold text-lg mb-1">🎮 How to Play</h3>
+            <ul className="list-disc list-inside space-y-1">
+              <li>Tap balloons quickly to pop them before they disappear</li>
+              <li>Normal balloons give you <strong>+10 points</strong></li>
+              <li>Golden balloons (⭐) give you <strong>+30 points</strong></li>
+              <li>Avoid bombs (💣) - they cost you a life!</li>
+              <li>Missing a balloon also costs a life</li>
+              <li>Game ends when time runs out or you lose all lives</li>
+            </ul>
+          </div>
+          <div>
+            <h3 className="font-semibold text-lg mb-1">🔥 Combos</h3>
+            <p>Pop balloons quickly in succession to build a combo! Each combo level adds <strong>+5 bonus points</strong>. The combo resets if you miss a balloon, hit a bomb, or wait too long between pops.</p>
+          </div>
+          <div>
+            <h3 className="font-semibold text-lg mb-1">⚙️ Difficulty</h3>
+            <div className="space-y-2">
+              <div><strong>🐌 Easy:</strong> Slower spawns, longer balloon lifetime, no bombs, 5 lives</div>
+              <div><strong>🏃 Medium:</strong> Faster spawns, shorter lifetime, 10% bombs, 3 lives</div>
+              <div><strong>⚡ Hard:</strong> Very fast spawns, quick lifetime, 20% bombs, 3 lives</div>
+            </div>
+          </div>
+          <div>
+            <h3 className="font-semibold text-lg mb-1">💡 Tips</h3>
+            <ul className="list-disc list-inside space-y-1">
+              <li>Focus on golden balloons for big points!</li>
+              <li>Watch out for bombs (💣)</li>
+              <li>Build combos by popping balloons quickly</li>
+              <li>Don't let balloons disappear - you'll lose a life!</li>
+            </ul>
+          </div>
+        </div>
+      }
     >
       {/* Stats Panel - Compact on mobile */}
       <div className="kid-card max-w-4xl mx-auto mb-2 md:mb-4 p-2 md:p-4">
@@ -225,90 +267,9 @@ const PopBalloonsPage: React.FC<PopBalloonsPageProps> = ({ onNavigateHome }) => 
         </div>
       )}
 
-      {/* Instructions - Hidden on mobile */}
-      <div className="kid-card max-w-4xl mx-auto hidden md:block">
-        <h2 className="text-xl font-bold mb-3 text-center text-orange-800">
-          How to Play
-        </h2>
-
-        <div className="space-y-3 text-slate-700">
-          <div>
-            <h3 className="font-semibold text-lg mb-1">🎯 Goal</h3>
-            <p>
-              Pop as many balloons as you can before time runs out! Avoid the bombs!
-            </p>
-          </div>
-
-          <div>
-            <h3 className="font-semibold text-lg mb-1">🎮 How to Play</h3>
-            <ul className="list-disc list-inside space-y-1">
-              <li>Tap balloons quickly to pop them before they disappear</li>
-              <li>Normal balloons give you <strong>+10 points</strong></li>
-              <li>Golden balloons (⭐) give you <strong>+30 points</strong></li>
-              <li>Avoid bombs (💣) - they cost you a life!</li>
-              <li>Missing a balloon also costs a life</li>
-              <li>Game ends when time runs out or you lose all lives</li>
-            </ul>
-          </div>
-
-          <div>
-            <h3 className="font-semibold text-lg mb-1">🔥 Combos</h3>
-            <p>
-              Pop balloons quickly in succession to build a combo! Each combo level adds <strong>+5 bonus points</strong>.
-              The combo resets if you miss a balloon, hit a bomb, or wait too long between pops.
-            </p>
-          </div>
-
-          <div>
-            <h3 className="font-semibold text-lg mb-1">⚙️ Difficulty</h3>
-            <div className="space-y-2">
-              <div>
-                <strong>🐌 Easy:</strong>
-                <ul className="ml-4 mt-1 space-y-1 text-sm">
-                  <li>• Slower spawn rate (1.5s)</li>
-                  <li>• Balloons stay longer (2s)</li>
-                  <li>• No bombs!</li>
-                  <li>• 5 starting lives</li>
-                </ul>
-              </div>
-              <div>
-                <strong>🏃 Medium:</strong>
-                <ul className="ml-4 mt-1 space-y-1 text-sm">
-                  <li>• Faster spawns (1s)</li>
-                  <li>• Shorter lifetime (1.5s)</li>
-                  <li>• 10% bombs</li>
-                  <li>• 3 starting lives</li>
-                </ul>
-              </div>
-              <div>
-                <strong>⚡ Hard:</strong>
-                <ul className="ml-4 mt-1 space-y-1 text-sm">
-                  <li>• Very fast spawns (0.7s)</li>
-                  <li>• Quick lifetime (1.2s)</li>
-                  <li>• 20% bombs!</li>
-                  <li>• 3 starting lives</li>
-                  <li>• More golden balloons (15%)</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-
-          <div>
-            <h3 className="font-semibold text-lg mb-1">💡 Tips</h3>
-            <ul className="list-disc list-inside space-y-1">
-              <li>Focus on golden balloons for big points!</li>
-              <li>Watch out for the bomb warning (⚠️)</li>
-              <li>Build combos by popping balloons quickly</li>
-              <li>Don't let balloons disappear - you'll lose a life!</li>
-              <li>Practice makes perfect!</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-
       {/* Game Over Modal */}
       {gameStatus === 'gameOver' && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div className="fixed inset-0 bg-gradient-to-b from-yellow-50/90 to-orange-50/90 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div className="kid-card max-w-md w-full text-center">
             <div className="text-6xl mb-4">
               {score > highScore || score === highScore ? '🎉' : '😊'}

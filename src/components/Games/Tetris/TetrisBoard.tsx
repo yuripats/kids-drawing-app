@@ -16,17 +16,24 @@ const typeColor: Record<string, string> = {
   L: 'bg-orange-400',
 };
 
-function CellView({ cell }: { cell: Cell }) {
-  if (!cell) return <div className="border border-white/20 bg-white/5" style={{ aspectRatio: '1 / 1' }} />;
-  const color = typeColor[cell.type] ?? 'bg-gray-400';
-  const glow = cell.locked ? 'shadow-inner' : 'shadow-lg';
-  return (
-    <div
-      className={`${color} ${glow} rounded-sm border border-black/10`}
-      style={{ aspectRatio: '1 / 1' }}
-    />
-  );
-}
+// Wrapped in React.memo with a structural comparator so only the ~5 cells that
+// actually change on each 800ms tick re-render, not all 200.
+const CellView = React.memo(
+  function CellView({ cell }: { cell: Cell }) {
+    if (!cell) return <div className="border border-white/20 bg-white/5" style={{ aspectRatio: '1 / 1' }} />;
+    const color = typeColor[cell.type] ?? 'bg-gray-400';
+    const glow = cell.locked ? 'shadow-inner' : 'shadow-lg';
+    return (
+      <div
+        className={`${color} ${glow} rounded-sm border border-black/10`}
+        style={{ aspectRatio: '1 / 1' }}
+      />
+    );
+  },
+  (prev, next) =>
+    prev.cell === next.cell ||
+    (prev.cell?.type === next.cell?.type && prev.cell?.locked === next.cell?.locked),
+);
 
 export default function TetrisBoard({ config }: Props) {
   const { state, board, controls } = useTetrisGame(config);

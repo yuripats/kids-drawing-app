@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import StencilGallery from './Stencils/StencilGallery';
 import { Stencil } from '../types/Stencil';
+import { get as storageGet } from '../utils/storage';
 
 interface HomePageProps {
   onNavigateToDrawing: () => void;
@@ -18,11 +19,15 @@ interface HomePageProps {
   onNavigateToColorMixer: () => void;
   onNavigateToMathFacts: () => void;
   onNavigateToShapeSorting: () => void;
+  onNavigateToGallery: () => void;
 }
 
-function HomePage({ onNavigateToDrawing, onNavigateToStencil, onNavigateToColorBlocks, onNavigateToSudoku, onNavigateToTetris, onNavigateToJellyVolleyball, onNavigateToSnake, onNavigateToMemoryMatch, onNavigateToDrawingChallenge, onNavigateToPopBalloons, onNavigateToSimonSays, onNavigateToBubblePop, onNavigateToColorMixer, onNavigateToMathFacts, onNavigateToShapeSorting }: HomePageProps) {
+function HomePage({ onNavigateToDrawing, onNavigateToStencil, onNavigateToColorBlocks, onNavigateToSudoku, onNavigateToTetris, onNavigateToJellyVolleyball, onNavigateToSnake, onNavigateToMemoryMatch, onNavigateToDrawingChallenge, onNavigateToPopBalloons, onNavigateToSimonSays, onNavigateToBubblePop, onNavigateToColorMixer, onNavigateToMathFacts, onNavigateToShapeSorting, onNavigateToGallery }: HomePageProps) {
   const [isExcited, setIsExcited] = useState(false);
   const [showStencils, setShowStencils] = useState(false);
+
+  // Read drawing streak directly from storage (refreshes on every render / navigation back)
+  const drawingStreak = storageGet<number>('daily:streak', 0);
 
   const handleStencilSelect = (stencil: Stencil) => {
     onNavigateToStencil(stencil);
@@ -97,132 +102,175 @@ function HomePage({ onNavigateToDrawing, onNavigateToStencil, onNavigateToColorB
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {/* Color Blocks Game */}
             <button
-              className="kid-card bg-green-500 hover:bg-green-600 active:bg-green-700 transition-colors duration-200 p-6 text-center cursor-pointer border-2 border-transparent hover:border-green-700"
+              aria-label="Color Blocks"
+              className="kid-card bg-green-500 hover:bg-green-600 active:bg-green-700 transition-colors duration-200 p-6 text-center cursor-pointer border-2 border-transparent hover:border-green-700 relative"
               onClick={() => onNavigateToColorBlocks()}
               onTouchStart={() => setIsExcited(true)}
             >
-              <div className="text-5xl mb-2">🎨</div>
+              <div className="text-5xl mb-2" aria-hidden="true">🟪</div>
               <div className="text-white font-bold text-lg">Color Blocks</div>
+              <span className="absolute bottom-1 left-1 bg-black/20 text-white text-xs font-bold rounded-full px-1.5 py-0.5 leading-none">🧒 4+</span>
             </button>
 
             {/* Sudoku */}
             <button
-              className="kid-card bg-blue-500 hover:bg-blue-600 active:bg-blue-700 transition-colors duration-200 p-6 text-center cursor-pointer border-2 border-transparent hover:border-blue-700"
+              aria-label="Sudoku"
+              className="kid-card bg-blue-500 hover:bg-blue-600 active:bg-blue-700 transition-colors duration-200 p-6 text-center cursor-pointer border-2 border-transparent hover:border-blue-700 relative"
               onClick={() => onNavigateToSudoku()}
               onTouchStart={() => setIsExcited(true)}
             >
-              <div className="text-5xl mb-2">🧩</div>
+              <div className="text-5xl mb-2" aria-hidden="true">🧩</div>
               <div className="text-white font-bold text-lg">Sudoku</div>
+              <span className="absolute bottom-1 left-1 bg-black/20 text-white text-xs font-bold rounded-full px-1.5 py-0.5 leading-none">🧒 8+</span>
             </button>
 
             {/* Tetris */}
             <button
-              className="kid-card bg-orange-500 hover:bg-orange-600 active:bg-orange-700 transition-colors duration-200 p-6 text-center cursor-pointer border-2 border-transparent hover:border-orange-700"
+              aria-label="Tetris"
+              className="kid-card bg-orange-500 hover:bg-orange-600 active:bg-orange-700 transition-colors duration-200 p-6 text-center cursor-pointer border-2 border-transparent hover:border-orange-700 relative"
               onClick={() => onNavigateToTetris()}
               onTouchStart={() => setIsExcited(true)}
             >
-              <div className="text-5xl mb-2">🧱</div>
+              <div className="text-5xl mb-2" aria-hidden="true">🧱</div>
               <div className="text-white font-bold text-lg">Tetris</div>
+              <span className="absolute bottom-1 left-1 bg-black/20 text-white text-xs font-bold rounded-full px-1.5 py-0.5 leading-none">🧒 7+</span>
             </button>
 
             {/* Jelly Volleyball */}
             <button
-              className="kid-card bg-teal-500 hover:bg-teal-600 active:bg-teal-700 transition-colors duration-200 p-6 text-center cursor-pointer border-2 border-transparent hover:border-teal-700"
+              aria-label="Jelly Volleyball"
+              className="kid-card bg-teal-500 hover:bg-teal-600 active:bg-teal-700 transition-colors duration-200 p-6 text-center cursor-pointer border-2 border-transparent hover:border-teal-700 relative"
               onClick={() => onNavigateToJellyVolleyball()}
               onTouchStart={() => setIsExcited(true)}
             >
-              <div className="text-5xl mb-2">🏐</div>
+              <div className="text-5xl mb-2" aria-hidden="true">🏐</div>
               <div className="text-white font-bold text-lg">Jelly Volleyball</div>
+              <span className="absolute bottom-1 left-1 bg-black/20 text-white text-xs font-bold rounded-full px-1.5 py-0.5 leading-none">🧒 5+</span>
             </button>
 
             {/* Snake Game */}
             <button
-              className="kid-card bg-lime-500 hover:bg-lime-600 active:bg-lime-700 transition-colors duration-200 p-6 text-center cursor-pointer border-2 border-transparent hover:border-lime-700"
+              aria-label="Snake"
+              className="kid-card bg-lime-500 hover:bg-lime-600 active:bg-lime-700 transition-colors duration-200 p-6 text-center cursor-pointer border-2 border-transparent hover:border-lime-700 relative"
               onClick={() => onNavigateToSnake()}
               onTouchStart={() => setIsExcited(true)}
             >
-              <div className="text-5xl mb-2">🐍</div>
+              <div className="text-5xl mb-2" aria-hidden="true">🐍</div>
               <div className="text-white font-bold text-lg">Snake</div>
+              <span className="absolute bottom-1 left-1 bg-black/20 text-white text-xs font-bold rounded-full px-1.5 py-0.5 leading-none">🧒 6+</span>
             </button>
 
-            {/* Memory Match - NEW! */}
+            {/* Memory Match */}
             <button
-              className="kid-card bg-pink-500 hover:bg-pink-600 active:bg-pink-700 transition-colors duration-200 p-6 text-center cursor-pointer border-2 border-transparent hover:border-pink-700"
+              aria-label="Memory Match"
+              className="kid-card bg-pink-500 hover:bg-pink-600 active:bg-pink-700 transition-colors duration-200 p-6 text-center cursor-pointer border-2 border-transparent hover:border-pink-700 relative"
               onClick={() => onNavigateToMemoryMatch()}
               onTouchStart={() => setIsExcited(true)}
             >
-              <div className="text-5xl mb-2">🃏</div>
+              <div className="text-5xl mb-2" aria-hidden="true">🃏</div>
               <div className="text-white font-bold text-lg">Memory Match</div>
+              <span className="absolute bottom-1 left-1 bg-black/20 text-white text-xs font-bold rounded-full px-1.5 py-0.5 leading-none">🧒 4+</span>
             </button>
 
-            {/* Drawing Challenge - NEW! */}
+            {/* Drawing Challenge */}
             <button
-              className="kid-card bg-purple-500 hover:bg-purple-600 active:bg-purple-700 transition-colors duration-200 p-6 text-center cursor-pointer border-2 border-transparent hover:border-purple-700"
+              aria-label="Drawing Challenge"
+              className="kid-card bg-purple-500 hover:bg-purple-600 active:bg-purple-700 transition-colors duration-200 p-6 text-center cursor-pointer border-2 border-transparent hover:border-purple-700 relative"
               onClick={() => onNavigateToDrawingChallenge()}
               onTouchStart={() => setIsExcited(true)}
             >
-              <div className="text-5xl mb-2">🎨</div>
+              {drawingStreak > 0 && (
+                <span className="absolute top-1 right-1 bg-orange-400 text-white text-xs font-bold rounded-full px-2 py-0.5 leading-none">
+                  🔥 {drawingStreak}d
+                </span>
+              )}
+              <div className="text-5xl mb-2" aria-hidden="true">✏️</div>
               <div className="text-white font-bold text-lg">Drawing Challenge</div>
+              <span className="absolute bottom-1 left-1 bg-black/20 text-white text-xs font-bold rounded-full px-1.5 py-0.5 leading-none">🧒 5+</span>
             </button>
 
-            {/* Pop the Balloons - NEW! */}
+            {/* Pop Balloons */}
             <button
-              className="kid-card bg-yellow-500 hover:bg-yellow-600 active:bg-yellow-700 transition-colors duration-200 p-6 text-center cursor-pointer border-2 border-transparent hover:border-yellow-700"
+              aria-label="Pop Balloons"
+              className="kid-card bg-yellow-500 hover:bg-yellow-600 active:bg-yellow-700 transition-colors duration-200 p-6 text-center cursor-pointer border-2 border-transparent hover:border-yellow-700 relative"
               onClick={() => onNavigateToPopBalloons()}
               onTouchStart={() => setIsExcited(true)}
             >
-              <div className="text-5xl mb-2">🎯</div>
+              <div className="text-5xl mb-2" aria-hidden="true">🎯</div>
               <div className="text-white font-bold text-lg">Pop Balloons</div>
+              <span className="absolute bottom-1 left-1 bg-black/20 text-white text-xs font-bold rounded-full px-1.5 py-0.5 leading-none">🧒 3+</span>
             </button>
 
-            {/* Simon Says - NEW! */}
+            {/* Simon Says */}
             <button
-              className="kid-card bg-indigo-500 hover:bg-indigo-600 active:bg-indigo-700 transition-colors duration-200 p-6 text-center cursor-pointer border-2 border-transparent hover:border-indigo-700"
+              aria-label="Simon Says"
+              className="kid-card bg-indigo-500 hover:bg-indigo-600 active:bg-indigo-700 transition-colors duration-200 p-6 text-center cursor-pointer border-2 border-transparent hover:border-indigo-700 relative"
               onClick={() => onNavigateToSimonSays()}
               onTouchStart={() => setIsExcited(true)}
             >
-              <div className="text-5xl mb-2">🎵</div>
+              <div className="text-5xl mb-2" aria-hidden="true">🎵</div>
               <div className="text-white font-bold text-lg">Simon Says</div>
+              <span className="absolute bottom-1 left-1 bg-black/20 text-white text-xs font-bold rounded-full px-1.5 py-0.5 leading-none">🧒 5+</span>
             </button>
 
-            {/* Bubble Pop - NEW! */}
+            {/* Bubble Pop */}
             <button
-              className="kid-card bg-cyan-500 hover:bg-cyan-600 active:bg-cyan-700 transition-colors duration-200 p-6 text-center cursor-pointer border-2 border-transparent hover:border-cyan-700"
+              aria-label="Bubble Pop"
+              className="kid-card bg-cyan-500 hover:bg-cyan-600 active:bg-cyan-700 transition-colors duration-200 p-6 text-center cursor-pointer border-2 border-transparent hover:border-cyan-700 relative"
               onClick={() => onNavigateToBubblePop()}
               onTouchStart={() => setIsExcited(true)}
             >
-              <div className="text-5xl mb-2">🫧</div>
+              <div className="text-5xl mb-2" aria-hidden="true">🫧</div>
               <div className="text-white font-bold text-lg">Bubble Pop</div>
+              <span className="absolute bottom-1 left-1 bg-black/20 text-white text-xs font-bold rounded-full px-1.5 py-0.5 leading-none">🧒 3+</span>
             </button>
 
-            {/* Color Mixer - NEW! */}
+            {/* Color Mixer */}
             <button
-              className="kid-card bg-rose-500 hover:bg-rose-600 active:bg-rose-700 transition-colors duration-200 p-6 text-center cursor-pointer border-2 border-transparent hover:border-rose-700"
+              aria-label="Color Mixer"
+              className="kid-card bg-rose-500 hover:bg-rose-600 active:bg-rose-700 transition-colors duration-200 p-6 text-center cursor-pointer border-2 border-transparent hover:border-rose-700 relative"
               onClick={() => onNavigateToColorMixer()}
               onTouchStart={() => setIsExcited(true)}
             >
-              <div className="text-5xl mb-2">🎨</div>
+              <div className="text-5xl mb-2" aria-hidden="true">🌈</div>
               <div className="text-white font-bold text-lg">Color Mixer</div>
+              <span className="absolute bottom-1 left-1 bg-black/20 text-white text-xs font-bold rounded-full px-1.5 py-0.5 leading-none">🧒 6+</span>
             </button>
 
-            {/* Math Facts - NEW! */}
+            {/* Math Facts */}
             <button
-              className="kid-card bg-emerald-500 hover:bg-emerald-600 active:bg-emerald-700 transition-colors duration-200 p-6 text-center cursor-pointer border-2 border-transparent hover:border-emerald-700"
+              aria-label="Math Facts"
+              className="kid-card bg-emerald-500 hover:bg-emerald-600 active:bg-emerald-700 transition-colors duration-200 p-6 text-center cursor-pointer border-2 border-transparent hover:border-emerald-700 relative"
               onClick={() => onNavigateToMathFacts()}
               onTouchStart={() => setIsExcited(true)}
             >
-              <div className="text-5xl mb-2">🔢</div>
+              <div className="text-5xl mb-2" aria-hidden="true">🔢</div>
               <div className="text-white font-bold text-lg">Math Facts</div>
+              <span className="absolute bottom-1 left-1 bg-black/20 text-white text-xs font-bold rounded-full px-1.5 py-0.5 leading-none">🧒 6+</span>
             </button>
 
-            {/* Shape Sorting - NEW! */}
+            {/* Shape Sorting */}
             <button
-              className="kid-card bg-amber-500 hover:bg-amber-600 active:bg-amber-700 transition-colors duration-200 p-6 text-center cursor-pointer border-2 border-transparent hover:border-amber-700"
+              aria-label="Shape Sorting"
+              className="kid-card bg-amber-500 hover:bg-amber-600 active:bg-amber-700 transition-colors duration-200 p-6 text-center cursor-pointer border-2 border-transparent hover:border-amber-700 relative"
               onClick={() => onNavigateToShapeSorting()}
               onTouchStart={() => setIsExcited(true)}
             >
-              <div className="text-5xl mb-2">🎪</div>
+              <div className="text-5xl mb-2" aria-hidden="true">🎪</div>
               <div className="text-white font-bold text-lg">Shape Sorting</div>
+              <span className="absolute bottom-1 left-1 bg-black/20 text-white text-xs font-bold rounded-full px-1.5 py-0.5 leading-none">🧒 4+</span>
+            </button>
+
+            {/* Gallery */}
+            <button
+              aria-label="Gallery"
+              className="kid-card bg-violet-500 hover:bg-violet-600 active:bg-violet-700 transition-colors duration-200 p-6 text-center cursor-pointer border-2 border-transparent hover:border-violet-700 relative"
+              onClick={() => onNavigateToGallery()}
+              onTouchStart={() => setIsExcited(true)}
+            >
+              <div className="text-5xl mb-2" aria-hidden="true">🖼️</div>
+              <div className="text-white font-bold text-lg">Gallery</div>
+              <span className="absolute bottom-1 left-1 bg-black/20 text-white text-xs font-bold rounded-full px-1.5 py-0.5 leading-none">🧒 3+</span>
             </button>
           </div>
         </div>

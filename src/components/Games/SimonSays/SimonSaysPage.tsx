@@ -7,6 +7,7 @@ import React from 'react';
 import { useSimonSays } from '../../../hooks/useSimonSays';
 import GameLayout from '../../shared/GameLayout';
 import type { Speed, ButtonConfig } from './types';
+import { useWinCelebration } from '../../../hooks/useWinCelebration';
 
 interface SimonSaysPageProps {
   onNavigateHome: () => void;
@@ -24,9 +25,10 @@ const SimonSaysPage: React.FC<SimonSaysPageProps> = ({ onNavigateHome }) => {
 
   const { round, gameStatus, speed, highScore, showingIndex } = gameState;
 
-  const handleSpeedChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSpeed(e.target.value as Speed);
-  };
+  useWinCelebration(
+    gameStatus === 'gameOver',
+    round === highScore && round > 1,
+  );
 
   const getStatusMessage = (): string => {
     switch (gameStatus) {
@@ -60,18 +62,20 @@ const SimonSaysPage: React.FC<SimonSaysPageProps> = ({ onNavigateHome }) => {
 
   const headerActions = (
     <>
-      {/* Speed Selector - Compact on mobile */}
-      <select
-        value={speed}
-        onChange={handleSpeedChange}
-        disabled={gameStatus === 'showing' || gameStatus === 'playing'}
-        className="kid-input text-xs md:text-sm px-2 md:px-3 py-1 md:py-2"
-        title="Game Speed"
-      >
-        <option value="slow">🐌 Slow</option>
-        <option value="normal">🏃 Normal</option>
-        <option value="fast">⚡ Fast</option>
-      </select>
+      {/* Speed buttons */}
+      <div className="flex gap-1" title="Game Speed">
+        {([['slow', '🐌', 'Slow'], ['normal', '🏃', 'Normal'], ['fast', '⚡', 'Fast']] as const).map(([val, icon, label]) => (
+          <button
+            key={val}
+            aria-label={label}
+            onClick={() => setSpeed(val as Speed)}
+            disabled={gameStatus === 'showing' || gameStatus === 'playing'}
+            className={`kid-button text-base md:text-lg px-2 md:px-3 py-1 md:py-2 ${speed === val ? '' : 'opacity-50'}`}
+          >
+            {icon}
+          </button>
+        ))}
+      </div>
 
       {/* Reset Button - Compact on mobile */}
       {gameStatus !== 'ready' && (
@@ -93,6 +97,41 @@ const SimonSaysPage: React.FC<SimonSaysPageProps> = ({ onNavigateHome }) => {
       onNavigateHome={onNavigateHome}
       headerActions={headerActions}
       bgColorClass="bg-gradient-to-b from-indigo-100 to-purple-100"
+      instructions={
+        <div className="space-y-3 text-slate-700">
+          <div>
+            <h3 className="font-semibold text-lg mb-1">🎯 Goal</h3>
+            <p>Repeat the pattern by pressing the buttons in the same order Simon shows you!</p>
+          </div>
+          <div>
+            <h3 className="font-semibold text-lg mb-1">🎮 How to Play</h3>
+            <ul className="list-disc list-inside space-y-1">
+              <li>Watch as Simon lights up buttons in a sequence</li>
+              <li>Listen to the musical tones for each button</li>
+              <li>Repeat the pattern by pressing the same buttons in order</li>
+              <li>Each round adds one more button to the sequence</li>
+              <li>One mistake and the game is over!</li>
+            </ul>
+          </div>
+          <div>
+            <h3 className="font-semibold text-lg mb-1">⚙️ Speed Settings</h3>
+            <ul className="list-disc list-inside space-y-1">
+              <li><strong>Slow:</strong> 800ms between buttons - great for learning</li>
+              <li><strong>Normal:</strong> 600ms - standard challenge</li>
+              <li><strong>Fast:</strong> 400ms - expert mode!</li>
+            </ul>
+          </div>
+          <div>
+            <h3 className="font-semibold text-lg mb-1">💡 Tips</h3>
+            <ul className="list-disc list-inside space-y-1">
+              <li>Pay attention to both colors and sounds</li>
+              <li>Create a rhythm or pattern to remember the sequence</li>
+              <li>Stay focused - one wrong button ends the game!</li>
+              <li>Try to beat your high score!</li>
+            </ul>
+          </div>
+        </div>
+      }
     >
       {/* Stats Panel - Compact on mobile */}
       <div className="kid-card max-w-4xl mx-auto mb-2 md:mb-4 p-2 md:p-4">
@@ -133,85 +172,42 @@ const SimonSaysPage: React.FC<SimonSaysPageProps> = ({ onNavigateHome }) => {
       {/* Simon Buttons Grid */}
       <div className="max-w-md mx-auto mb-4 md:mb-6">
         <div className="grid grid-cols-2 gap-3 md:gap-4 p-4">
-          {buttonConfigs.map((config, index) => (
-            <button
-              key={config.color}
-              onClick={() => handleButtonPress(index)}
-              disabled={gameStatus !== 'playing'}
-              className={`
-                ${config.className}
-                ${showingIndex === index ? 'ring-8 ring-white scale-110' : ''}
-                ${gameStatus === 'playing' ? 'cursor-pointer' : 'cursor-not-allowed opacity-60'}
-                aspect-square rounded-2xl md:rounded-3xl
-                shadow-lg transition-all duration-200
-                flex items-center justify-center
-                text-white font-bold text-2xl md:text-4xl
-                touch-none select-none
-              `}
-              style={{
-                transform: showingIndex === index ? 'scale(1.1)' : 'scale(1)'
-              }}
-            >
-              <span className="drop-shadow-lg">
-                {index === 0 && '🔴'}
-                {index === 1 && '🔵'}
-                {index === 2 && '🟢'}
-                {index === 3 && '🟡'}
-              </span>
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Instructions - Hidden on mobile */}
-      <div className="kid-card max-w-4xl mx-auto hidden md:block">
-        <h2 className="text-xl font-bold mb-3 text-center text-purple-800">
-          How to Play
-        </h2>
-
-        <div className="space-y-3 text-slate-700">
-          <div>
-            <h3 className="font-semibold text-lg mb-1">🎯 Goal</h3>
-            <p>
-              Repeat the pattern by pressing the buttons in the same order Simon shows you!
-            </p>
-          </div>
-
-          <div>
-            <h3 className="font-semibold text-lg mb-1">🎮 How to Play</h3>
-            <ul className="list-disc list-inside space-y-1">
-              <li>Watch as Simon lights up buttons in a sequence</li>
-              <li>Listen to the musical tones for each button</li>
-              <li>Repeat the pattern by pressing the same buttons in order</li>
-              <li>Each round adds one more button to the sequence</li>
-              <li>One mistake and the game is over!</li>
-            </ul>
-          </div>
-
-          <div>
-            <h3 className="font-semibold text-lg mb-1">⚙️ Speed Settings</h3>
-            <ul className="list-disc list-inside space-y-1">
-              <li><strong>Slow:</strong> 800ms between buttons - great for learning</li>
-              <li><strong>Normal:</strong> 600ms - standard challenge</li>
-              <li><strong>Fast:</strong> 400ms - expert mode!</li>
-            </ul>
-          </div>
-
-          <div>
-            <h3 className="font-semibold text-lg mb-1">💡 Tips</h3>
-            <ul className="list-disc list-inside space-y-1">
-              <li>Pay attention to both colors and sounds</li>
-              <li>Create a rhythm or pattern to remember the sequence</li>
-              <li>Stay focused - one wrong button ends the game!</li>
-              <li>Try to beat your high score!</li>
-            </ul>
-          </div>
+          {buttonConfigs.map((config, index) => {
+            const glyphs = ['R', 'B', 'G', 'Y'];
+            const emojis = ['🔴', '🔵', '🟢', '🟡'];
+            return (
+              <button
+                key={config.color}
+                aria-label={config.color}
+                onClick={() => handleButtonPress(index)}
+                disabled={gameStatus !== 'playing'}
+                className={`
+                  ${config.className}
+                  ${showingIndex === index ? 'ring-8 ring-white scale-110' : ''}
+                  ${gameStatus === 'playing' ? 'cursor-pointer' : 'cursor-not-allowed opacity-60'}
+                  aspect-square rounded-2xl md:rounded-3xl
+                  shadow-lg transition-all duration-200
+                  flex items-center justify-center
+                  text-white font-bold text-2xl md:text-4xl
+                  touch-none select-none
+                `}
+                style={{
+                  transform: showingIndex === index ? 'scale(1.1)' : 'scale(1)'
+                }}
+              >
+                <span className="drop-shadow-lg flex flex-col items-center gap-0.5">
+                  <span aria-hidden="true">{emojis[index]}</span>
+                  <span className="text-sm md:text-base font-black leading-none">{glyphs[index]}</span>
+                </span>
+              </button>
+            );
+          })}
         </div>
       </div>
 
       {/* Game Over Modal */}
       {gameStatus === 'gameOver' && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div className="fixed inset-0 bg-gradient-to-b from-purple-50/90 to-pink-50/90 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div className="kid-card max-w-md w-full text-center">
             <div className="text-6xl mb-4">😅</div>
             <h2 className="text-3xl font-bold text-red-600 mb-4">

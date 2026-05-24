@@ -8,6 +8,9 @@ import { useSnakeGame } from '../../../hooks/useSnakeGame';
 import { SnakeBoard } from './SnakeBoard';
 import { SnakeControls } from './SnakeControls';
 import type { Difficulty, GridSize } from './types';
+import GameLayout from '../../shared/GameLayout';
+import { getStatusColor } from '../../../utils/gameUtils';
+import { useWinCelebration } from '../../../hooks/useWinCelebration';
 
 interface SnakePageProps {
   onNavigateHome: () => void;
@@ -16,13 +19,10 @@ interface SnakePageProps {
 const SnakePage: React.FC<SnakePageProps> = ({ onNavigateHome }) => {
   const { gameState, config, controls } = useSnakeGame();
 
-  const handleDifficultyChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    controls.setDifficulty(e.target.value as Difficulty);
-  };
-
-  const handleGridSizeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    controls.setGridSize(e.target.value as GridSize);
-  };
+  useWinCelebration(
+    gameState.gameStatus === 'gameOver',
+    gameState.score === gameState.highScore && gameState.score > 0,
+  );
 
   const getStatusMessage = (): string => {
     switch (gameState.gameStatus) {
@@ -39,59 +39,44 @@ const SnakePage: React.FC<SnakePageProps> = ({ onNavigateHome }) => {
     }
   };
 
-  const getStatusColor = (): string => {
-    switch (gameState.gameStatus) {
-      case 'ready':
-        return 'text-blue-600';
-      case 'playing':
-        return 'text-green-600';
-      case 'paused':
-        return 'text-yellow-600';
-      case 'gameOver':
-        return 'text-red-600';
-      default:
-        return 'text-slate-600';
-    }
-  };
-
   return (
-    <div className="p-2 md:p-4 min-h-screen bg-gradient-to-b from-emerald-100 to-emerald-200">
-      {/* Header - Mobile First */}
-      <div className="flex items-center justify-between mb-2 md:mb-4 gap-2">
-        <h1 className="text-xl md:text-3xl font-bold text-emerald-800 flex items-center gap-1 md:gap-2">
-          <span className="text-2xl md:text-3xl">🐍</span>
-          <span className="hidden sm:inline">Snake Game</span>
-        </h1>
+    <GameLayout
+      title="Snake Game"
+      emoji="🐍"
+      onNavigateHome={onNavigateHome}
+      bgColorClass="bg-gradient-to-b from-emerald-100 to-emerald-200"
+      headerActions={
+        <>
+          {/* Speed buttons */}
+          <div className="flex gap-1" title="Game Speed">
+            {([['easy', '🐌', 'Slow'], ['medium', '🏃', 'Medium'], ['hard', '⚡', 'Fast']] as const).map(([val, icon, label]) => (
+              <button
+                key={val}
+                aria-label={label}
+                onClick={() => controls.setDifficulty(val as Difficulty)}
+                disabled={gameState.gameStatus === 'playing'}
+                className={`kid-button text-base md:text-lg px-2 md:px-3 py-1 md:py-2 ${gameState.difficulty === val ? '' : 'opacity-50'}`}
+              >
+                {icon}
+              </button>
+            ))}
+          </div>
 
-        <div className="flex gap-1 md:gap-2 flex-wrap items-center justify-end">
-          {/* Speed Selector - Compact on mobile */}
-          <select
-            value={gameState.difficulty}
-            onChange={handleDifficultyChange}
-            disabled={gameState.gameStatus === 'playing'}
-            className="kid-input text-xs md:text-sm px-2 md:px-3 py-1 md:py-2"
-            title="Game Speed"
-          >
-            <option value="easy">🐌 Slow</option>
-            <option value="medium">🏃 Med</option>
-            <option value="hard">⚡ Fast</option>
-          </select>
+          {/* Grid size buttons */}
+          <div className="flex gap-1" title="Grid Size">
+            {([['small', '📐', 'Small 15×15'], ['medium', '📏', 'Medium 20×20'], ['large', '📊', 'Large 25×25'], ['xlarge', '🗺️', 'X-Large 30×30']] as const).map(([val, icon, label]) => (
+              <button
+                key={val}
+                aria-label={label}
+                onClick={() => controls.setGridSize(val as GridSize)}
+                disabled={gameState.gameStatus === 'playing'}
+                className={`kid-button text-base md:text-lg px-2 md:px-3 py-1 md:py-2 ${gameState.gridSize === val ? '' : 'opacity-50'}`}
+              >
+                {icon}
+              </button>
+            ))}
+          </div>
 
-          {/* Grid Size Selector - Compact on mobile */}
-          <select
-            value={gameState.gridSize}
-            onChange={handleGridSizeChange}
-            disabled={gameState.gameStatus === 'playing'}
-            className="kid-input text-xs md:text-sm px-2 md:px-3 py-1 md:py-2"
-            title="Grid Size"
-          >
-            <option value="small">📐 15×15</option>
-            <option value="medium">📏 20×20</option>
-            <option value="large">📊 25×25</option>
-            <option value="xlarge">🗺️ 30×30</option>
-          </select>
-
-          {/* Pause/Resume Button - Compact on mobile */}
           {(gameState.gameStatus === 'playing' || gameState.gameStatus === 'paused') && (
             <button
               className="kid-button text-xs md:text-sm bg-yellow-500 hover:bg-yellow-600 px-2 md:px-4 py-1 md:py-2"
@@ -102,7 +87,6 @@ const SnakePage: React.FC<SnakePageProps> = ({ onNavigateHome }) => {
             </button>
           )}
 
-          {/* Reset Button - Compact on mobile */}
           {gameState.gameStatus !== 'ready' && (
             <button
               className="kid-button text-xs md:text-sm bg-blue-500 hover:bg-blue-600 px-2 md:px-4 py-1 md:py-2"
@@ -111,19 +95,56 @@ const SnakePage: React.FC<SnakePageProps> = ({ onNavigateHome }) => {
               🔄<span className="hidden md:inline ml-1">Play Again</span>
             </button>
           )}
-
-          {/* Home Button - Compact on mobile */}
-          <button
-            className="kid-button text-xs md:text-sm bg-slate-500 hover:bg-slate-600 px-2 md:px-4 py-1 md:py-2"
-            onClick={onNavigateHome}
-            title="Home"
-          >
-            <span className="md:hidden">←</span>
-            <span className="hidden md:inline">← Home</span>
-          </button>
+        </>
+      }
+      instructions={
+        <div className="space-y-3">
+          <div>
+            <h3 className="font-semibold text-lg mb-1">🎯 Goal</h3>
+            <p className="text-slate-700">Eat the apples 🍎 to grow your snake and score points. Don't hit the walls or yourself!</p>
+          </div>
+          <div>
+            <h3 className="font-semibold text-lg mb-1">⌨️ Keyboard Controls</h3>
+            <ul className="text-slate-700 space-y-1">
+              <li><strong>Arrow Keys</strong> or <strong>WASD</strong> - Move snake</li>
+              <li><strong>Space</strong> - Pause/Resume</li>
+              <li><strong>R</strong> - Restart (when game over)</li>
+            </ul>
+          </div>
+          <div>
+            <h3 className="font-semibold text-lg mb-1">📱 Touch Controls</h3>
+            <p className="text-slate-700">Tap the arrow buttons to change direction</p>
+          </div>
+          <div>
+            <h3 className="font-semibold text-lg mb-1">📊 Scoring</h3>
+            <p className="text-slate-700">Each apple gives you <strong>+10 points</strong> and makes your snake longer!</p>
+          </div>
+          <div>
+            <h3 className="font-semibold text-lg mb-1">⚙️ Game Settings</h3>
+            <div className="text-slate-700 space-y-2">
+              <div>
+                <strong>Speed:</strong>
+                <ul className="ml-4 mt-1 space-y-1">
+                  <li>🐌 <strong>Slow</strong> - Relaxed pace (200ms)</li>
+                  <li>🏃 Medium - Moderate speed (150ms)</li>
+                  <li>⚡ <strong>Fast</strong> - Quick reflexes needed! (100ms)</li>
+                </ul>
+              </div>
+              <div>
+                <strong>Grid Size:</strong>
+                <ul className="ml-4 mt-1 space-y-1">
+                  <li>📐 <strong>Small</strong> - Cozy 15×15 grid</li>
+                  <li>📏 Medium - Standard 20×20 grid</li>
+                  <li>📊 <strong>Large</strong> - Spacious 25×25 grid</li>
+                  <li>🗺️ <strong>X-Large</strong> - Huge 30×30 grid!</li>
+                </ul>
+              </div>
+              <p className="text-sm italic">Mix and match speed and grid size for your perfect challenge!</p>
+            </div>
+          </div>
         </div>
-      </div>
-
+      }
+    >
       {/* Score Display - Compact on mobile */}
       <div className="kid-card max-w-4xl mx-auto mb-2 md:mb-4 p-2 md:p-4">
         <div className="grid grid-cols-3 gap-2 md:gap-4">
@@ -144,7 +165,7 @@ const SnakePage: React.FC<SnakePageProps> = ({ onNavigateHome }) => {
 
       {/* Status Message - Smaller on mobile */}
       <div className="text-center mb-2 md:mb-4">
-        <p className={`text-sm md:text-lg font-semibold ${getStatusColor()}`}>
+        <p className={`text-sm md:text-lg font-semibold ${getStatusColor(gameState.gameStatus)}`}>
           {getStatusMessage()}
         </p>
       </div>
@@ -162,72 +183,9 @@ const SnakePage: React.FC<SnakePageProps> = ({ onNavigateHome }) => {
         />
       </div>
 
-      {/* Instructions - Hidden on mobile */}
-      <div className="kid-card max-w-4xl mx-auto hidden md:block">
-        <h2 className="text-xl font-bold mb-3 text-center text-emerald-800">
-          How to Play
-        </h2>
-
-        <div className="space-y-3">
-          <div>
-            <h3 className="font-semibold text-lg mb-1">🎯 Goal</h3>
-            <p className="text-slate-700">
-              Eat the apples 🍎 to grow your snake and score points. Don't hit the walls or yourself!
-            </p>
-          </div>
-
-          <div>
-            <h3 className="font-semibold text-lg mb-1">⌨️ Keyboard Controls</h3>
-            <ul className="text-slate-700 space-y-1">
-              <li><strong>Arrow Keys</strong> or <strong>WASD</strong> - Move snake</li>
-              <li><strong>Space</strong> - Pause/Resume</li>
-              <li><strong>R</strong> - Restart (when game over)</li>
-            </ul>
-          </div>
-
-          <div className="md:hidden">
-            <h3 className="font-semibold text-lg mb-1">📱 Touch Controls</h3>
-            <p className="text-slate-700">
-              Tap the arrow buttons above to change direction
-            </p>
-          </div>
-
-          <div>
-            <h3 className="font-semibold text-lg mb-1">📊 Scoring</h3>
-            <p className="text-slate-700">
-              Each apple gives you <strong>+10 points</strong> and makes your snake longer!
-            </p>
-          </div>
-
-          <div>
-            <h3 className="font-semibold text-lg mb-1">⚙️ Game Settings</h3>
-            <div className="text-slate-700 space-y-2">
-              <div>
-                <strong>Speed:</strong>
-                <ul className="ml-4 mt-1 space-y-1">
-                  <li>🐌 <strong>Slow</strong> - Relaxed pace (200ms)</li>
-                  <li>🏃 <strong>Medium</strong> - Moderate speed (150ms)</li>
-                  <li>⚡ <strong>Fast</strong> - Quick reflexes needed! (100ms)</li>
-                </ul>
-              </div>
-              <div>
-                <strong>Grid Size:</strong>
-                <ul className="ml-4 mt-1 space-y-1">
-                  <li>📐 <strong>Small</strong> - Cozy 15×15 grid</li>
-                  <li>📏 <strong>Medium</strong> - Standard 20×20 grid</li>
-                  <li>📊 <strong>Large</strong> - Spacious 25×25 grid</li>
-                  <li>🗺️ <strong>X-Large</strong> - Huge 30×30 grid!</li>
-                </ul>
-              </div>
-              <p className="text-sm italic">Mix and match speed and grid size for your perfect challenge!</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
       {/* Game Over Modal Overlay */}
       {gameState.gameStatus === 'gameOver' && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div className="fixed inset-0 bg-gradient-to-b from-emerald-50/90 to-emerald-100/90 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div className="kid-card max-w-md w-full text-center">
             <h2 className="text-3xl font-bold text-red-600 mb-4">Game Over!</h2>
 
@@ -259,7 +217,7 @@ const SnakePage: React.FC<SnakePageProps> = ({ onNavigateHome }) => {
           </div>
         </div>
       )}
-    </div>
+    </GameLayout>
   );
 };
 
